@@ -12,8 +12,8 @@ import com.xiaomi.account.openauth.XiaomiOAuthConstants;
  */
 public class AppConstants {
 	
-	public static final String BASE_URL = "http://120.77.65.198/TanLoveServer/";
-//	public static final String BASE_URL = "http://192.168.1.101/TanLoveServer/";
+	public static final String BASE_URL = "http://120.77.65.198/MOLoveServer/";
+//	public static final String BASE_URL = "http://192.168.1.101/MOLoveServer/";
 
 	/**
 	 * 密码加密密匙
@@ -28,8 +28,8 @@ public class AppConstants {
 	/**
 	 *容联云IM
 	 */
-	public static final String YUNTONGXUN_ID = "8a216da856c131340156d6ea887f1466";
-	public static final String YUNTONGXUN_TOKEN = "56cc98f3e9129eeb5352cc5d58f4edd1";
+	public static final String YUNTONGXUN_ID = "8aaf07085c1ab70d015c1b4c9ceb0049";
+	public static final String YUNTONGXUN_TOKEN = "104176ee7192c50c3b062c2b23280bf7";
 
 	/**
 	 * QQ登录的appid和appkey
@@ -44,8 +44,8 @@ public class AppConstants {
 	/**
 	 * 短信
 	 */
-	public static final String SMS_INIT_KEY = "1705ac31c7ae6";
-	public static final String SMS_INIT_SECRET = "334da8403952168a0bb65d8870ea35af";
+	public static final String SMS_INIT_KEY = "1df9989ba62c6";
+	public static final String SMS_INIT_SECRET = "731d4eaafa4f01e82a60375c864ebf64";
 
 	/**
 	 * 小米推送appid
