@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ff8585</color>
-    <color name="colorPrimaryDark">#ff7d7d</color>
-    <color name="colorAccent">#ff7d7d</color>
+    <color name="colorPrimary">#ffc882</color>
+    <color name="colorPrimaryDark">#fcc073</color>
+    <color name="colorAccent">#fcc073</color>
 
     <!-- 图片选择背景 -->
     <color name="image_selected_color">#7f000000</color>
