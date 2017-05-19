@@ -23,13 +23,23 @@ import retrofit2.Callback;
  * 描述：
  */
 public class UploadCityInfoRequest extends ResultPostExecute<String> {
-	public void request(final String city){
+	public void request(final String city, final String latitude, final String longitude){
 		ArrayMap<String, String> params = new ArrayMap<>();
 		params.put("channel", CheckUtil.getAppMetaData(CSApplication.getInstance(), "UMENG_CHANNEL"));
 		if (!TextUtils.isEmpty(city)) {
 			params.put("currentCity", city);
 		} else {
 			params.put("currentCity", "");
+		}
+		if (!TextUtils.isEmpty(latitude)) {
+			params.put("latitude", latitude);
+		} else {
+			params.put("latitude", "");
+		}
+		if (!TextUtils.isEmpty(longitude)) {
+			params.put("longitude", longitude);
+		} else {
+			params.put("longitude", "");
 		}
 		Call<ResponseBody> call = AppManager.getUserService().uploadCityInfo(params, AppManager.getClientUser().sessionId);
 		call.enqueue(new Callback<ResponseBody>() {
