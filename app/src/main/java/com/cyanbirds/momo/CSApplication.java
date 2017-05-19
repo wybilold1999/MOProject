@@ -98,7 +98,7 @@ public class CSApplication extends MultiDexApplication {
 	private void initFresco() {
 		DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(this)
 				.setBaseDirectoryPath(FileAccessorUtils.getCachePathName())
-				.setBaseDirectoryName("tt_love")
+				.setBaseDirectoryName("momo")
 				.setMaxCacheSize(500*1024*1024)//500MB
 				.setMaxCacheSizeOnLowDiskSpace(10 * 1024 * 1024)
 				.setMaxCacheSizeOnVeryLowDiskSpace(5 * 1024 * 1024)

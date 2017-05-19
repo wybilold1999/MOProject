@@ -23,7 +23,7 @@ android {
 
     greendao {
         schemaVersion 1
-        daoPackage "com.cyanbirds.tanlove.greendao"
+        daoPackage "com.cyanbirds.momo.greendao"
         targetGenDir "src/main/java"
     }
 
