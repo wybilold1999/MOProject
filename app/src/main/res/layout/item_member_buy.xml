@@ -8,24 +8,42 @@
 				android:layout_marginRight="20dp"
 				android:layout_marginTop="10dp">
 
-
-	<TextView
-		android:id="@+id/date_limit"
+	<FrameLayout
+		android:id="@+id/date_lay"
 		android:layout_width="50dp"
-		android:layout_height="wrap_content"
-		android:layout_alignParentLeft="true"
-		android:layout_centerVertical="true"/>
+		android:layout_height="50dp">
+
+		<TextView
+			android:id="@+id/date"
+			android:layout_width="45dp"
+			android:layout_height="45dp"
+			android:textSize="20sp"
+			android:textColor="@android:color/white"
+			android:background="@drawable/button_radius_background"
+			android:gravity="center_vertical|center_horizontal"
+			android:layout_alignParentLeft="true"
+			android:layout_centerVertical="true"/>
+
+		<ImageView
+			android:id="@+id/iv_hot"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="top|right"
+			android:src="@mipmap/icon_hot"
+			android:visibility="gone"/>
+
+	</FrameLayout>
 
 	<RelativeLayout
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_centerVertical="true"
 		android:layout_marginLeft="30dp"
-		android:layout_toRightOf="@id/date_limit"
+		android:layout_toRightOf="@id/date_lay"
 		android:orientation="vertical">
 
 		<TextView
-			android:id="@+id/price"
+			android:id="@+id/limit"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
 
@@ -33,14 +51,7 @@
 			android:id="@+id/preferential"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginLeft="1dp"
-			android:layout_toRightOf="@id/price"/>
-
-		<TextView
-			android:id="@+id/desciption"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_below="@id/price"
+			android:layout_below="@id/limit"
 			android:layout_marginTop="10dp"/>
 	</RelativeLayout>
 
@@ -51,7 +62,6 @@
 		android:layout_alignParentRight="true"
 		android:layout_centerVertical="true"
 		android:background="@drawable/button_radius_background"
-		android:text="购买"
 		android:textColor="@android:color/white"
 		android:textSize="12sp"/>
 

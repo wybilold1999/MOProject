@@ -193,6 +193,7 @@ public class DownloadPayFragment extends Fragment{
 		new GetMemberBuyListTask().request(DOWNLOAD_VIP);
 		//获取用户名称
 		new GetUserNameTask().request(1, 100);
+
 		/**
 		 * 默认支付宝支付
 		 */
@@ -314,9 +315,35 @@ public class DownloadPayFragment extends Fragment{
 		@Override
 		public void onItemClick(View view, int position) {
 			memberBuy = mAdapter.getItem(position);
+			showPayDialog(memberBuy);
 		}
 	};
 
+	private void showPayDialog(final MemberBuy memberBuy) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle(getResources().getString(R.string.pay_type));
+		builder.setNegativeButton(getResources().getString(R.string.cancel),
+				null);
+		builder.setItems(
+				new String[]{getResources().getString(R.string.ali_pay),
+						getResources().getString(R.string.weixin_pay)},
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which) {
+							case 0:
+								new GetAliPayOrderInfoTask().request(memberBuy.id, AppConstants.ALI_PAY_PLATFORM);
+								break;
+							case 1:
+								new CreateOrderTask().request(memberBuy.id, AppConstants.WX_PAY_PLATFORM);
+								break;
+						}
+						dialog.dismiss();
+					}
+				});
+		builder.show();
+	}
 
 	class CreateOrderTask extends CreateOrderRequest {
 		@Override

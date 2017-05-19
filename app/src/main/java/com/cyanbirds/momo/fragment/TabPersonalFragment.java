@@ -45,7 +45,6 @@ import com.cyanbirds.momo.net.request.UpdateGoldRequest;
 import com.cyanbirds.momo.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.momo.utils.StringUtil;
 import com.dl7.tag.TagLayout;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -184,6 +183,7 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	private TabPersonalPhotosAdapter mAdapter;
 	private LinearLayoutManager layoutManager;
 	private LinearLayoutManager mGiftLayoutManager;
+//	private Gson gson = new Gson();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -601,10 +601,20 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 			} else {
 				mMyLocation.setVisibility(View.GONE);
 				mMapCard.setVisibility(View.GONE);
+//				ToastUtil.showMessage(R.string.no_result);
 			}
+		} else if (rCode == 27) {
+			mMyLocation.setVisibility(View.GONE);
+			mMapCard.setVisibility(View.GONE);
+//			ToastUtil.showMessage(R.string.error_network);
+		} else if (rCode == 32) {
+			mMyLocation.setVisibility(View.GONE);
+			mMapCard.setVisibility(View.GONE);
+//			ToastUtil.showMessage(R.string.error_key);
 		} else {
 			mMyLocation.setVisibility(View.GONE);
 			mMapCard.setVisibility(View.GONE);
+//			ToastUtil.showMessage(getString(R.string.error_other) + rCode);
 		}
 	}
 

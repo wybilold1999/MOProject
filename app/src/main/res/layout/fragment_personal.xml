@@ -115,8 +115,7 @@
                 app:cardBackgroundColor="#fff"
                 app:cardCornerRadius="0dp"
                 app:cardElevation="1dp"
-                app:cardPreventCornerOverlap="true"
-                android:visibility="gone">
+                app:cardPreventCornerOverlap="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -133,13 +132,13 @@
 
                         <ImageView
                             android:id="@+id/identify_img"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/authentication_09"/>
+                            android:src="@mipmap/my_profile_certificate_icon"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -199,13 +198,13 @@
 
                         <ImageView
                             android:id="@+id/my_attention_img"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/icon_attentioned"/>
+                            android:src="@mipmap/my_profile_dynamic_icon"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -239,6 +238,68 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/my_visitor"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="?android:selectableItemBackground"
+                        android:clickable="true"
+                        android:descendantFocusability="blocksDescendants"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/my_visitor_img"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="20dp"
+                            android:contentDescription="@null"
+                            android:src="@mipmap/personal_recent_visitors_icon"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_toRightOf="@id/my_visitor_img"
+                            android:text="@string/my_visitor"
+                            android:textSize="16sp"/>
+
+                        <ImageView
+                            android:id="@id/personal_enter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginRight="20dp"
+                            android:contentDescription="@null"
+                            android:src="@mipmap/personal_enter"/>
+
+                        <TextView
+                            android:id="@+id/visitor_count"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_toLeftOf="@id/personal_enter"
+                            android:layout_centerVertical="true"
+                            android:textColor="@android:color/holo_red_light"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginRight="10dp"
+                            android:contentDescription="@null"
+                            android:visibility="gone"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/divider_height"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginLeft="@dimen/divider_margin_left"
+                            android:background="@color/divider_color"
+                            android:contentDescription="@null"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:id="@+id/my_gifts"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
@@ -248,13 +309,13 @@
 
                         <ImageView
                             android:id="@+id/my_gifts_img"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/icon_square_letter"/>
+                            android:src="@mipmap/module_msgsender_guider_gift"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -310,13 +371,13 @@
 
                         <ImageView
                             android:id="@+id/attentioned_user_img"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/icon_lookme"/>
+                            android:src="@mipmap/my_invite_friend_icon"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -342,16 +403,15 @@
 
                         <TextView
                             android:id="@+id/attention_count"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_toLeftOf="@id/personal_enter"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:layout_centerInParent="true"
                             android:layout_centerVertical="true"
-                            android:layout_marginEnd="25dp"
-                            android:layout_marginRight="25dp"
-                            android:contentDescription="@null"
+                            android:layout_toLeftOf="@id/personal_enter"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginRight="10dp"
                             android:textColor="@android:color/holo_red_light"
-                            android:gravity="center"
+                            android:contentDescription="@null"
                             android:visibility="gone"/>
 
                         <View
@@ -373,13 +433,13 @@
 
                         <ImageView
                             android:id="@+id/good_user_img"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/good_focused"/>
+                            android:src="@mipmap/my_profile_mylove_icon"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -390,6 +450,7 @@
                             android:layout_toRightOf="@id/good_user_img"
                             android:text="@string/who_good_for_me"
                             android:textSize="16sp"/>
+
 
                         <ImageView
                             android:id="@id/personal_enter"
@@ -405,15 +466,14 @@
 
                         <TextView
                             android:id="@+id/love_count"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:layout_toLeftOf="@id/personal_enter"
                             android:layout_centerVertical="true"
-                            android:layout_marginEnd="25dp"
-                            android:layout_marginRight="25dp"
-                            android:contentDescription="@null"
                             android:textColor="@android:color/holo_red_light"
-                            android:gravity="center"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginRight="10dp"
+                            android:contentDescription="@null"
                             android:visibility="gone"/>
 
                         <View
@@ -429,15 +489,14 @@
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
-                android:id="@+id/vip_card"
+                android:id="@+id/vip_rose_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 app:cardBackgroundColor="#fff"
                 app:cardCornerRadius="0dp"
                 app:cardElevation="1dp"
-                app:cardPreventCornerOverlap="true"
-                android:visibility="gone">
+                app:cardPreventCornerOverlap="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -454,13 +513,13 @@
 
                         <ImageView
                             android:id="@+id/vip_img"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/icon_vip"/>
+                            android:src="@mipmap/my_profile_vip_icon"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -470,7 +529,8 @@
                             android:layout_marginStart="10dp"
                             android:layout_toRightOf="@id/vip_img"
                             android:text="@string/vip_center"
-                            android:textSize="16sp"/>
+                            android:textSize="16sp"
+                            android:id="@+id/textView"/>
 
                         <ImageView
                             android:id="@id/personal_enter"
@@ -490,7 +550,9 @@
                             android:layout_alignParentBottom="true"
                             android:layout_marginLeft="@dimen/divider_margin_left"
                             android:background="@color/divider_color"
-                            android:contentDescription="@null"/>
+                            android:contentDescription="@null"
+                            android:id="@+id/view"/>
+
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -503,8 +565,8 @@
 
                         <ImageView
                             android:id="@+id/download_img"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
@@ -540,7 +602,6 @@
                             android:layout_marginLeft="@dimen/divider_margin_left"
                             android:background="@color/divider_color"
                             android:contentDescription="@null"/>
-
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -553,13 +614,13 @@
 
                         <ImageView
                             android:id="@+id/my_gold_img"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/gold"/>
+                            android:src="@mipmap/me_score"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -602,8 +663,7 @@
                 app:cardBackgroundColor="#fff"
                 app:cardCornerRadius="0dp"
                 app:cardElevation="1dp"
-                app:cardPreventCornerOverlap="true"
-                android:visibility="gone">
+                app:cardPreventCornerOverlap="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -620,13 +680,13 @@
 
                         <ImageView
                             android:id="@+id/lovers_img"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/icon_between_lovers"/>
+                            android:src="@mipmap/find_rank"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -667,19 +727,15 @@
                         android:clickable="true"
                         android:descendantFocusability="blocksDescendants">
 
-                        <com.facebook.drawee.view.SimpleDraweeView
+                        <ImageView
                             android:id="@+id/success_case_img"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            app:actualImageScaleType="fitCenter"
-                            app:failureImage="@mipmap/icon_success_case"
-                            app:placeholderImage="@mipmap/icon_success_case"
-                            app:placeholderImageScaleType="fitCenter"
-                            app:roundAsCircle="true"/>
+                            android:src="@mipmap/squre_peach_icon"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -722,13 +778,13 @@
 
                         <ImageView
                             android:id="@+id/near_party_img"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/icon_party"/>
+                            android:src="@mipmap/squre_offline_icon"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -787,13 +843,13 @@
 
                         <ImageView
                             android:id="@+id/setting_img"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/icon_settings"/>
+                            android:src="@mipmap/my_profile_setting_icon"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -836,13 +892,13 @@
 
                         <ImageView
                             android:id="@+id/about_img"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/about"/>
+                            android:src="@mipmap/my_profile_qa_icon"/>
 
                         <TextView
                             android:layout_width="wrap_content"

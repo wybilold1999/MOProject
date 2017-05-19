@@ -6,6 +6,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -175,6 +176,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	 * 剪裁图片返回
 	 */
 	public final static int PHOTO_CUT_RESULT = 106;
+
 	/**
 	 * 读写文件夹
 	 */
@@ -183,6 +185,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	 * 跳转设置界面
 	 */
 	private final int REQUEST_PERMISSION_SETTING = 10001;
+
 	/**
 	 * 是否拥有读写权限
 	 */
@@ -1006,6 +1009,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 			ProgressDialogUtils.getInstance(ModifyUserInfoActivity.this).dismiss();
 			clientUser.face_url = AppConstants.OSS_IMG_ENDPOINT + s;
 			clientUser.face_local = mPortraitUri.getPath();
+//			mPortraitPhoto.setImageURI(Uri.parse("file://" + mPortraitUri.getPath()));
 			mPortraitPhoto.setImageURI(clientUser.face_url);
 			AppManager.setClientUser(clientUser);
 			AppManager.saveUserInfo();
@@ -1035,6 +1039,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 
 	/**
 	 * 剪切图片
+	 *
 	 * @param file
 	 */
 	private void cutPhoto(File file) {
@@ -1048,7 +1053,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 			}
 		}
 
-//		Uri imageUri=FileProvider.getUriForFile(this, "com.cyanbirds.momo.fileProvider", file);//通过FileProvider创建一个content类型的Uri
+//		Uri imageUri= FileProvider.getUriForFile(this, "com.cyanbirds.momo.fileProvider", file);//通过FileProvider创建一个content类型的Uri
 		Uri imageUri = Uri.fromFile(file);
 		Intent intent = new Intent("com.android.camera.action.CROP");
 		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

@@ -1,6 +1,5 @@
 package com.cyanbirds.momo.config;
 
-import com.xiaomi.account.openauth.XiaomiOAuthConstants;
 
 /**
  * 
@@ -55,10 +54,6 @@ public class AppConstants {
 	 * 小米推送appkey
 	 */
 	public static final String MI_PUSH_APP_KEY = "5721752438610";
-
-	public static final String MI_ACCOUNT_REDIRECT_URI = "http://www.cyanbirds.cn";
-
-	public static final int[] MI_SCOPE = new int[]{XiaomiOAuthConstants.SCOPE_PROFILE, XiaomiOAuthConstants.SCOPE_OPEN_ID};
 
 	/**
 	 * 阿里图片节点

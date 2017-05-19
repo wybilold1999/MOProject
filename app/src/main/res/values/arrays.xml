@@ -137,7 +137,7 @@
     </string-array>
     <string-array name="quit_items">
         <item>退出当前账号</item>
-        <item>关闭探爱</item>
+        <item>关闭TT交友</item>
     </string-array>
     <string-array name="login_history_more">
         <item>切换账号</item>
@@ -425,6 +425,14 @@
         <item>唱歌</item>
         <item>交友</item>
         <item>听音乐</item>
+    </string-array>
+
+    <string-array name="salary">
+        <item>小于2000</item>
+        <item>2000-5000</item>
+        <item>5000-10000</item>
+        <item>10000-20000</item>
+        <item>20000以上</item>
     </string-array>
 
 </resources>

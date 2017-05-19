@@ -49,6 +49,8 @@ public class LocationDetailActivity extends BaseActivity implements
 	private LatLng mMessageLatLng;
 	private String mAddress;
 
+	private Handler handler = new Handler();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -150,7 +152,6 @@ public class LocationDetailActivity extends BaseActivity implements
 		super.onDestroy();
 		mMapView.onDestroy();
 	}
-
 
 	@Override
 	public void onLocationChanged(AMapLocation location) {

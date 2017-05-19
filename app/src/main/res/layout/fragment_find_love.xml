@@ -26,7 +26,7 @@
 
 		</android.support.v4.widget.SwipeRefreshLayout>
 
-		<com.cyanbirds.momo.ui.widget.CircularProgress
+		<com.cyanbirds.ttjy.ui.widget.CircularProgress
 			android:id="@+id/progress_bar"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -46,6 +46,6 @@
 		android:src="@mipmap/ic_shuffle"
 		app:layout_anchor="@+id/recyclerview"
 		app:layout_anchorGravity="bottom|end"
-		app:layout_behavior="com.cyanbirds.momo.ui.widget.ScrollAwareFABBehavior"/>
+		app:layout_behavior="com.cyanbirds.ttjy.ui.widget.ScrollAwareFABBehavior"/>
 
 </android.support.design.widget.CoordinatorLayout>

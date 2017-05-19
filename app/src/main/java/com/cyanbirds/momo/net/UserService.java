@@ -4,6 +4,8 @@ import android.support.v4.util.ArrayMap;
 
 import com.cyanbirds.momo.config.AppConstants;
 
+import java.util.Map;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -227,4 +229,5 @@ public interface UserService {
      */
     @GET("http://restapi.amap.com/v3/ip?key=" + AppConstants.WEB_KEY)
     Call<ResponseBody> getCityInfo();
+
 }

@@ -8,6 +8,8 @@ import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.base.ResultPostExecute;
 import com.cyanbirds.momo.utils.CheckUtil;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
 

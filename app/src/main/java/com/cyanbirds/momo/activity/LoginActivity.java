@@ -17,15 +17,12 @@ import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.eventtype.LocationEvent;
 import com.cyanbirds.momo.eventtype.WeinXinEvent;
-import com.cyanbirds.momo.eventtype.XMEvent;
 import com.cyanbirds.momo.helper.IMChattingHelper;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.request.DownloadFileRequest;
-import com.cyanbirds.momo.net.request.GetMiAccessTokenRequest;
 import com.cyanbirds.momo.net.request.QqLoginRequest;
 import com.cyanbirds.momo.net.request.UserLoginRequest;
 import com.cyanbirds.momo.net.request.WXLoginRequest;
-import com.cyanbirds.momo.net.request.XMLoginRequest;
 import com.cyanbirds.momo.utils.AESEncryptorUtil;
 import com.cyanbirds.momo.utils.CheckUtil;
 import com.cyanbirds.momo.utils.FileAccessorUtils;
@@ -41,9 +38,6 @@ import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 import com.umeng.analytics.MobclickAgent;
-import com.xiaomi.account.openauth.XiaomiOAuthFuture;
-import com.xiaomi.account.openauth.XiaomiOAuthResults;
-import com.xiaomi.account.openauth.XiaomiOAuthorize;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -73,8 +67,6 @@ public class LoginActivity extends BaseActivity {
     ImageView weiXinLogin;
     @BindView(R.id.qq_login)
     ImageView qqLogin;
-    @BindView(R.id.xm_login)
-    ImageView xmLogin;
 
     public static Tencent mTencent;
     private UserInfo mInfo;
@@ -85,6 +77,8 @@ public class LoginActivity extends BaseActivity {
     private String channelId;
     private boolean activityIsRunning;
     private String mCurrrentCity;//定位到的城市
+    private String curLat;
+    private String curLon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,9 +105,11 @@ public class LoginActivity extends BaseActivity {
             loginAccount.setSelection(mPhoneNum.length());
         }
         mCurrrentCity = getIntent().getStringExtra(ValueKey.LOCATION);
+        curLat = getIntent().getStringExtra(ValueKey.LATITUDE);
+        curLon = getIntent().getStringExtra(ValueKey.LONGITUDE);
     }
 
-    @OnClick({R.id.btn_login, R.id.forget_pwd, R.id.qq_login, R.id.weixin_login, R.id.xm_login})
+    @OnClick({R.id.btn_login, R.id.forget_pwd, R.id.qq_login, R.id.weixin_login})
     public void onClick(View view) {
         Intent intent = new Intent();
         switch (view.getId()) {
@@ -129,8 +125,8 @@ public class LoginActivity extends BaseActivity {
             case R.id.forget_pwd:
                 //0=注册1=找回密码2=验证绑定手机
                 intent.setClass(this, FindPwdActivity.class);
-                intent.putExtra(ValueKey.LOCATION, mCurrrentCity);
                 intent.putExtra(ValueKey.INPUT_PHONE_TYPE, 1);
+                intent.putExtra(ValueKey.LOCATION, mCurrrentCity);
                 startActivity(intent);
                 break;
             case R.id.qq_login:
@@ -147,56 +143,6 @@ public class LoginActivity extends BaseActivity {
                 req.state = "wechat_sdk_demo_test";
                 CSApplication.api.sendReq(req);
                 break;
-            case R.id.xm_login :
-                XiaomiOAuthFuture<XiaomiOAuthResults> future = new XiaomiOAuthorize()
-                        .setAppId(Long.parseLong(AppConstants.MI_PUSH_APP_ID))
-                        .setRedirectUrl(AppConstants.MI_ACCOUNT_REDIRECT_URI)
-                        .setScope(AppConstants.MI_SCOPE)
-                        .startGetAccessToken(this);
-                new GetMiAccessTokenRequest(this, future).execute();
-                break;
-        }
-    }
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void xmLogin(XMEvent event) {
-        ProgressDialogUtils.getInstance(LoginActivity.this).show(R.string.dialog_request_login);
-        new XMLoginTask().request(event.xmOAuthResults, channelId, mCurrrentCity);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getCity(LocationEvent event) {
-        mCurrrentCity = event.city;
-    }
-
-    public class XMLoginTask extends XMLoginRequest {
-        @Override
-        public void onPostExecute(ClientUser clientUser) {
-            ProgressDialogUtils.getInstance(LoginActivity.this).dismiss();
-            MobclickAgent.onProfileSignIn(String.valueOf(AppManager
-                    .getClientUser().userId));
-            if(!new File(FileAccessorUtils.FACE_IMAGE,
-                    Md5Util.md5(clientUser.face_url) + ".jpg").exists()
-                    && !TextUtils.isEmpty(clientUser.face_url)){
-                new DownloadPortraitTask().request(clientUser.face_url,
-                        FileAccessorUtils.FACE_IMAGE,
-                        Md5Util.md5(clientUser.face_url) + ".jpg");
-            }
-            clientUser.currentCity = mCurrrentCity;
-            AppManager.setClientUser(clientUser);
-            AppManager.saveUserInfo();
-            IMChattingHelper.getInstance().sendInitLoginMsg();
-            Intent intent = new Intent();
-            intent.setClass(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finishAll();
-        }
-
-        @Override
-        public void onErrorExecute(String error) {
-            ProgressDialogUtils.getInstance(LoginActivity.this).dismiss();
-            ToastUtil.showMessage(error);
         }
     }
 
@@ -204,6 +150,11 @@ public class LoginActivity extends BaseActivity {
     public void weiXinLogin(WeinXinEvent event) {
         ProgressDialogUtils.getInstance(LoginActivity.this).show(R.string.dialog_request_login);
         new WXLoginTask().request(event.code, channelId, mCurrrentCity);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getCity(LocationEvent event) {
+        mCurrrentCity = event.city;
     }
 
     class WXLoginTask extends WXLoginRequest {
@@ -219,6 +170,8 @@ public class LoginActivity extends BaseActivity {
                         Md5Util.md5(clientUser.face_url) + ".jpg");
             }
             clientUser.currentCity = mCurrrentCity;
+            clientUser.latitude = curLat;
+            clientUser.longitude = curLon;
             AppManager.setClientUser(clientUser);
             AppManager.saveUserInfo();
             IMChattingHelper.getInstance().sendInitLoginMsg();
@@ -249,6 +202,8 @@ public class LoginActivity extends BaseActivity {
                         Md5Util.md5(clientUser.face_url) + ".jpg");
             }
             clientUser.currentCity = mCurrrentCity;
+            clientUser.latitude = curLat;
+            clientUser.longitude = curLon;
             AppManager.setClientUser(clientUser);
             AppManager.saveUserInfo();
             IMChattingHelper.getInstance().sendInitLoginMsg();
@@ -357,6 +312,8 @@ public class LoginActivity extends BaseActivity {
                         Md5Util.md5(clientUser.face_url) + ".jpg");
             }
             clientUser.currentCity = mCurrrentCity;
+            clientUser.latitude = curLat;
+            clientUser.longitude = curLon;
             AppManager.setClientUser(clientUser);
             AppManager.saveUserInfo();
             IMChattingHelper.getInstance().sendInitLoginMsg();
@@ -420,17 +377,17 @@ public class LoginActivity extends BaseActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        ProgressDialogUtils.getInstance(this).dismiss();
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         activityIsRunning = false;
         MobclickAgent.onPageEnd(this.getClass().getName());
         MobclickAgent.onPause(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        ProgressDialogUtils.getInstance(this).dismiss();
     }
 
     @Override

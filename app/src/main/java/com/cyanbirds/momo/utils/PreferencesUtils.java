@@ -17,83 +17,83 @@ import com.cyanbirds.momo.manager.AppManager;
 public class PreferencesUtils {
 
 	/** 保存登陆账号 */
-	public static final String SETTINGS_RL_ACCOUNT = "com.cyanbird.tanlove_account";
+	public static final String SETTINGS_RL_ACCOUNT = "com.cyanbirds.momo_account";
 	/** 保存登陆密码 */
-	public static final String SETTINGS_RL_PASSWORD = "com.cyanbird.tanlove_p";
+	public static final String SETTINGS_RL_PASSWORD = "com.cyanbirds.momo_p";
 	/** 保存是否第一次启动 */
-	public static final String SETTINGS_RL_FIRST_LAUNCHER = "com.cyanbird.tanlove_first_launcher";
+	public static final String SETTINGS_RL_FIRST_LAUNCHER = "com.cyanbirds.momo_first_launcher";
 	/** 用户年龄 */
-	public static final String SETTINGS_RL_USER_AGE = "com.cyanbird.tanlove_age";
+	public static final String SETTINGS_RL_USER_AGE = "com.cyanbirds.momo_age";
 	/** 头像url */
-	public static final String SETTINGS_RL_USER_FACE_URL = "com.cyanbird.tanlove_face_url";
+	public static final String SETTINGS_RL_USER_FACE_URL = "com.cyanbirds.momo_face_url";
 	/** 手机号 */
-	public static final String SETTINGS_RL_USER_MOBILE = "com.cyanbird.tanlove_mobile";
+	public static final String SETTINGS_RL_USER_MOBILE = "com.cyanbirds.momo_mobile";
 	/** 个性签名 */
-	public static final String SETTINGS_RL_USER_SIGNATURE = "com.cyanbird.tanlove_signature";
+	public static final String SETTINGS_RL_USER_SIGNATURE = "com.cyanbirds.momo_signature";
 	/** 保存用户性别 */
-	public static final String SETTINGS_RL_USER_SEX = "com.cyanbird.tanlove_sex";
+	public static final String SETTINGS_RL_USER_SEX = "com.cyanbirds.momo_sex";
 	/** 用户名 */
-	public static final String SETTINGS_RL_USER_USER_NAME = "com.cyanbird.tanlove_user_name";
+	public static final String SETTINGS_RL_USER_USER_NAME = "com.cyanbirds.momo_user_name";
 	/** 某用户是否第一次登录 */
-	public static final String SETTINGS_RL_FIRST_LOGIN = "com.cyanbird.tanlove_first_login";
+	public static final String SETTINGS_RL_FIRST_LOGIN = "com.cyanbirds.momo_first_login";
 	/** 是否登录 */
-	public static final String SETTINGS_RL_IS_LOGIN = "com.cyanbird.tanlove_is_login";
+	public static final String SETTINGS_RL_IS_LOGIN = "com.cyanbirds.momo_is_login";
 	/** 本地头像地址 */
-	public static final String SETTINGS_RL_FACE_LOCAL = "com.cyanbird.tanlove_face_local";
+	public static final String SETTINGS_RL_FACE_LOCAL = "com.cyanbirds.momo_face_local";
 	/**sessionId */
-	public static final String SETTINGS_RL_SESSIONID = "com.cyanbird.tanlove_sessionid";
+	public static final String SETTINGS_RL_SESSIONID = "com.cyanbirds.momo_sessionid";
 	/**qq号 */
-	public static final String SETTINGS_RL_QQ = "com.cyanbird.tanlove_qq";
+	public static final String SETTINGS_RL_QQ = "com.cyanbirds.momo_qq";
 	/**微信号 */
-	public static final String SETTINGS_RL_WEIXIN = "com.cyanbird.tanlove_weixin";
+	public static final String SETTINGS_RL_WEIXIN = "com.cyanbirds.momo_weixin";
 	/**身高 */
-	public static final String SETTINGS_RL_TALL = "com.cyanbird.tanlove_tall";
+	public static final String SETTINGS_RL_TALL = "com.cyanbirds.momo_tall";
 	/**体重 */
-	public static final String SETTINGS_RL_WEIGHT = "com.cyanbird.tanlove_weight";
+	public static final String SETTINGS_RL_WEIGHT = "com.cyanbirds.momo_weight";
 	/**距离 */
-	public static final String SETTINGS_RL_DISTANCE = "com.cyanbird.tanlove_distance";
+	public static final String SETTINGS_RL_DISTANCE = "com.cyanbirds.momo_distance";
 	/**情感状态 */
-	public static final String SETTINGS_RL_EMOTION_STATUS = "com.cyanbird.tanlove_emotion_status";
+	public static final String SETTINGS_RL_EMOTION_STATUS = "com.cyanbirds.momo_emotion_status";
 	/**星座 */
-	public static final String SETTINGS_RL_CONSTELLATION = "com.cyanbird.tanlove_constellation";
+	public static final String SETTINGS_RL_CONSTELLATION = "com.cyanbirds.momo_constellation";
 	/**城市 */
-	public static final String SETTINGS_RL_CITY = "com.cyanbird.tanlove_city";
+	public static final String SETTINGS_RL_CITY = "com.cyanbirds.momo_city";
 	/**职业 */
-	public static final String SETTINGS_RL_OCCUPATION = "com.cyanbird.tanlove_occupation";
+	public static final String SETTINGS_RL_OCCUPATION = "com.cyanbirds.momo_occupation";
 	/**教育 */
-	public static final String SETTINGS_RL_EDUCATION = "com.cyanbird.tanlove_education";
+	public static final String SETTINGS_RL_EDUCATION = "com.cyanbirds.momo_education";
 	/**交友目的 */
-	public static final String SETTINGS_RL_PURPOSE = "com.cyanbird.tanlove_purpose";
+	public static final String SETTINGS_RL_PURPOSE = "com.cyanbirds.momo_purpose";
 	/**爱爱地点 */
-	public static final String SETTINGS_RL_LOVE_WHERE = "com.cyanbird.tanlove_love_where";
+	public static final String SETTINGS_RL_LOVE_WHERE = "com.cyanbirds.momo_love_where";
 	/**首次见面希望 */
-	public static final String SETTINGS_RL_DO_WHAT_FIRST = "com.cyanbird.tanlove_do_what_first";
+	public static final String SETTINGS_RL_DO_WHAT_FIRST = "com.cyanbirds.momo_do_what_first";
 	/**恋爱观念 */
-	public static final String SETTINGS_RL_CONCEPTION = "com.cyanbird.tanlove_conception";
+	public static final String SETTINGS_RL_CONCEPTION = "com.cyanbirds.momo_conception";
 	/**是否显示 */
-	public static final String SETTINGS_RL_IS_SHOW = "com.cyanbird.tanlove_is_show";
+	public static final String SETTINGS_RL_IS_SHOW = "com.cyanbirds.momo_is_show";
 	/**是否vip */
-	public static final String SETTINGS_RL_IS_VIP = "com.cyanbird.tanlove_is_vip";
+	public static final String SETTINGS_RL_IS_VIP = "com.cyanbirds.momo_is_vip";
 	/**isCheckPhone */
-	public static final String SETTINGS_RL_IS_CHECK_PHONE = "com.cyanbird.tanlove_is_check_phone";
+	public static final String SETTINGS_RL_IS_CHECK_PHONE = "com.cyanbirds.momo_is_check_phone";
 	/**publicSocialNumber */
-	public static final String SETTINGS_RL_PUBLIC_SOCIALNUMBER = "com.cyanbird.tanlove_public_socialnumber";
+	public static final String SETTINGS_RL_PUBLIC_SOCIALNUMBER = "com.cyanbirds.momo_public_socialnumber";
 	/** 新消息提醒 */
-	public static final String SETTINGS_RL_NEW_MESSAGE_NOTICE = "com.cyanbird.tanlove_new_message_notice";
+	public static final String SETTINGS_RL_NEW_MESSAGE_NOTICE = "com.cyanbirds.momo_new_message_notice";
 	/** 通知显示消息详情 */
-	public static final String SETTINGS_RL_NOTICE_MESSAGE_INFO = "com.cyanbird.tanlove_notice_message_info";
+	public static final String SETTINGS_RL_NOTICE_MESSAGE_INFO = "com.cyanbirds.momo_notice_message_info";
 	/** 通知声音*/
-	public static final String SETTINGS_RL_NOTICE_VOICE = "com.cyanbird.tanlove_notice_voice";
+	public static final String SETTINGS_RL_NOTICE_VOICE = "com.cyanbirds.momo_notice_voice";
 	/** 通知震动*/
-	public static final String SETTINGS_RL_NOTICE_SHOCK = "com.cyanbird.tanlove_notice_shock";
+	public static final String SETTINGS_RL_NOTICE_SHOCK = "com.cyanbirds.momo_notice_shock";
 	/** 听筒播放*/
-	public static final String SETTINGS_RL_EARPIECE_PLAY_VOICE = "com.cyanbird.tanlove_earpiece_play_voice";
+	public static final String SETTINGS_RL_EARPIECE_PLAY_VOICE = "com.cyanbirds.momo_earpiece_play_voice";
 	/** 极光推送设置别名是否成功*/
-	public static final String SETTINGS_JPUSH_SET_ALIAS = "com.cyanbird.tanlove_jpush_set_alias";
+	public static final String SETTINGS_JPUSH_SET_ALIAS = "com.cyanbirds.momo_jpush_set_alias";
 	/** 抽奖次数*/
-	public static final String SETTINGS_REWARD_COUNT = "com.cyanbird.tanlove_reward_count";
+	public static final String SETTINGS_REWARD_COUNT = "com.cyanbirds.momo_reward_count";
 	/** 定位到的城市*/
-	public static final String SETTINGS_CURRENT_CITY = "com.cyanbird.tanlove_current_city";
+	public static final String SETTINGS_CURRENT_CITY = "com.cyanbird.ttjy_current_city";
 
 	/**
 	 * 获取RL账号

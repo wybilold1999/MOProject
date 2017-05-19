@@ -15,7 +15,7 @@
         app:placeholderImage="@mipmap/default_pic"
         app:placeholderImageScaleType="fitCenter"/>
 
-    <com.cyanbirds.momo.ui.widget.CircularProgress
+    <com.cyanbirds.ttjy.ui.widget.CircularProgress
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

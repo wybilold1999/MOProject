@@ -119,8 +119,6 @@ public class PersonalFragment extends Fragment {
 	RelativeLayout mMyGifts;
 	@BindView(R.id.gifts_count)
 	TextView giftsCount;
-	@BindView(R.id.vip_card)
-	CardView mVipCard;
 
 	private View rootView;
 
@@ -210,11 +208,9 @@ public class PersonalFragment extends Fragment {
 				isVip.setVisibility(View.GONE);
 			}
 			if (clientUser.isShowVip) {
-				mVipCard.setVisibility(View.VISIBLE);
 				mIdentifyCard.setVisibility(View.VISIBLE);
 				vipLay.setVisibility(View.VISIBLE);
 			} else {
-				mVipCard.setVisibility(View.GONE);
 				mIdentifyCard.setVisibility(View.GONE);
 				vipLay.setVisibility(View.GONE);
 			}

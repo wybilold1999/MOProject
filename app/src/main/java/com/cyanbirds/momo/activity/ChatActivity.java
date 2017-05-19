@@ -101,13 +101,10 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 	private LinearLayout mEmoticonPageIndicator;
 	private RecyclerView mEmoticonRecyclerview;
 	private SwipeRefreshLayout mSwipeRefresh;
-	private Toolbar mToolbar;
 
 	private String mPhotoPath;
 	private File mPhotoFile;
 	private Uri mPhotoOnSDCardUri;
-	private Uri mPortraitUri;
-	private File mCutFile;
 
 	private String mConversationId;
 	private ClientUser mClientUser;
@@ -144,7 +141,6 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 	 * 图片创建成功
 	 */
 	public static final int CREATE_IMAGE_SUCCESS_FLAG = 203;
-
 	/**
 	 * 跳转设置界面
 	 */
@@ -615,12 +611,8 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 					mPhotoOnSDCardUri);
 			sendBroadcast(intent);
 			if (mPhotoOnSDCardUri != null && new File(mPhotoPath).exists()) {
-//				int size = FileUtils.decodeFileLength(mPhotoPath);
-//				String str = Formatter.formatFileSize(this, size);
 				//压缩图片
 				String imgUrl = ImageUtil.compressImage(mPhotoPath, FileAccessorUtils.IMESSAGE_IMAGE);
-//				int size2 = FileUtils.decodeFileLength(imgUrl);
-//				String str2 = Formatter.formatFileSize(this, size2);
 				Uri uri = Uri.parse("file://" + imgUrl);
 				toImagePreview(uri);
 			}
@@ -679,8 +671,6 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 				IMChattingHelper.getInstance().sendLocationMsg(mClientUser, latitude, longitude,
 						address, imagePath);
 			}
-		} else if (requestCode == REQUEST_PERMISSION_SETTING) {
-
 		}
 	}
 
@@ -941,4 +931,3 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 		builder.show();
 	}
 }
-

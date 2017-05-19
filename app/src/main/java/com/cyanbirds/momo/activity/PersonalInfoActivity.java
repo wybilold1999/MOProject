@@ -353,22 +353,7 @@ public class PersonalInfoActivity extends BaseActivity {
 				getSupportFragmentManager(), fragmentList, tabList);
 		mViewpager.setAdapter(fragmentAdapter);//给ViewPager设置适配器
 		mTabLayout.setupWithViewPager(mViewpager);//将TabLayout和ViewPager关联起来。
-		mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-			@Override
-			public void onTabSelected(TabLayout.Tab tab) {
-				mViewpager.setCurrentItem(tab.getPosition());
-			}
-
-			@Override
-			public void onTabUnselected(TabLayout.Tab tab) {
-
-			}
-
-			@Override
-			public void onTabReselected(TabLayout.Tab tab) {
-
-			}
-		});
+		mTabLayout.setTabsFromPagerAdapter(fragmentAdapter);
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)

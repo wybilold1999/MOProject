@@ -105,11 +105,11 @@
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="58442a8be469441d3ef5fdd6a2c1942d" />
+            android:value="6cb779c01dc89323b817ee1d73246c0b" />
 
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="57fcfcfbe0f55a3147003866"/>
+            android:value="58a90dd97f2c7478a900065d"/>
 
         <meta-data
             android:name="UMENG_CHANNEL"
@@ -139,7 +139,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme="tencent1105589350"/>
+                <data android:scheme="tencent1105980496"/>
             </intent-filter>
         </activity>
 
@@ -426,7 +426,6 @@
             android:screenOrientation="portrait">
         </activity>
 
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.cyanbirds.momo.fileProvider"
@@ -436,6 +435,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
 
         <!-- *****************************ECSDK核心服务类 （必须配置）Start******************************************** -->
         // SDK核心服务配置(必选配置)
@@ -548,13 +548,13 @@
         //====================个推推送开始=================================
         <meta-data
             android:name="PUSH_APPID"
-            android:value="fn4zeTabxU6Z7jbRgm0d19" />
+            android:value="6BO85LjudJ84laoTSzMPF" />
         <meta-data
             android:name="PUSH_APPKEY"
-            android:value="lhFmeD04jY7NEqOm6xW7E2" />
+            android:value="7QxfJAhJIH8NeTmSjsXMvA" />
         <meta-data
             android:name="PUSH_APPSECRET"
-            android:value="SgdwgVRTVU8XW9UajLdjX1" />
+            android:value="8PZn2lNDdG6EIj12bQh1g7" />
 
         <!-- 配置SDK核心服务 -->
         <service
@@ -625,98 +625,10 @@
         </service>
         //====================个推推送结束=================================
 
-        //====================信鸽推送开始=================================
-
-        <!-- 【必须】 (2.30及以上版新增)展示通知的activity -->
-        <activity
-            android:name="com.tencent.android.tpush.XGPushActivity"
-            android:theme="@android:style/Theme.Translucent"
-            android:exported="false" >
-            <intent-filter>
-                <!-- 若使用AndroidStudio，请设置android:name="android.intent.action"-->
-                <action android:name="android.intent.action" />
-            </intent-filter>
-        </activity>
-
-        <!-- 【必须】 信鸽receiver广播接收 -->
-        <receiver
-            android:name="com.tencent.android.tpush.XGPushReceiver"
-            android:process=":xg_service_v2" >
-            <intent-filter android:priority="0x7fffffff" >
-
-                <!-- 【必须】 信鸽SDK的内部广播 -->
-                <action android:name="com.tencent.android.tpush.action.SDK" />
-                <action android:name="com.tencent.android.tpush.action.INTERNAL_PUSH_MESSAGE" />
-                <!-- 【必须】 系统广播：网络切换 -->
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-
-                <!-- 【可选】 系统广播：开屏 -->
-                <action android:name="android.intent.action.USER_PRESENT" />
-
-                <!-- 【可选】 一些常用的系统广播，增强信鸽service的复活机会，请根据需要选择。当然，你也可以添加APP自定义的一些广播让启动service -->
-                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
-                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
-            </intent-filter>
-            <!-- 【可选】 usb相关的系统广播，增强信鸽service的复活机会，请根据需要添加 -->
-            <intent-filter android:priority="0x7fffffff" >
-                <action android:name="android.intent.action.MEDIA_UNMOUNTED" />
-                <action android:name="android.intent.action.MEDIA_REMOVED" />
-                <action android:name="android.intent.action.MEDIA_CHECKING" />
-                <action android:name="android.intent.action.MEDIA_EJECT" />
-
-                <data android:scheme="file" />
-            </intent-filter>
-        </receiver>
-        <!-- 【必须】 信鸽service -->
-        <service
-            android:name="com.tencent.android.tpush.service.XGPushService"
-            android:exported="true"
-            android:persistent="true"
-            android:process=":xg_service_v2" />
-
-        <!-- 【必须】 通知service，其中android:name部分要改为当前包名 -->
-        <service
-            android:name="com.tencent.android.tpush.rpc.XGRemoteService"
-            android:exported="true" >
-            <intent-filter>
-                <!-- 【必须】 请修改为当前APP名包.PUSH_ACTION，如demo的包名为：com.qq.xgdemo -->
-                <action android:name="com.cyanbirds.momo.PUSH_ACTION" />
-            </intent-filter>
-        </service>
-        <!-- 【可选】信鸽拉起其他APP应用，若应用在本地找不到可以自动下载 -->
-        <!--
-              <service
-            android:name="com.tencent.android.tpush.XGDownloadService"
-            android:enabled="true"
-            android:exported="false" />
-        -->
-        <!-- 【可选】APP实现的Receiver，用于接收消息透传和操作结果的回调，请根据需要添加 -->
-        <receiver android:name="com.cyanbirds.momo.receiver.XinGeMessageReceiver"
-                  android:exported="true" >
-            <intent-filter>
-                <!-- 接收消息透传 -->
-                <action android:name="com.tencent.android.tpush.action.PUSH_MESSAGE" />
-                <!-- 监听注册、反注册、设置/删除标签、通知被点击等处理结果 -->
-                <action android:name="com.tencent.android.tpush.action.FEEDBACK" />
-            </intent-filter>
-        </receiver>
-
-        <!-- 【必须】 请修改为APP的AccessId，“21”开头的10位数字，中间没空格 -->
-        <meta-data
-            android:name="XG_V2_ACCESS_ID"
-            android:value="2100243677" />
-        <!-- 【必须】 请修改为APP的AccessKey，“A”开头的12位字符串，中间没空格 -->
-        <meta-data
-            android:name="XG_V2_ACCESS_KEY"
-            android:value="A2M31UVNW13B" />
-
-        //====================信鸽推送结束=================================
-
         //====================极光推送开始=================================
 
         <meta-data android:name="JPUSH_CHANNEL" android:value="developer-default"/>
-        <meta-data android:name="JPUSH_APPKEY" android:value="0717c67de0e1382a75d51989" />
+        <meta-data android:name="JPUSH_APPKEY" android:value="0fc93404188d9ab1b34e90d9" />
         <!-- Rich push 核心功能 since 2.0.6-->
         <activity
             android:name="cn.jpush.android.ui.PopWinActivity"
@@ -817,11 +729,11 @@
         //====================魅族推送开始=================================
         <meta-data
             android:name="APP_ID"
-            android:value="110446"/>
+            android:value="110467"/>
 
         <meta-data
             android:name="APP_KEY"
-            android:value="0e29617af61244ae9ac57c19083d7bc7"/>
+            android:value="74e7258593474bb0a04a91239243105b"/>
         <!-- push 应用定义消息 receiver 声明 -->
         <receiver android:name="com.cyanbirds.momo.receiver.MeizuPushMessageReceiver">
             <intent-filter>

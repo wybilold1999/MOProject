@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -57,6 +58,9 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
     private RadioButton sex_male;
     private RadioButton sex_female;
     private RadioGroup mSexGroup;
+    private RadioButton all_country;
+    private RadioButton same_city;
+    private RadioGroup rg_area;
 
     private FindLoveAdapter mAdapter;
     private LinearLayoutManager layoutManager;
@@ -69,7 +73,7 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
 	/**
      * 0:同城 1：缘分 2：颜值  -1:就是全国
      */
-    private String mUserScopeType = "";
+    private String mUserScopeType = "-1";
 
     private final String SAME_CITY = "0";
     private final String BEAUTIFUL = "2";
@@ -101,9 +105,9 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
         if (parent != null) {
             parent.removeView(rootView);
         }
-        /*((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(
-                R.string.tab_find_love);*/
+                R.string.tab_find_love);
         return rootView;
     }
 
@@ -327,6 +331,9 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
      */
     private void initSearchDialogView(){
         searchView = LayoutInflater.from(getActivity()).inflate(R.layout.item_search, null);
+        rg_area = (RadioGroup) searchView.findViewById(R.id.rg_area);
+        all_country = (RadioButton) searchView.findViewById(R.id.all_country);
+        same_city = (RadioButton) searchView.findViewById(R.id.same_city);
         mSexGroup = (RadioGroup) searchView.findViewById(R.id.rg_sex);
         sex_male = (RadioButton) searchView.findViewById(R.id.sex_male);
         sex_female = (RadioButton) searchView.findViewById(R.id.sex_female);
@@ -342,6 +349,21 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
                     GENDER = "Male";
                 } else if(checkedId == sex_female.getId()){
                     GENDER = "FeMale";
+                }
+            }
+        });
+        if (mUserScopeType.equals(ALL_COUNTRY)) {
+            all_country.setChecked(true);
+        } else {
+            same_city.setChecked(true);
+        }
+        rg_area.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                if (checkedId == all_country.getId()) {
+                    mUserScopeType = ALL_COUNTRY;
+                } else if (checkedId == same_city.getId()) {
+                    mUserScopeType = SAME_CITY;
                 }
             }
         });

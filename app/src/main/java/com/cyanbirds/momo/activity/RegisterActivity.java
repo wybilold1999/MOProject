@@ -18,15 +18,12 @@ import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.eventtype.LocationEvent;
 import com.cyanbirds.momo.eventtype.WeinXinEvent;
-import com.cyanbirds.momo.eventtype.XMEvent;
 import com.cyanbirds.momo.helper.IMChattingHelper;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.request.CheckIsRegisterByPhoneRequest;
 import com.cyanbirds.momo.net.request.DownloadFileRequest;
-import com.cyanbirds.momo.net.request.GetMiAccessTokenRequest;
 import com.cyanbirds.momo.net.request.QqLoginRequest;
 import com.cyanbirds.momo.net.request.WXLoginRequest;
-import com.cyanbirds.momo.net.request.XMLoginRequest;
 import com.cyanbirds.momo.utils.CheckUtil;
 import com.cyanbirds.momo.utils.FileAccessorUtils;
 import com.cyanbirds.momo.utils.Md5Util;
@@ -41,9 +38,6 @@ import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 import com.umeng.analytics.MobclickAgent;
-import com.xiaomi.account.openauth.XiaomiOAuthFuture;
-import com.xiaomi.account.openauth.XiaomiOAuthResults;
-import com.xiaomi.account.openauth.XiaomiOAuthorize;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -74,8 +68,6 @@ public class RegisterActivity extends BaseActivity {
     ImageView mSelectMan;
     @BindView(R.id.select_lady)
     ImageView mSelectLady;
-    @BindView(R.id.xm_login)
-    ImageView xmLogin;
 
     /**
      * 相册返回
@@ -91,7 +83,8 @@ public class RegisterActivity extends BaseActivity {
     private String channelId;
     private boolean activityIsRunning;
     private String mCurrrentCity;//定位到的城市
-
+    private String curLat;
+    private String curLon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,11 +102,13 @@ public class RegisterActivity extends BaseActivity {
 
         channelId = CheckUtil.getAppMetaData(this, "UMENG_CHANNEL");
         mCurrrentCity = getIntent().getStringExtra(ValueKey.LOCATION);
+        curLat = getIntent().getStringExtra(ValueKey.LATITUDE);
+        curLon = getIntent().getStringExtra(ValueKey.LONGITUDE);
     }
 
 
     @OnClick({R.id.next, R.id.qq_login,
-            R.id.select_man, R.id.select_lady, R.id.weixin_login, R.id.xm_login})
+            R.id.select_man, R.id.select_lady, R.id.weixin_login})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.next:
@@ -145,53 +140,9 @@ public class RegisterActivity extends BaseActivity {
                 req.state = "wechat_sdk_demo_test";
                 CSApplication.api.sendReq(req);
                 break;
-            case R.id.xm_login:
-                XiaomiOAuthFuture<XiaomiOAuthResults> future = new XiaomiOAuthorize()
-                        .setAppId(Long.parseLong(AppConstants.MI_PUSH_APP_ID))
-                        .setRedirectUrl(AppConstants.MI_ACCOUNT_REDIRECT_URI)
-                        .setScope(AppConstants.MI_SCOPE)
-                        .startGetAccessToken(this);
-                new GetMiAccessTokenRequest(this, future).execute();
-                break;
         }
     }
 
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void xmLogin(XMEvent event) {
-        ProgressDialogUtils.getInstance(RegisterActivity.this).show(R.string.dialog_request_login);
-        new XMLoginTask().request(event.xmOAuthResults, channelId, mCurrrentCity);
-    }
-
-    public class XMLoginTask extends XMLoginRequest {
-        @Override
-        public void onPostExecute(ClientUser clientUser) {
-            MobclickAgent.onProfileSignIn(String.valueOf(AppManager
-                    .getClientUser().userId));
-            if(!new File(FileAccessorUtils.FACE_IMAGE,
-                    Md5Util.md5(clientUser.face_url) + ".jpg").exists()
-                    && !TextUtils.isEmpty(clientUser.face_url)){
-                new DownloadPortraitTask().request(clientUser.face_url,
-                        FileAccessorUtils.FACE_IMAGE,
-                        Md5Util.md5(clientUser.face_url) + ".jpg");
-            }
-            clientUser.currentCity = mCurrrentCity;
-            AppManager.setClientUser(clientUser);
-            AppManager.saveUserInfo();
-            IMChattingHelper.getInstance().sendInitLoginMsg();
-            Intent intent = new Intent();
-            intent.setClass(RegisterActivity.this, MainActivity.class);
-            startActivity(intent);
-            finishAll();
-        }
-
-        @Override
-        public void onErrorExecute(String error) {
-            ProgressDialogUtils.getInstance(RegisterActivity.this).dismiss();
-            ToastUtil.showMessage(error);
-        }
-    }
-    
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void weiXinLogin(WeinXinEvent event) {
         ProgressDialogUtils.getInstance(RegisterActivity.this).show(R.string.dialog_request_login);
@@ -211,11 +162,13 @@ public class RegisterActivity extends BaseActivity {
             if(!new File(FileAccessorUtils.FACE_IMAGE,
                     Md5Util.md5(clientUser.face_url) + ".jpg").exists()
                     && !TextUtils.isEmpty(clientUser.face_url)){
-                new RegisterActivity.DownloadPortraitTask().request(clientUser.face_url,
+                new DownloadPortraitTask().request(clientUser.face_url,
                         FileAccessorUtils.FACE_IMAGE,
                         Md5Util.md5(clientUser.face_url) + ".jpg");
             }
             clientUser.currentCity = mCurrrentCity;
+            clientUser.latitude = curLat;
+            clientUser.longitude = curLon;
             AppManager.setClientUser(clientUser);
             AppManager.saveUserInfo();
             IMChattingHelper.getInstance().sendInitLoginMsg();
@@ -241,11 +194,11 @@ public class RegisterActivity extends BaseActivity {
                 //获取验证码
                 String phone_num = phoneNum.getText().toString().trim();
                 mClientUser.mobile = phone_num;
-                mClientUser.currentCity = mCurrrentCity;
                 SMSSDK.getVerificationCode("86", phone_num);
                 Intent intent = new Intent(RegisterActivity.this, RegisterCaptchaActivity.class);
                 intent.putExtra(ValueKey.PHONE_NUMBER, phone_num);
                 intent.putExtra(ValueKey.INPUT_PHONE_TYPE, 0);
+                mClientUser.currentCity = mCurrrentCity;
                 intent.putExtra(ValueKey.USER, mClientUser);
                 startActivity(intent);
             }
@@ -355,6 +308,8 @@ public class RegisterActivity extends BaseActivity {
                         Md5Util.md5(clientUser.face_url) + ".jpg");
             }
             clientUser.currentCity = mCurrrentCity;
+            clientUser.latitude = curLat;
+            clientUser.longitude = curLon;
             AppManager.setClientUser(clientUser);
             AppManager.saveUserInfo();
             IMChattingHelper.getInstance().sendInitLoginMsg();
@@ -407,13 +362,11 @@ public class RegisterActivity extends BaseActivity {
                             mSelectLady.setImageResource(R.mipmap.radio_women_focused_bg);
                         }
                         dialog.dismiss();
-                        mClientUser.age = 20;
+                        mClientUser.age = 21;
                     }
                 });
         builder.show();
     }
-
-
 
     class DownloadPortraitTask extends DownloadFileRequest {
         @Override
@@ -471,7 +424,6 @@ public class RegisterActivity extends BaseActivity {
         super.onStop();
         ProgressDialogUtils.getInstance(this).dismiss();
     }
-
 
     @Override
     protected void onDestroy() {
