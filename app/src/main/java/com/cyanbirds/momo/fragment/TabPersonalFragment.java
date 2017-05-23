@@ -301,11 +301,21 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 		String myLongitude = AppManager.getClientUser().longitude;
 		if (!TextUtils.isEmpty(myLatitude) &&
 				!TextUtils.isEmpty(myLongitude)) {
-			LatLonPoint latLonPoint = new LatLonPoint(Double.parseDouble(myLatitude) + latitude,
-					Double.parseDouble(myLongitude) + longitude);
+			LatLonPoint latLonPoint = null;
+			if ("-1".equals(AppManager.getClientUser().userId)) {
+				latLonPoint = new LatLonPoint(latitude, longitude);
+			} else {
+				latLonPoint = new LatLonPoint(Double.parseDouble(myLatitude) + latitude,
+						Double.parseDouble(myLongitude) + longitude);
+			}
 			mLatLonPoint = latLonPoint;
-			LatLng latLng = new LatLng(Double.parseDouble(myLatitude) + latitude,
-					Double.parseDouble(myLongitude) + longitude);
+			LatLng latLng = null;
+			if ("-1".equals(AppManager.getClientUser().userId)) {
+				latLng = new LatLng(latitude, longitude);
+			} else {
+				latLng = new LatLng(Double.parseDouble(myLatitude) + latitude,
+						Double.parseDouble(myLongitude) + longitude);
+			}
 			aMap.animateCamera(CameraUpdateFactory.changeLatLng(latLng));
 			RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 1000,
 					GeocodeSearch.AMAP);// 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
