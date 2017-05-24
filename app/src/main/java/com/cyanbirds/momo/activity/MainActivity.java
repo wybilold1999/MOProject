@@ -89,6 +89,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 
 	private String curLat;
 	private String curLon;
+	private String currentCity;
 
 	private final Handler mHandler = new Handler() {
 		@Override
@@ -315,7 +316,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 			new UploadCityInfoTask().request(aMapLocation.getCity(),
 					AppManager.getClientUser().latitude, AppManager.getClientUser().longitude);
 		} else {
-			new UploadCityInfoTask().request(AppManager.getClientUser().currentCity, curLat, curLon);
+			new UploadCityInfoTask().request(currentCity, curLat, curLon);
 		}
 	}
 
@@ -328,6 +329,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 		public void onPostExecute(CityInfo cityInfo) {
 			if (cityInfo != null) {
 				try {
+					currentCity = cityInfo.city;
 					String[] rectangle = cityInfo.rectangle.split(";");
 					String[] leftBottom = rectangle[0].split(",");
 					String[] rightTop = rectangle[1].split(",");
