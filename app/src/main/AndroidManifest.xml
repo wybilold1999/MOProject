@@ -127,8 +127,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.xiaomi.account.openauth.AuthorizeActivity" />
-
         <activity
             android:name="com.tencent.tauth.AuthActivity"
             android:launchMode="singleTask"

@@ -11,8 +11,8 @@ package com.cyanbirds.momo.config;
  */
 public class AppConstants {
 	
-	public static final String BASE_URL = "http://120.77.65.198/MOLoveServer/";
-//	public static final String BASE_URL = "http://192.168.1.101/MOLoveServer/";
+//	public static final String BASE_URL = "http://120.77.65.198/MOLoveServer/";
+	public static final String BASE_URL = "http://192.168.1.101/MOLoveServer/";
 
 	/**
 	 * 密码加密密匙
