@@ -22,7 +22,7 @@
             app:placeholderImageScaleType="fitCenter"/>
 
 
-        <com.cyanbirds.ttjy.ui.widget.CircularProgress
+        <com.cyanbirds.momo.ui.widget.CircularProgress
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

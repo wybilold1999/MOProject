@@ -40,7 +40,7 @@
 						android:layout_margin="5dp"
 						android:text="浪漫七夕，缘来是你"/>
 
-					<com.cyanbirds.ttjy.ui.widget.NoScrollGridView
+					<com.cyanbirds.momo.ui.widget.NoScrollGridView
 						android:id="@+id/party_1"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
 						android:horizontalSpacing="2dp"
 						android:numColumns="3"
 						android:verticalSpacing="5dp">
-					</com.cyanbirds.ttjy.ui.widget.NoScrollGridView>
+					</com.cyanbirds.momo.ui.widget.NoScrollGridView>
 
 				</LinearLayout>
 
@@ -79,7 +79,7 @@
 						android:layout_margin="5dp"
 						android:text="我要大声对你说520"/>
 
-					<com.cyanbirds.ttjy.ui.widget.NoScrollGridView
+					<com.cyanbirds.momo.ui.widget.NoScrollGridView
 						android:id="@+id/party_2"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
 						android:layout_marginTop="8dp"
 						android:numColumns="3"
 						android:verticalSpacing="5dp">
-					</com.cyanbirds.ttjy.ui.widget.NoScrollGridView>
+					</com.cyanbirds.momo.ui.widget.NoScrollGridView>
 
 				</LinearLayout>
 
@@ -117,7 +117,7 @@
 						android:layout_margin="5dp"
 						android:text="浪漫情人节，我们不见不散"/>
 
-					<com.cyanbirds.ttjy.ui.widget.NoScrollGridView
+					<com.cyanbirds.momo.ui.widget.NoScrollGridView
 						android:id="@+id/party_3"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
 						android:layout_marginTop="8dp"
 						android:numColumns="3"
 						android:verticalSpacing="5dp">
-					</com.cyanbirds.ttjy.ui.widget.NoScrollGridView>
+					</com.cyanbirds.momo.ui.widget.NoScrollGridView>
 				</LinearLayout>
 
 			</android.support.v7.widget.CardView>
@@ -156,7 +156,7 @@
 						android:layout_margin="5dp"
 						android:text="相约元旦，幸福我来牵"/>
 
-					<com.cyanbirds.ttjy.ui.widget.NoScrollGridView
+					<com.cyanbirds.momo.ui.widget.NoScrollGridView
 						android:id="@+id/party_4"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
@@ -165,7 +165,7 @@
 						android:layout_marginTop="8dp"
 						android:numColumns="3"
 						android:verticalSpacing="5dp">
-					</com.cyanbirds.ttjy.ui.widget.NoScrollGridView>
+					</com.cyanbirds.momo.ui.widget.NoScrollGridView>
 				</LinearLayout>
 
 			</android.support.v7.widget.CardView>

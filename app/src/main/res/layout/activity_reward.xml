@@ -28,7 +28,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content">
 
-				<com.cyanbirds.ttjy.ui.widget.LuckyPanView
+				<com.cyanbirds.momo.ui.widget.LuckyPanView
 					android:id="@+id/id_luckypan"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"

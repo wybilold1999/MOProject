@@ -16,7 +16,7 @@
         app:theme="@style/ActionBarThemeOverlay"
         app:titleTextAppearance="@style/ActionBar.TitleText" />
 
-    <com.cyanbirds.ttjy.ui.widget.HackyViewPager
+    <com.cyanbirds.momo.ui.widget.HackyViewPager
         android:id="@+id/id_viewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"

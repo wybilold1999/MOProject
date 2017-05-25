@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.cyanbirds.ttjy.ui.widget.SquareToWidthRelativeLayout
+<com.cyanbirds.momo.ui.widget.SquareToWidthRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/RelativeLayout1"
@@ -28,4 +28,4 @@
             app:roundedCornerRadius="0dp"/>
     </RelativeLayout>
 
-</com.cyanbirds.ttjy.ui.widget.SquareToWidthRelativeLayout>
+</com.cyanbirds.momo.ui.widget.SquareToWidthRelativeLayout>
