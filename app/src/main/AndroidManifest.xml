@@ -105,11 +105,11 @@
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="6cb779c01dc89323b817ee1d73246c0b" />
+            android:value="fbe36160957cf56df2d658174f8f6136" />
 
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="58a90dd97f2c7478a900065d"/>
+            android:value="592ab9318630f50a79000442"/>
 
         <meta-data
             android:name="UMENG_CHANNEL"

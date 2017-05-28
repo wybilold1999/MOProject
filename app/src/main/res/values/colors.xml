@@ -7,12 +7,12 @@
     <!-- 图片选择背景 -->
     <color name="image_selected_color">#7f000000</color>
 
-    <color name="color_theme">#ef9a9a</color>
+    <color name="color_theme">#00d8c7</color>
     <!-- 分割线背景 -->
     <color name="divider_color">#E1E1E1</color>
     <color name="tabhost_color">#F3F3F3</color>
     <!-- tab高亮选中字体颜色 -->
-    <color name="tab_text_selector">#EF9A9A</color>
+    <color name="tab_text_selector">#00d8c7</color>
     <!-- 灰色字体 -->
     <color name="gray_text">#cdc8c8</color>
 
