@@ -119,8 +119,6 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 					R.drawable.tab_tao_love_selector),
 			new TableConfig(R.string.tab_found, FoundFragment.class,
 					R.drawable.tab_found_selector),
-			new TableConfig(R.string.video_show, VideoShowFragment.class,
-					R.drawable.tab_video_selector),
 			new TableConfig(R.string.tab_message, MessageFragment.class,
 					R.drawable.tab_my_message_selector),
 			new TableConfig(R.string.tab_personal, PersonalFragment.class,
@@ -376,9 +374,6 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 		mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
 		mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 		for (int i = 0; i < tableConfig.length; i++) {
-			if (i == 2 && !AppManager.getClientUser().isShowVideo){
-				continue;
-			}
 			mTabHost.addTab(
 					mTabHost.newTabSpec(getString(tableConfig[i].titleId))
 							.setIndicator(getIndicator(i)),
