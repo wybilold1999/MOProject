@@ -337,6 +337,9 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 
 					double lon = Double.parseDouble(leftBottom[0]) + (Double.parseDouble(rightTop[0]) - Double.parseDouble(leftBottom[0])) / 5;
 					curLon = String.valueOf(lon);
+
+					AppManager.getClientUser().latitude = curLat;
+					AppManager.getClientUser().longitude = curLon;
 				} catch (Exception e) {
 
 				}
