@@ -43,7 +43,6 @@ import com.cyanbirds.momo.fragment.FindLoveFragment;
 import com.cyanbirds.momo.fragment.FoundFragment;
 import com.cyanbirds.momo.fragment.MessageFragment;
 import com.cyanbirds.momo.fragment.PersonalFragment;
-import com.cyanbirds.momo.fragment.VideoShowFragment;
 import com.cyanbirds.momo.helper.SDKCoreHelper;
 import com.cyanbirds.momo.listener.MessageUnReadListener;
 import com.cyanbirds.momo.manager.AppManager;
@@ -151,8 +150,6 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 				initGeTuiPush();
 
 				initJPush();
-
-				initMeizuPush();
 
 				loadData();
 
@@ -291,11 +288,6 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 			}
 			mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_TAGS, tag));
 		}
-	}
-
-	private void initMeizuPush() {
-		com.meizu.cloud.pushsdk.PushManager.register(this,
-				AppConstants.MZ_APP_ID, AppConstants.MZ_APP_KEY);
 	}
 
 	@Override
