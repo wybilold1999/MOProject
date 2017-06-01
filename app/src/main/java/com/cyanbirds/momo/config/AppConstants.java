@@ -11,8 +11,8 @@ package com.cyanbirds.momo.config;
  */
 public class AppConstants {
 	
-//	public static final String BASE_URL = "http://120.76.54.8/MoLoveServer/";
-	public static final String BASE_URL = "http://192.168.1.101/MoLoveServer/";
+	public static final String BASE_URL = "http://120.76.54.8/MoLoveServer/";
+//	public static final String BASE_URL = "http://192.168.1.101/MoLoveServer/";
 
 	/**
 	 * 密码加密密匙
@@ -43,8 +43,8 @@ public class AppConstants {
 	/**
 	 * 短信
 	 */
-	public static final String SMS_INIT_KEY = "1df9989ba62c6";
-	public static final String SMS_INIT_SECRET = "731d4eaafa4f01e82a60375c864ebf64";
+	public static final String SMS_INIT_KEY = "1e4fb1379a464";
+	public static final String SMS_INIT_SECRET = "703d4d94e91393b5e779f1c2b2d67db8";
 
 	/**
 	 * 小米推送appid
