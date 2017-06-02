@@ -235,6 +235,7 @@
     <string name="open_location">获取您的位置后才能才能更精确的查看附近用户,请在权限选项中打开位置权限</string>
     <string name="open_camera_permission">打开相机权限才能拍照,请在权限选项中打开相机权限</string>
     <string name="open_write_external">获取存储权限后才能拍照,请在权限选项中打开存储权限</string>
+    <string name="phone_un_register">该手机号码还未注册过该软件，请先注册</string>
 
     <string name="errcode_success">发送成功</string>
     <string name="errcode_cancel">发送取消</string>

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.config.ValueKey;
+import com.cyanbirds.momo.net.request.CheckIsRegisterByPhoneRequest;
 import com.cyanbirds.momo.utils.CheckUtil;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
@@ -59,13 +60,28 @@ public class FindPwdActivity extends BaseActivity {
     @OnClick(R.id.next)
     public void onClick() {
         if(checkInput()){
-            SMSSDK.getVerificationCode("86", phoneNum.getText().toString().trim());
-            Intent intent = new Intent(this, RegisterCaptchaActivity.class);
-            intent.putExtra(ValueKey.INPUT_PHONE_TYPE, mInputPhoneType);
-            intent.putExtra(ValueKey.PHONE_NUMBER, phoneNum.getText().toString().trim());
-            intent.putExtra(ValueKey.LOCATION, mCurrrentCity);
-            startActivity(intent);
-            finish();
+            new CheckPhoneIsRegisterTask().request(phoneNum.getText().toString().trim());
+        }
+    }
+
+    class CheckPhoneIsRegisterTask extends CheckIsRegisterByPhoneRequest {
+        @Override
+        public void onPostExecute(Boolean s) {
+            if(s){
+                SMSSDK.getVerificationCode("86", phoneNum.getText().toString().trim());
+                Intent intent = new Intent(FindPwdActivity.this, RegisterCaptchaActivity.class);
+                intent.putExtra(ValueKey.INPUT_PHONE_TYPE, mInputPhoneType);
+                intent.putExtra(ValueKey.PHONE_NUMBER, phoneNum.getText().toString().trim());
+                intent.putExtra(ValueKey.LOCATION, mCurrrentCity);
+                startActivity(intent);
+                finish();
+            } else {
+                ToastUtil.showMessage(R.string.phone_un_register);
+            }
+        }
+
+        @Override
+        public void onErrorExecute(String error) {
         }
     }
 
