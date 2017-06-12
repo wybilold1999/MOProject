@@ -153,6 +153,7 @@
     <string name="file_symbol">[文件]</string>
     <string name="image_symbol">[图片]</string>
     <string name="voice_symbol">[语音]</string>
+    <string name="voip_symbol">[电话]</string>
     <string name="un_send_msg">您还不是会员,不能发送消息,立即开通会员？</string>
     <string name="see_more_data">您还不是会员,暂时只能查看前10位关注了您的用户,查看更多，立即开通会员？</string>
     <string name="no_gold_un_send_msg">发送消息需账户中金币数量大于100，您账户中金币数量暂时不足，请先购买</string>
@@ -236,6 +237,8 @@
     <string name="open_camera_permission">打开相机权限才能拍照,请在权限选项中打开相机权限</string>
     <string name="open_write_external">获取存储权限后才能拍照,请在权限选项中打开存储权限</string>
     <string name="phone_un_register">该手机号码还未注册过该软件，请先注册</string>
+    <string name="calling">%1$s正在来电中...</string>
+    <string name="decline_call">已拒绝来电</string>
 
     <string name="errcode_success">发送成功</string>
     <string name="errcode_cancel">发送取消</string>

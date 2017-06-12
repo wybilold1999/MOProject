@@ -60,5 +60,7 @@ public class PushMsgModel implements Serializable {
 		public static final int LOCATION = 3;
 		/** 贴纸 */
 		public static final int STICKER = 4;
+		/** 电话 */
+		public static final int VOIP = 5;
 	}
 }
