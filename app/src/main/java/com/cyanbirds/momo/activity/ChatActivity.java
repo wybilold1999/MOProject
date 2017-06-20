@@ -222,6 +222,7 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 		openAlbums.setOnClickListener(this);
 		openEmotion.setOnClickListener(this);
 		openLocation.setOnClickListener(this);
+		redPacket.setOnClickListener(this);
 		mSwipeRefresh.setOnRefreshListener(this);
 		mInputVoiceAndText.setOnClickListener(this);
 		MessageStatusReportListener.getInstance().setOnMessageReportCallback(this);
@@ -441,6 +442,9 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 				break;
 			case R.id.openLocation:
 				toShareLocation();
+				break;
+			case R.id.red_packet:
+				toRedPakcet();
 				break;
 			case R.id.tool_view_input_text:
 				if (AppManager.getClientUser().isShowVip) {
@@ -772,6 +776,14 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 	private void toShareLocation() {
 		Intent intent = new Intent(this, ShareLocationActivity.class);
 		startActivityForResult(intent, SHARE_LOCATION_RESULT);
+	}
+
+	/**
+	 * 跳到发红包界面
+	 */
+	private void toRedPakcet() {
+		Intent intent = new Intent(this, RedPacketActivity.class);
+		startActivityForResult(intent, SEND_RED_PACKET);
 	}
 
 	@Override
