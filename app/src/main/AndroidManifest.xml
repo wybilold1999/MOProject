@@ -430,6 +430,14 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity
+            android:name=".activity.RedPacketActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="adjustResize"
+            android:label="@string/send_red_packet"
+            android:screenOrientation="portrait">
+        </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.cyanbirds.momo.fileProvider"

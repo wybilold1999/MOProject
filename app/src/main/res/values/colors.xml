@@ -43,4 +43,12 @@
     <color name="bg_color_pink">#FF90A2</color>
     <color name="bg_color_blue">#43D5FF</color>
 
+    <color name="btn_send_money_normal">#e95f38</color>
+    <color name="btn_send_money_press">#d15533</color>
+    <color name="btn_send_money_unenable">#f3af9a</color>
+    <color name="btn_send_money_text">#f3c5b6</color>
+    <color name="send_money_limit_bg">#803025</color>
+    <color name="send_money_limit_text">#e5a237</color>
+    <color name="red_packet_bg">#fb9d3a</color>
+
 </resources>

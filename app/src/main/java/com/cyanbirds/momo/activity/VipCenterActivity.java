@@ -20,6 +20,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alipay.sdk.app.PayTask;
@@ -80,6 +81,10 @@ public class VipCenterActivity extends BaseActivity {
 	VerticalMarqueeTextView mVerticalText;
 	@BindView(R.id.preferential)
 	TextView mPreferential;//优惠的说明文字，可以控制什么时候显示
+	@BindView(R.id.vip_7_lay)
+	RelativeLayout mVip7Lay;
+	@BindView(R.id.vip_8_lay)
+	RelativeLayout mVip8Lay;
 
 	private MemberBuyAdapter mAdapter;
 
@@ -168,6 +173,13 @@ public class VipCenterActivity extends BaseActivity {
 	}
 
 	private void setupData() {
+		if (!AppManager.getClientUser().is_vip) {
+			mVip7Lay.setVisibility(View.VISIBLE);
+			mVip8Lay.setVisibility(View.VISIBLE);
+		} else {
+			mVip7Lay.setVisibility(View.GONE);
+			mVip8Lay.setVisibility(View.GONE);
+		}
 		new GetMemberBuyListTask().request(NORMAL_VIP);
 	}
 

@@ -28,6 +28,7 @@
     <string name="my_attention">我的关注</string>
     <string name="my_visitor">我的访客</string>
     <string name="my_gifts">我的礼物</string>
+    <string name="send_red_packet">发红包</string>
     <string name="who_attention_me">谁关注我</string>
     <string name="who_good_for_me">谁赞了我</string>
     <string name="good_success">点赞成功</string>
@@ -154,6 +155,7 @@
     <string name="image_symbol">[图片]</string>
     <string name="voice_symbol">[语音]</string>
     <string name="voip_symbol">[电话]</string>
+    <string name="rpt_symbol">[红包]</string>
     <string name="un_send_msg">您还不是会员,不能发送消息,立即开通会员？</string>
     <string name="see_more_data">您还不是会员,暂时只能查看前10位关注了您的用户,查看更多，立即开通会员？</string>
     <string name="no_gold_un_send_msg">发送消息需账户中金币数量大于100，您账户中金币数量暂时不足，请先购买</string>
@@ -239,12 +241,34 @@
     <string name="phone_un_register">该手机号码还未注册过该软件，请先注册</string>
     <string name="calling">%1$s正在来电中...</string>
     <string name="decline_call">已拒绝来电</string>
+    <string name="no_vip_receive_calling">您还不是会员,暂时无法接听,立即开通会员接听来电?</string>
+    <string name="no_vip_calling">您还不是会员,暂时不能拨打电话,立即开通会员来拨打电话?</string>
+    <string name="no_gold_num_receive_calling">您的金币数量不足,暂时无法接听,立即购买接听来电?</string>
+    <string name="no_gold_num_calling">您的金币数量不足,暂时无法拨打电话,立即购买来拨打电话?</string>
+    <string name="single_red_packet">单个金额</string>
+    <string name="feedback">留言</string>
+    <string name="feedback_info">恭喜发财，大吉大利</string>
+    <string name="btn_send_money">塞钱进红包</string>
+    <string name="money">￥%1$s</string>
+    <string name="send_red_packet_success">发红包之后，约会成功率能达到98%</string>
+    <string name="send_red_packet_info">未领取的红包，将于24小时后发起退款</string>
+    <string name="user_send_red_packet_info">用户可在24小时之内随时撤回已发出去的红包</string>
+    <string name="single_red_packet_limit">单个红包金额不超过%1$s元</string>
+    <string name="single_red_packet_more">单个红包金额最低%1$s元</string>
+    <string name="check_red_packet">查看红包</string>
+    <string name="cancel_red_packet">用户已将该红包撤回</string>
+    <string name="cancel_red_packet_tips">撤回红包成功，金额将于3个工作日之后退回至您的账户中</string>
+    <string name="un_cancel_red_packet">您还不是会员,不能撤销发出去的红包,立即开通会员撤销红包？</string>
+    <string name="no_gold_un_cancel_red_packet">撤销红包需账户中金币数量大于100，您账户中金币数量暂时不足，立即购买金币来撤销红包？</string>
+    <string name="un_receive_rpt">您还不是会员,不能领取红包,立即开通会员领取红包？</string>
+    <string name="no_gold_un_receive_rpt">领取红包需账户中金币数量大于100，您账户中金币数量暂时不足，立即购买金币来领取红包？</string>
 
     <string name="errcode_success">发送成功</string>
     <string name="errcode_cancel">发送取消</string>
     <string name="errcode_deny">发送被拒绝</string>
     <string name="errcode_unknown">发送返回</string>
     <string name="delete_conversation">删除该聊天</string>
+    <string name="delete_all_conversation">删除全部聊天</string>
 
     <string name="network_requests_error">网络异常,请检查网络设置</string>
     <string name="data_load_error">数据加载失败</string>
@@ -291,6 +315,7 @@
     <string name="gold_info_2">2.金币可以让异性用户在茫茫人海中优先发现你</string>
     <string name="gold_info_3">3.金币可以购买道具，赠送礼物等</string>
     <string name="gold_info_4">4.金币可以用于查看微信号和QQ号</string>
+    <string name="gold_info_5">5.金币可以无限制拨打电话</string>
 
     <string name="input_name">输入收款人姓名</string>
     <string name="input_bank">输入收款人开户行</string>

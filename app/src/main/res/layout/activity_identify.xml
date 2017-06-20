@@ -106,7 +106,8 @@
 					android:layout_gravity="center_horizontal"
 					android:text="@string/identify_info"
 					android:textSize="12sp"
-					android:textColor="@color/gray_text"/>
+					android:textColor="@color/gray_text"
+					android:visibility="invisible"/>
 
 				<mehdi.sakout.fancybuttons.FancyButton
 					android:id="@+id/btn_submit"

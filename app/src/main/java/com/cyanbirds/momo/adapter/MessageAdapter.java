@@ -24,6 +24,7 @@ import com.cyanbirds.momo.db.IMessageDaoManager;
 import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.entity.Conversation;
 import com.cyanbirds.momo.listener.MessageUnReadListener;
+import com.cyanbirds.momo.manager.NotificationManager;
 import com.cyanbirds.momo.utils.DateUtil;
 import com.cyanbirds.momo.utils.EmoticonUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -139,7 +140,9 @@ public class MessageAdapter extends
                     .setItems(
                             new String[] {
                                     mContext.getResources().getString(
-                                            R.string.delete_conversation) },
+                                            R.string.delete_conversation),
+                                    mContext.getResources().getString(
+                                            R.string.delete_all_conversation)},
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -150,6 +153,14 @@ public class MessageAdapter extends
                                             mConversations.remove(position);
                                             notifyDataSetChanged();
                                             MessageUnReadListener.getInstance().notifyDataSetChanged(0);
+                                            break;
+                                        case 1:
+                                            ConversationSqlManager.getInstance(mContext).deleteAllConversation();
+                                            IMessageDaoManager.getInstance(mContext).deleteAllIMessage();
+                                            mConversations.clear();
+                                            notifyDataSetChanged();
+                                            MessageUnReadListener.getInstance().notifyDataSetChanged(0);
+                                            NotificationManager.getInstance().cancelNotification();
                                             break;
                                     }
                                     dialog.dismiss();

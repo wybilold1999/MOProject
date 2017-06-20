@@ -89,6 +89,10 @@ public class IMessageDaoManager extends DBManager {
 		List<IMessage> messageList = qb.list();
 		mIMessageDao.deleteInTx(messageList);
 	}
+
+	public void deleteAllIMessage() {
+		mIMessageDao.deleteAll();
+	}
 	
 	/**
 	 * 更新一条记录

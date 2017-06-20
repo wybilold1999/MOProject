@@ -278,6 +278,70 @@ public class IMChattingHelper implements OnChatReceiveListener{
 						+ "/" + R.raw.sound_send)).play();
 	}
 
+	public void sendRedPacketMsg(final ClientUser clientUser, final String msgContent) {
+		// 组建一个待发送的ECMessage
+		ECMessage ecMessagee = ECMessage.createECMessage(ECMessage.Type.TXT);
+		ecMessagee.setDirection(ECMessage.Direction.SEND);
+		ecMessagee.setMsgId(AppManager.getUUID());
+		ecMessagee.setFrom(AppManager.getClientUser().userId);
+		ecMessagee.setNickName(AppManager.getClientUser().user_name);
+		ecMessagee.setTo(clientUser.userId);
+		ecMessagee.setMsgTime(System.currentTimeMillis());
+		ecMessagee.setType(ECMessage.Type.RICH_TEXT);
+		ecMessagee.setUserData(AppManager.getClientUser().user_name + ";" + AppManager.getClientUser().face_url);
+		ECTextMessageBody msgBody = new ECTextMessageBody(msgContent);
+		ecMessagee.setBody(msgBody);
+
+		/**
+		 * 本地消息
+		 */
+		final IMessage message = new IMessage();
+		message.msgId = ecMessagee.getMsgId();
+		message.talker = ecMessagee.getTo();
+		message.sender = ecMessagee.getForm();
+		message.sender_name = ecMessagee.getNickName();
+		ECTextMessageBody body = (ECTextMessageBody) ecMessagee.getBody();
+		message.content = body.getMessage();
+		message.msgType = IMessage.MessageType.RED_PKT;
+		message.isRead = true;
+		message.isSend = IMessage.MessageIsSend.SEND;
+		message.status = IMessage.MessageStatus.SENDING;
+		message.create_time = ecMessagee.getMsgTime();
+		message.send_time = message.create_time;
+
+		long convsId = ConversationSqlManager.getInstance(mContext).insertConversation(clientUser, ecMessagee);
+		message.conversationId = convsId;
+		MessageCallbackListener.getInstance().notifyPushMessage(message);//刷新UI
+
+		// 调用SDK发送接口发送消息到服务器
+		mChatManager.sendMessage(ecMessagee, new ECChatManager.OnSendMessageListener() {
+			@Override
+			public void onSendMessageComplete(ECError error, ECMessage ecMessage) {
+				// 处理消息发送结果
+				if (ecMessage == null || error.errorCode != 200) {
+					message.status = IMessage.MessageStatus.FAILED;
+				}
+				/**
+				 * 通知消息发送的状态，发送成功，目的是让环形进度条消失
+				 */
+				message.status = IMessage.MessageStatus.SENT;
+				IMessageDaoManager.getInstance(mContext).insertIMessage(message);
+				//通知消息发送的状态
+				MessageStatusReportListener.getInstance().notifyMessageStatus(message);
+			}
+
+			@Override
+			public void onProgress(String msgId, int totalByte, int progressByte) {
+				// 处理文件发送上传进度（尽上传文件、图片时候SDK回调该方法）
+			}
+		});
+
+		RingtoneManager.getRingtone(
+				CSApplication.getInstance(),
+				Uri.parse("android.resource://" + AppManager.getPackageName()
+						+ "/" + R.raw.sound_send)).play();
+	}
+
 	/**
 	 * 发送文件消息
 	 */

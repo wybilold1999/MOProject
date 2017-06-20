@@ -140,4 +140,5 @@ dependencies {
     compile 'com.liulishuo.filedownloader:library:1.2.1'
     compile 'com.meizu.flyme.internet:push-internal:3.3.170329@aar'
     compile 'com.github.Rukey7:TagLayout:1.0.4'
+    compile 'com.jaeger.statusbarutil:library:1.4.0'
 }

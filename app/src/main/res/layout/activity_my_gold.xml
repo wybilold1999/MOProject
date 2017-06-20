@@ -85,8 +85,22 @@
                 android:layout_marginTop="10dp"
                 android:paddingLeft="20dp"
                 android:text="@string/gold_info_3"
-                android:textSize="12sp"
-                android:layout_marginBottom="15dp"/>
+                android:textSize="12sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="20dp"
+                android:text="@string/gold_info_4"
+                android:textSize="12sp"/>
+            <TextView
+                android:id="@+id/call_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="20dp"
+                android:text="@string/gold_info_5"
+                android:textSize="12sp"/>
 
             <LinearLayout
                 android:id="@+id/pay_lay"

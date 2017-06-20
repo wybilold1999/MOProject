@@ -76,6 +76,8 @@ public class MyGoldActivity extends BaseActivity {
 	RelativeLayout mWechatLay;
 	@BindView(R.id.pay_lay)
 	LinearLayout mPayLay;
+	@BindView(R.id.call_info)
+	TextView mCallInfo;
 
 	private static final int SDK_PAY_FLAG = 1;
 
@@ -145,6 +147,11 @@ public class MyGoldActivity extends BaseActivity {
 	}
 
 	private void setupData() {
+		if (AppManager.getClientUser().gold_num < 100) {
+			mCallInfo.setVisibility(View.VISIBLE);
+		} else {
+			mCallInfo.setVisibility(View.GONE);
+		}
 		mMyGoldNum.setText(String.format(getResources().getString(R.string.my_gold_num), AppManager.getClientUser().gold_num));
 		new GetGoldListTask().request(BUY_GOLD);
 

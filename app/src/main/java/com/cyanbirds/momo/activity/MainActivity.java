@@ -354,6 +354,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 				AppManager.getClientUser().isShowMap = false;
 				AppManager.getClientUser().isShowVideo = false;
 				AppManager.getClientUser().isShowVip = false;
+				AppManager.getClientUser().isShowRpt = false;
 			}
 		}
 

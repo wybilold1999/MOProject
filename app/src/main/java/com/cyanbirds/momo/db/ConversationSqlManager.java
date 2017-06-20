@@ -130,11 +130,11 @@ public class ConversationSqlManager extends DBManager {
 
 	/**
 	 * 删除所有会话
-	 * 
+	 *
 	 * @return
 	 */
-	public long deleteAllConversation() {
-		return 0;
+	public void deleteAllConversation() {
+		conversationDao.deleteAll();
 	}
 
 	public void deleteConversationById(Conversation conversation) {

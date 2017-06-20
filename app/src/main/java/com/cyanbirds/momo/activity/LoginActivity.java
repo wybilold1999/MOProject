@@ -174,6 +174,7 @@ public class LoginActivity extends BaseActivity {
             clientUser.longitude = curLon;
             AppManager.setClientUser(clientUser);
             AppManager.saveUserInfo();
+            AppManager.getClientUser().loginTime = System.currentTimeMillis();
             IMChattingHelper.getInstance().sendInitLoginMsg();
             Intent intent = new Intent();
             intent.setClass(LoginActivity.this, MainActivity.class);
@@ -206,6 +207,7 @@ public class LoginActivity extends BaseActivity {
             clientUser.longitude = curLon;
             AppManager.setClientUser(clientUser);
             AppManager.saveUserInfo();
+            AppManager.getClientUser().loginTime = System.currentTimeMillis();
             IMChattingHelper.getInstance().sendInitLoginMsg();
             Intent intent = new Intent();
             intent.setClass(LoginActivity.this, MainActivity.class);
@@ -316,6 +318,7 @@ public class LoginActivity extends BaseActivity {
             clientUser.longitude = curLon;
             AppManager.setClientUser(clientUser);
             AppManager.saveUserInfo();
+            AppManager.getClientUser().loginTime = System.currentTimeMillis();
             IMChattingHelper.getInstance().sendInitLoginMsg();
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);

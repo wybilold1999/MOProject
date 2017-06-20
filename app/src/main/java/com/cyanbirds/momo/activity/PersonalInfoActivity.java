@@ -153,6 +153,12 @@ public class PersonalInfoActivity extends BaseActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (AppManager.getClientUser().userId.equals(curUserId)) {
 			getMenuInflater().inflate(R.menu.personal_menu, menu);
+		} else {
+			if (AppManager.getClientUser().isShowVip) {
+				if (!AppManager.getClientUser().is_vip || AppManager.getClientUser().gold_num < 100) {
+					getMenuInflater().inflate(R.menu.call_menu, menu);
+				}
+			}
 		}
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -161,6 +167,12 @@ public class PersonalInfoActivity extends BaseActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.modify_info) {
 			Intent intent = new Intent(this, ModifyUserInfoActivity.class);
+			startActivity(intent);
+		} else if (item.getItemId() == R.id.call) {
+			Intent intent = new Intent(this, VoipCallActivity.class);
+			intent.putExtra(ValueKey.IMAGE_URL, mClientUser.face_url);
+			intent.putExtra(ValueKey.USER_NAME, mClientUser.user_name);
+			intent.putExtra(ValueKey.FROM_ACTIVITY, "PersonalInfoActivity");
 			startActivity(intent);
 		} else {
 			finish();

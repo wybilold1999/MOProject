@@ -337,6 +337,10 @@ public class IMessage implements Serializable{
         public static final int VOICE = 3;
         /** 位置 **/
         public static final int LOCATION = 4;
+        /** 电话 **/
+        public static final int VOIP = 5;
+        /** 红包 **/
+        public static final int RED_PKT = 6;
     }
 
     public class MessageIsSend {
