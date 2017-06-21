@@ -68,7 +68,7 @@
                     android:src="@mipmap/message_send_fail"
                     android:visibility="gone" />
 
-                <com.cyanbirds.ttjy.ui.widget.CircularProgress
+                <com.cyanbirds.momo.ui.widget.CircularProgress
                     android:id="@+id/progress_bar"
                     android:layout_width="15dp"
                     android:layout_height="15dp"

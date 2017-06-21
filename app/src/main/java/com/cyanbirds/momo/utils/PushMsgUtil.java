@@ -161,6 +161,12 @@ public class PushMsgUtil {
 			message.fileUrl = pushMsgModel.fileUrl;
 			message.content = CSApplication.getInstance().getResources()
 					.getString(R.string.image_symbol);
+		} else if (pushMsgModel.msgType == PushMsgModel.MessageType.VOIP) {
+			message.msgType = IMessage.MessageType.VOIP;
+			message.content = "未接听";
+		}  else if (pushMsgModel.msgType == PushMsgModel.MessageType.RPT) {
+			message.msgType = IMessage.MessageType.RED_PKT;
+			message.content = pushMsgModel.content;
 		}
 
 		IMessageDaoManager.getInstance(CSApplication.getInstance()).insertIMessage(message);

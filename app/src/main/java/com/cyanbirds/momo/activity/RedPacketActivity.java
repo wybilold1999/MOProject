@@ -114,7 +114,6 @@ public class RedPacketActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_red_packet);
 		ButterKnife.bind(this);
-		StatusBarUtil.setTransparent(this);
 		Toolbar toolbar = getActionBarToolbar();
 		if (toolbar != null) {
 			toolbar.setNavigationIcon(R.mipmap.ic_up);
