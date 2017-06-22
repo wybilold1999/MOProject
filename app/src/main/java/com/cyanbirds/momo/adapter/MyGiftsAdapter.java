@@ -1,14 +1,21 @@
 package com.cyanbirds.momo.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cyanbirds.momo.R;
+import com.cyanbirds.momo.activity.PhotoViewActivity;
+import com.cyanbirds.momo.activity.VipCenterActivity;
+import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.ReceiveGiftModel;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -19,9 +26,13 @@ import java.util.List;
  * @datetime 2016-01-14 18:47 GMT+8
  * @email 395044952@qq.com
  */
-public class MyGiftsAdapter extends RecyclerView.Adapter<MyGiftsAdapter.ViewHolder> {
+public class MyGiftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final int TYPE_ITEM = 0;
+    private static final int TYPE_FOOTER = 1;
     private Context mContext;
     private List<ReceiveGiftModel> mReceiveGiftModels;
+    private boolean mShowFooter = false;
+    private List<String> mFaceUrls;//foot里面的头像url
 
     private OnItemClickListener mOnItemClickListener;
     public MyGiftsAdapter(Context context) {
@@ -29,21 +40,54 @@ public class MyGiftsAdapter extends RecyclerView.Adapter<MyGiftsAdapter.ViewHold
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.item_my_gifts, parent, false));
+    public int getItemViewType(int position) {
+        // 最后一个item设置为footerView
+        if(!mShowFooter) {
+            return TYPE_ITEM;
+        }
+        if (position + 1 == getItemCount()) {
+            return TYPE_FOOTER;
+        } else {
+            return TYPE_ITEM;
+        }
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if(viewType == TYPE_ITEM) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_my_gifts, parent, false);
+            ItemViewHolder vh = new ItemViewHolder(v);
+            return vh;
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.footer_view_more, null);
+            view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
+            return new FooterViewHolder(view);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ReceiveGiftModel receiveGiftModel = mReceiveGiftModels.get(position);
         if(receiveGiftModel == null){
             return;
         }
-        holder.portrait.setImageURI(Uri.parse(receiveGiftModel.faceUrl));
-        holder.giftUrl.setImageURI(Uri.parse(receiveGiftModel.giftUrl));
-        holder.user_name.setText(receiveGiftModel.nickname);
-        holder.giftName.setText(receiveGiftModel.giftName);
+        if(holder instanceof ItemViewHolder){
+            ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
+            itemViewHolder.portrait.setImageURI(Uri.parse(receiveGiftModel.faceUrl));
+            itemViewHolder.giftUrl.setImageURI(Uri.parse(receiveGiftModel.giftUrl));
+            itemViewHolder.user_name.setText(receiveGiftModel.nickname);
+            itemViewHolder.giftName.setText(receiveGiftModel.giftName);
+        } else if (holder instanceof FooterViewHolder) {
+            FooterViewHolder footerViewHolder = (FooterViewHolder) holder;
+            if (mFaceUrls != null && mFaceUrls.size() >=3) {
+                footerViewHolder.mPortrait1.setImageURI(Uri.parse(mFaceUrls.get(0)));
+                footerViewHolder.mPortrait2.setImageURI(Uri.parse(mFaceUrls.get(1)));
+                footerViewHolder.mPortrait3.setImageURI(Uri.parse(mFaceUrls.get(2)));
+            }
+        }
     }
 
     public ReceiveGiftModel getItem(int position){
@@ -55,12 +99,12 @@ public class MyGiftsAdapter extends RecyclerView.Adapter<MyGiftsAdapter.ViewHold
         return mReceiveGiftModels == null ? 0 : mReceiveGiftModels.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         SimpleDraweeView portrait;
         TextView user_name;
         SimpleDraweeView giftUrl;
         TextView giftName;
-        public ViewHolder(View itemView) {
+        public ItemViewHolder(View itemView) {
             super(itemView);
             portrait = (SimpleDraweeView) itemView.findViewById(R.id.portrait);
             user_name = (TextView) itemView.findViewById(R.id.user_name);
@@ -77,6 +121,81 @@ public class MyGiftsAdapter extends RecyclerView.Adapter<MyGiftsAdapter.ViewHold
         }
     }
 
+    public class FooterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        SimpleDraweeView mPortrait1;
+        SimpleDraweeView mPortrait2;
+        SimpleDraweeView mPortrait3;
+        LinearLayout mFooterLay;
+        public FooterViewHolder(View view) {
+            super(view);
+            mPortrait1 = (SimpleDraweeView) view.findViewById(R.id.portrait_1);
+            mPortrait2 = (SimpleDraweeView) view.findViewById(R.id.portrait_2);
+            mPortrait3 = (SimpleDraweeView) view.findViewById(R.id.portrait_3);
+            mFooterLay = (LinearLayout) view.findViewById(R.id.footer);
+            mFooterLay.setOnClickListener(this);
+            mPortrait1.setOnClickListener(this);
+            mPortrait2.setOnClickListener(this);
+            mPortrait3.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(mContext, PhotoViewActivity.class);
+            intent.putExtra(ValueKey.FROM_ACTIVITY, this.getClass().getSimpleName());
+            switch (v.getId()) {
+                case R.id.footer :
+                    showVipDialog();
+                    break;
+                case R.id.portrait_1:
+                    if (mFaceUrls != null) {
+                        intent.putExtra(ValueKey.IMAGE_URL,mFaceUrls.get(0));
+                        mContext.startActivity(intent);
+                    }
+                    break;
+                case R.id.portrait_2:
+                    if (mFaceUrls != null) {
+                        intent.putExtra(ValueKey.IMAGE_URL,mFaceUrls.get(1));
+                        mContext.startActivity(intent);
+                    }
+                    break;
+                case R.id.portrait_3:
+                    if (mFaceUrls != null) {
+                        intent.putExtra(ValueKey.IMAGE_URL,mFaceUrls.get(2));
+                        mContext.startActivity(intent);
+                    }
+                    break;
+            }
+        }
+    }
+
+    private void showVipDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setMessage(R.string.see_more_send_gift_data);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Intent intent = new Intent(mContext, VipCenterActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    public void setIsShowFooter(boolean showFooter) {
+        this.mShowFooter = showFooter;
+    }
+
+    public boolean isShowFooter() {
+        return this.mShowFooter;
+    }
+
     public interface OnItemClickListener {
         public void onItemClick(View view, int position);
     }
@@ -88,5 +207,9 @@ public class MyGiftsAdapter extends RecyclerView.Adapter<MyGiftsAdapter.ViewHold
     public void setReceiveGiftModel(List<ReceiveGiftModel> receiveGiftModels){
         this.mReceiveGiftModels = receiveGiftModels;
         this.notifyDataSetChanged();
+    }
+
+    public void setFooterFaceUrls(List<String> urls) {
+        mFaceUrls = urls;
     }
 }

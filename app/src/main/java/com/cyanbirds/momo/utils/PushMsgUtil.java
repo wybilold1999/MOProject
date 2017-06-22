@@ -1,6 +1,8 @@
 package com.cyanbirds.momo.utils;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import com.cyanbirds.momo.CSApplication;
@@ -31,6 +33,7 @@ public class PushMsgUtil {
 	private boolean isPassThrough; //是否是透传消息，是就手动创建通知栏
 
 	private static PushMsgUtil mInstance;
+	private Handler mHandler = new Handler(Looper.getMainLooper());
 	private PushMsgUtil(){
 		gson = new Gson();
 	}
@@ -52,85 +55,141 @@ public class PushMsgUtil {
 	 */
 	public synchronized void handlePushMsg(boolean isPassThroughMsg, String pushMsgJson) {
 		isPassThrough = isPassThroughMsg;
-		PushMsgModel pushMsgModel = gson.fromJson(pushMsgJson, PushMsgModel.class);
+		final PushMsgModel pushMsgModel = gson.fromJson(pushMsgJson, PushMsgModel.class);
 		if (pushMsgModel != null && !TextUtils.isEmpty(pushMsgModel.sender)) {
 			if (pushMsgModel.msgType == PushMsgModel.MessageType.VOIP) {
-				if (!AppManager.getTopActivity(CSApplication.getInstance()).equals("com.cyanbirds.momo.activity.VoipCallActivity")) {
-					Intent intent = new Intent(CSApplication.getInstance(), VoipCallActivity.class);
-					intent.putExtra(ValueKey.IMAGE_URL, pushMsgModel.faceUrl);
-					intent.putExtra(ValueKey.USER_NAME, pushMsgModel.senderName);
-					CSApplication.getInstance().startActivity(intent);
+				if (!AppManager.getTopActivity(CSApplication.getInstance()).equals("com.cyanbirds.ttjy.activity.VoipCallActivity")) {
+					if (!AppManager.getClientUser().is_vip || AppManager.getClientUser().gold_num < 100) {
+						//当前接收到消息的时间和登录时间相距小于1分钟，就延迟执行
+						if (System.currentTimeMillis() - AppManager.getClientUser().loginTime < 60000) {
+							mHandler.postDelayed(new Runnable() {
+								@Override
+								public void run() {
+									if (!AppManager.getTopActivity(CSApplication.getInstance()).equals("com.cyanbirds.ttjy.activity.VoipCallActivity")) {
+										Intent intent = new Intent(CSApplication.getInstance(), VoipCallActivity.class);
+										intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+										intent.putExtra(ValueKey.IMAGE_URL, pushMsgModel.faceUrl);
+										intent.putExtra(ValueKey.USER_NAME, pushMsgModel.senderName);
+										CSApplication.getInstance().startActivity(intent);
+									}
+								}
+							}, 60000);//延迟一分钟执行
+						} else {
+							Intent intent = new Intent(CSApplication.getInstance(), VoipCallActivity.class);
+							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+							intent.putExtra(ValueKey.IMAGE_URL, pushMsgModel.faceUrl);
+							intent.putExtra(ValueKey.USER_NAME, pushMsgModel.senderName);
+							CSApplication.getInstance().startActivity(intent);
+						}
+					}
 				}
 			}
-
-			Conversation conversation = ConversationSqlManager.getInstance(CSApplication.getInstance())
-					.queryConversationForByTalkerId(pushMsgModel.sender);
-			if (conversation == null) {
-				/**
-				 * 插入会话
-				 */
-				conversation = new Conversation();
-				if (pushMsgModel.msgType == PushMsgModel.MessageType.TEXT) {//文本消息
-					conversation.type = ECMessage.Type.TXT.ordinal();
-					conversation.content = pushMsgModel.content;
-				} else if (pushMsgModel.msgType == PushMsgModel.MessageType.STICKER ||
-						pushMsgModel.msgType == PushMsgModel.MessageType.IMG) {
-					conversation.type = ECMessage.Type.IMAGE.ordinal();
-					conversation.content = CSApplication.getInstance().getResources()
-							.getString(R.string.image_symbol);
+			if (pushMsgModel.msgType == PushMsgModel.MessageType.RPT) {//红包
+				//如果是vip并且金币数量大于100，就忽略红包消息
+				if (AppManager.getClientUser().is_vip && AppManager.getClientUser().gold_num > 100) {
+					return;
 				}
-				conversation.talker = pushMsgModel.sender;
-				conversation.talkerName = pushMsgModel.senderName;
-				conversation.createTime = pushMsgModel.serverTime;
-				conversation.unreadCount++;
-				long conversationId = ConversationSqlManager.getInstance(
-						CSApplication.getInstance()).inserConversation(conversation);
-				conversation.id = conversationId;
-				if (!TextUtils.isEmpty(pushMsgModel.faceUrl)) {
-					new DownloadPortraitTask(conversation).request(
-							pushMsgModel.faceUrl, FileAccessorUtils.FACE_IMAGE, Md5Util.md5(pushMsgModel.faceUrl) + ".jpg");
+			}
+			if (System.currentTimeMillis() - AppManager.getClientUser().loginTime < 60000 &&
+					pushMsgModel.msgType == PushMsgModel.MessageType.VOIP) {
+				if (!AppManager.getClientUser().is_vip || AppManager.getClientUser().gold_num < 100) {
+					mHandler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							handleConversation(pushMsgModel);
+						}
+					}, 60000);
 				}
+			} else {
+				handleConversation(pushMsgModel);
+			}
+		}
+	}
 
-				/**
-				 * 插入消息
-				 */
-				insertMessage(conversationId, pushMsgModel);
+	private void handleConversation(PushMsgModel pushMsgModel) {
+		Conversation conversation = ConversationSqlManager.getInstance(CSApplication.getInstance())
+				.queryConversationForByTalkerId(pushMsgModel.sender);
+		if (conversation == null) {
+			/**
+			 * 插入会话
+			 */
+			conversation = new Conversation();
+			if (pushMsgModel.msgType == PushMsgModel.MessageType.TEXT) {//文本消息
+				conversation.type = ECMessage.Type.TXT.ordinal();
+				conversation.content = pushMsgModel.content;
+			} else if (pushMsgModel.msgType == PushMsgModel.MessageType.STICKER ||
+					pushMsgModel.msgType == PushMsgModel.MessageType.IMG) {
+				conversation.type = ECMessage.Type.IMAGE.ordinal();
+				conversation.content = CSApplication.getInstance().getResources()
+						.getString(R.string.image_symbol);
+			} else if (pushMsgModel.msgType == PushMsgModel.MessageType.VOIP) {
+				conversation.type = ECMessage.Type.CALL.ordinal();
+				conversation.content = CSApplication.getInstance().getResources()
+						.getString(R.string.voip_symbol);
+			} else if (pushMsgModel.msgType == PushMsgModel.MessageType.RPT) {
+				conversation.type = ECMessage.Type.RICH_TEXT.ordinal();
+				conversation.content = CSApplication.getInstance().getResources()
+						.getString(R.string.rpt_symbol);
+			}
+			conversation.talker = pushMsgModel.sender;
+			conversation.talkerName = pushMsgModel.senderName;
+			conversation.createTime = pushMsgModel.serverTime;
+			conversation.unreadCount++;
+			long conversationId = ConversationSqlManager.getInstance(
+					CSApplication.getInstance()).inserConversation(conversation);
+			conversation.id = conversationId;
+			if (!TextUtils.isEmpty(pushMsgModel.faceUrl)) {
+				new DownloadPortraitTask(conversation).request(
+						pushMsgModel.faceUrl, FileAccessorUtils.FACE_IMAGE, Md5Util.md5(pushMsgModel.faceUrl) + ".jpg");
+			}
 
-			} else {//有会话，就判断本地有没有该消息
+			/**
+			 * 插入消息
+			 */
+			insertMessage(conversationId, pushMsgModel);
 
-				if (pushMsgModel != null && !TextUtils.isEmpty(pushMsgModel.msgId)) {
-					long count = IMessageDaoManager.getInstance(CSApplication.getInstance())
-							.queryIMessageByMsgId(pushMsgModel.msgId);
-					if (count == 0) {//本地还没有消息
-						/**
-						 * 对会话进行更新
-						 */
-						if (pushMsgModel.msgType == PushMsgModel.MessageType.TEXT) {//文本消息
-							conversation.type = ECMessage.Type.TXT.ordinal();
-							conversation.content = pushMsgModel.content;
-						} else if (pushMsgModel.msgType == PushMsgModel.MessageType.STICKER ||
-								pushMsgModel.msgType == PushMsgModel.MessageType.IMG) {
-							conversation.type = ECMessage.Type.IMAGE.ordinal();
-							conversation.content = CSApplication.getInstance().getResources()
-									.getString(R.string.image_symbol);
-						}
-						conversation.talker = pushMsgModel.sender;
-						conversation.talkerName = pushMsgModel.senderName;
-						conversation.createTime = pushMsgModel.serverTime;
-						conversation.unreadCount++;
-						if (!TextUtils.isEmpty(pushMsgModel.faceUrl) &&
-								(TextUtils.isEmpty(conversation.localPortrait) ||
-										!new File(conversation.localPortrait).exists())) {
-							new DownloadPortraitTask(conversation).request(
-									pushMsgModel.faceUrl, FileAccessorUtils.FACE_IMAGE, Md5Util.md5(pushMsgModel.faceUrl) + ".jpg");
-						} else {
-							ConversationSqlManager.getInstance(CSApplication.getInstance())
-									.updateConversation(conversation);
-						}
-						insertMessage(conversation.id, pushMsgModel);
+		} else {//有会话，就判断本地有没有该消息
+
+			if (pushMsgModel != null && !TextUtils.isEmpty(pushMsgModel.msgId)) {
+				long count = IMessageDaoManager.getInstance(CSApplication.getInstance())
+						.queryIMessageByMsgId(pushMsgModel.msgId);
+				if (count == 0) {//本地还没有消息
+					/**
+					 * 对会话进行更新
+					 */
+					if (pushMsgModel.msgType == PushMsgModel.MessageType.TEXT) {//文本消息
+						conversation.type = ECMessage.Type.TXT.ordinal();
+						conversation.content = pushMsgModel.content;
+					} else if (pushMsgModel.msgType == PushMsgModel.MessageType.STICKER ||
+							pushMsgModel.msgType == PushMsgModel.MessageType.IMG) {
+						conversation.type = ECMessage.Type.IMAGE.ordinal();
+						conversation.content = CSApplication.getInstance().getResources()
+								.getString(R.string.image_symbol);
+					} else if (pushMsgModel.msgType == PushMsgModel.MessageType.VOIP) {
+						conversation.type = ECMessage.Type.IMAGE.ordinal();
+						conversation.content = CSApplication.getInstance().getResources()
+								.getString(R.string.voip_symbol);
+					} else if (pushMsgModel.msgType == PushMsgModel.MessageType.RPT) {
+						conversation.type = ECMessage.Type.RICH_TEXT.ordinal();
+						conversation.content = CSApplication.getInstance().getResources()
+								.getString(R.string.rpt_symbol);
 					}
-
+					conversation.talker = pushMsgModel.sender;
+					conversation.talkerName = pushMsgModel.senderName;
+					conversation.createTime = pushMsgModel.serverTime;
+					conversation.unreadCount++;
+					if (!TextUtils.isEmpty(pushMsgModel.faceUrl) &&
+							(TextUtils.isEmpty(conversation.localPortrait) ||
+									!new File(conversation.localPortrait).exists())) {
+						new DownloadPortraitTask(conversation).request(
+								pushMsgModel.faceUrl, FileAccessorUtils.FACE_IMAGE, Md5Util.md5(pushMsgModel.faceUrl) + ".jpg");
+					} else {
+						ConversationSqlManager.getInstance(CSApplication.getInstance())
+								.updateConversation(conversation);
+					}
+					insertMessage(conversation.id, pushMsgModel);
 				}
+
 			}
 		}
 	}

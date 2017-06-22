@@ -30,7 +30,6 @@ import com.cyanbirds.momo.net.request.GetMemberBuyListRequest;
 import com.cyanbirds.momo.net.request.RPAliPayOrderInfoRequest;
 import com.cyanbirds.momo.net.request.RPCreateOrderRequest;
 import com.cyanbirds.momo.utils.ToastUtil;
-import com.jaeger.library.StatusBarUtil;
 import com.tencent.mm.sdk.modelpay.PayReq;
 
 import org.greenrobot.eventbus.Subscribe;

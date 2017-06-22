@@ -158,6 +158,7 @@
     <string name="rpt_symbol">[红包]</string>
     <string name="un_send_msg">您还不是会员,不能发送消息,立即开通会员？</string>
     <string name="see_more_data">您还不是会员,暂时只能查看前10位关注了您的用户,查看更多，立即开通会员？</string>
+    <string name="see_more_send_gift_data">您还不是会员,暂时只能查看前10位给您送礼物的用户,查看更多，立即开通会员？</string>
     <string name="no_gold_un_send_msg">发送消息需账户中金币数量大于100，您账户中金币数量暂时不足，请先购买</string>
     <string name="un_see_attention_and_love">查看更多,立即开通会员？</string>
     <string name="turn_vip">该视频只能是会员才可以观看,请先开通会员</string>

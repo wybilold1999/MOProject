@@ -548,7 +548,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
+		/*if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if ((System.currentTimeMillis() - clickTime) > 2000) {
 				ToastUtil.showMessage(R.string.exit_tips);
 				clickTime = System.currentTimeMillis();
@@ -556,6 +556,11 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 				exitApp();
 			}
 			return true;
+		}*/
+		if (keyCode == KeyEvent.KEYCODE_BACK
+				&& event.getAction() == KeyEvent.ACTION_DOWN) {
+			moveTaskToBack(false);
+			mTabHost.setCurrentTab(0);
 		}
 		return super.onKeyDown(keyCode, event);
 	}

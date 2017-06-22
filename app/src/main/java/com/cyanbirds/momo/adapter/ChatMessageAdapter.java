@@ -612,6 +612,14 @@ public class ChatMessageAdapter extends
                 return new LocationViewHolder(LayoutInflater.from(
                         parent.getContext()).inflate(
                     R.layout.item_chat_message_location, parent, false));
+            case IMessage.MessageType.VOIP:
+                return new VoipViewHolder(LayoutInflater.from(
+                        parent.getContext()).inflate(
+                        R.layout.item_chat_message_voip, parent, false));
+            case IMessage.MessageType.RED_PKT:
+                return new RedViewHolder(LayoutInflater.from(
+                        parent.getContext()).inflate(
+                        R.layout.item_chat_red_packet, parent, false));
             default:
                 return null;
         }
