@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.adapter.AttentionMeAdapter;
-import com.cyanbirds.momo.adapter.MyAttentionAdapter;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.FollowModel;
 import com.cyanbirds.momo.manager.AppManager;
@@ -104,7 +103,14 @@ public class AttentionMeActivity extends BaseActivity {
         public void onPostExecute(List<FollowModel> followModels) {
             mCircularProgress.setVisibility(View.GONE);
             if(followModels != null && followModels.size() > 0){
-                if (!AppManager.getClientUser().is_vip && followModels.size() > 10) {//如果不是vip，移除前面3个
+                mFollowModels.addAll(followModels);
+                mAdapter.setIsShowFooter(false);
+                mAdapter.setFollowModels(mFollowModels);
+            }
+            /*if(followModels != null && followModels.size() > 0){
+                if (AppManager.getClientUser().isShowVip &&
+                        !AppManager.getClientUser().is_vip &&
+                        followModels.size() > 10) {//如果不是vip，移除前面3个
                     mAdapter.setIsShowFooter(true);
                     List<String> urls = new ArrayList<>(3);
                     urls.add(followModels.get(0).faceUrl);
@@ -123,7 +129,7 @@ public class AttentionMeActivity extends BaseActivity {
                 }
                 mAdapter.setIsShowFooter(false);
                 mAdapter.setFollowModels(mFollowModels);
-            }
+            }*/
             if (mFollowModels != null && mFollowModels.size() > 0) {
                 mNoUserinfo.setVisibility(View.GONE);
             } else {
