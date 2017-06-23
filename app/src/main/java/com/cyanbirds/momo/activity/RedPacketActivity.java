@@ -26,6 +26,7 @@ import com.cyanbirds.momo.entity.MemberBuy;
 import com.cyanbirds.momo.entity.PayResult;
 import com.cyanbirds.momo.entity.WeChatPay;
 import com.cyanbirds.momo.eventtype.PayEvent;
+import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.request.GetMemberBuyListRequest;
 import com.cyanbirds.momo.net.request.RPAliPayOrderInfoRequest;
 import com.cyanbirds.momo.net.request.RPCreateOrderRequest;
@@ -205,6 +206,11 @@ public class RedPacketActivity extends BaseActivity {
 		mSelectAlipay.setChecked(true);
 		mSelectWechatpay.setChecked(false);
 		new GetGoldListTask().request(MEMBER_BUY_TYPE_RED_PACKET);
+		if (AppManager.getClientUser().isShowLovers) {
+			mPayLay.setVisibility(View.VISIBLE);
+		} else {
+			mPayLay.setVisibility(View.GONE);
+		}
 	}
 
 	/**
