@@ -50,7 +50,7 @@ public class MyIntentService extends GTIntentService {
 				mHandler.post(new Runnable() {
 					@Override
 					public void run() {
-						PushMsgUtil.getInstance().handlePushMsg(false, data);
+						PushMsgUtil.getInstance().handlePushMsg(true, data);
 					}
 				});
 			}

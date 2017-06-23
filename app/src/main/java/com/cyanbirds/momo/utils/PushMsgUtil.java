@@ -242,7 +242,7 @@ public class PushMsgUtil {
 		/**
 		 * 只要是透传消息，就创建通知栏
 		 */
-		if (isPassThrough) {
+		if (isPassThrough && pushMsgModel.msgType != PushMsgModel.MessageType.VOIP) {
 			AppManager.showNotification(message);
 		}
 	}
