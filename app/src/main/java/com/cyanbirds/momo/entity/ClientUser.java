@@ -116,6 +116,10 @@ public class ClientUser implements Serializable{
      * 0:不显示  1：显示
      */
     public boolean isShowRpt; //红包
+    /**
+     * 0:不显示  1：显示
+     */
+    public boolean isShowTd; //跳转到vip还是downloadvip
 
     public String latitude = "";
     public String longitude = "";

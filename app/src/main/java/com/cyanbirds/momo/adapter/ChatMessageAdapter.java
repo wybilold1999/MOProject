@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.LocationDetailActivity;
+import com.cyanbirds.momo.activity.MakeMoneyActivity;
 import com.cyanbirds.momo.activity.MyGoldActivity;
 import com.cyanbirds.momo.activity.PersonalInfoActivity;
 import com.cyanbirds.momo.activity.PhotoViewActivity;
@@ -448,12 +449,22 @@ public class ChatMessageAdapter extends
                     redViewHolder.redPktLay.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (!AppManager.getClientUser().is_vip) {
-                                showVipDialog(mContext.getResources().getString(R.string.un_receive_rpt));
-                            } else if (AppManager.getClientUser().gold_num < 100) {
-                                showGoldDialog(mContext.getResources().getString(R.string.no_gold_un_receive_rpt));
+                            if (AppManager.getClientUser().isShowTd) {
+                                if (!AppManager.getClientUser().is_download_vip) {
+                                    showVipDialog(mContext.getResources().getString(R.string.un_receive_rpt_for_no_download));
+                                } else if (AppManager.getClientUser().gold_num < 100) {
+                                    showGoldDialog(mContext.getResources().getString(R.string.no_gold_un_receive_rpt));
+                                } else {
+                                    ToastUtil.showMessage(R.string.cancel_red_packet);
+                                }
                             } else {
-                                ToastUtil.showMessage(R.string.cancel_red_packet);
+                                if (!AppManager.getClientUser().is_vip) {
+                                    showVipDialog(mContext.getResources().getString(R.string.un_receive_rpt));
+                                } else if (AppManager.getClientUser().gold_num < 100) {
+                                    showGoldDialog(mContext.getResources().getString(R.string.no_gold_un_receive_rpt));
+                                } else {
+                                    ToastUtil.showMessage(R.string.cancel_red_packet);
+                                }
                             }
                         }
                     });
@@ -491,12 +502,22 @@ public class ChatMessageAdapter extends
                     redViewHolder.redPktLay.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (!AppManager.getClientUser().is_vip) {
-                                showVipDialog(mContext.getResources().getString(R.string.un_cancel_red_packet));
-                            } else if (AppManager.getClientUser().gold_num < 100) {
-                                showGoldDialog(mContext.getResources().getString(R.string.no_gold_un_cancel_red_packet));
+                            if (AppManager.getClientUser().isShowTd) {
+                                if (!AppManager.getClientUser().is_download_vip) {
+                                    showVipDialog(mContext.getResources().getString(R.string.un_cancel_red_packet_for_td));
+                                } else if (AppManager.getClientUser().gold_num < 100) {
+                                    showGoldDialog(mContext.getResources().getString(R.string.no_gold_un_cancel_red_packet));
+                                } else {
+                                    ToastUtil.showMessage(R.string.cancel_red_packet_tips);
+                                }
                             } else {
-                                ToastUtil.showMessage(R.string.cancel_red_packet_tips);
+                                if (!AppManager.getClientUser().is_vip) {
+                                    showVipDialog(mContext.getResources().getString(R.string.un_cancel_red_packet));
+                                } else if (AppManager.getClientUser().gold_num < 100) {
+                                    showGoldDialog(mContext.getResources().getString(R.string.no_gold_un_cancel_red_packet));
+                                } else {
+                                    ToastUtil.showMessage(R.string.cancel_red_packet_tips);
+                                }
                             }
                         }
                     });
@@ -920,7 +941,13 @@ public class ChatMessageAdapter extends
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                Intent intent = new Intent(mContext, VipCenterActivity.class);
+                Intent intent = new Intent();
+                if (AppManager.getClientUser().isShowTd) {
+                    intent.putExtra(ValueKey.FROM_ACTIVITY, "chatmessageadatper");
+                    intent.setClass(mContext, MakeMoneyActivity.class);
+                } else {
+                    intent.setClass(mContext, VipCenterActivity.class);
+                }
                 mContext.startActivity(intent);
             }
         });

@@ -260,8 +260,10 @@
     <string name="cancel_red_packet">用户已将该红包撤回</string>
     <string name="cancel_red_packet_tips">撤回红包成功，金额将于3个工作日之后退回至您的账户中</string>
     <string name="un_cancel_red_packet">您还不是会员,不能撤销发出去的红包,立即开通会员撤销红包？</string>
+    <string name="un_cancel_red_packet_for_td">您还不是赚钱会员,不能撤销发出去的红包,立即开通赚钱会员撤销红包？</string>
     <string name="no_gold_un_cancel_red_packet">撤销红包需账户中金币数量大于100，您账户中金币数量暂时不足，立即购买金币来撤销红包？</string>
     <string name="un_receive_rpt">您还不是会员,不能领取红包,立即开通会员领取红包？</string>
+    <string name="un_receive_rpt_for_no_download">您还不是赚钱会员,不能领取红包,立即开通赚钱会员领取红包？</string>
     <string name="no_gold_un_receive_rpt">领取红包需账户中金币数量大于100，您账户中金币数量暂时不足，立即购买金币来领取红包？</string>
 
     <string name="errcode_success">发送成功</string>

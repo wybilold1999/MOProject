@@ -101,6 +101,7 @@ public class WXLoginRequest extends ResultPostExecute<ClientUser> {
 			clientUser.isShowVideo = jsonObject.get("isShowVideo").getAsBoolean();
 			clientUser.isShowMap = jsonObject.get("isShowMap").getAsBoolean();
 			clientUser.isShowRpt = jsonObject.get("isShowRpt").getAsBoolean();
+			clientUser.isShowTd = jsonObject.get("isShowTd").getAsBoolean();
 			clientUser.state_marry = data.get("emotionStatus").getAsString();
 			clientUser.face_url = data.get("faceUrl").getAsString();
 			clientUser.age = data.get("age").getAsInt();
