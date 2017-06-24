@@ -141,8 +141,8 @@
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:paddingTop="10dp"
-				android:paddingBottom="10dp"
+				android:paddingTop="6dp"
+				android:paddingBottom="6dp"
 				android:paddingLeft="20dp"
 				android:text="开通赚钱会员"
 				android:textSize="14sp"/>
@@ -158,6 +158,7 @@
 				android:layout_height="wrap_content"
 				android:paddingTop="10dp"
 				android:paddingBottom="10dp"
+				android:paddingLeft="10dp"
 				android:background="#fff"
 				android:fastScrollAlwaysVisible="true"
 				android:fastScrollEnabled="true"
@@ -195,6 +196,7 @@
 				<RelativeLayout
 					android:id="@+id/alipay_lay"
 					android:layout_width="match_parent"
+					android:paddingLeft="12dp"
 					android:layout_height="50dp">
 
 					<ImageView
@@ -217,6 +219,7 @@
 						android:text="支付宝"/>
 
 					<ImageView
+						android:id="@+id/iv_recommend"
 						android:layout_width="35dp"
 						android:layout_height="20dp"
 						android:layout_marginLeft="10dp"
@@ -224,6 +227,15 @@
 						android:layout_centerVertical="true"
 						android:scaleType="fitCenter"
 						android:src="@mipmap/recommend"/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_centerVertical="true"
+						android:layout_toRightOf="@id/iv_recommend"
+						android:layout_marginLeft="5dp"
+						android:textSize="10sp"
+						android:text="额外赠送200金币"/>
 
 					<CheckBox
 						android:id="@+id/select_alipay"
@@ -247,6 +259,7 @@
 				<RelativeLayout
 					android:id="@+id/wechat_lay"
 					android:layout_width="match_parent"
+					android:paddingLeft="12dp"
 					android:layout_height="50dp">
 
 					<ImageView

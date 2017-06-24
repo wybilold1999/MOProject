@@ -55,8 +55,11 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:gravity="center_vertical"/>
+                android:layout_height="22dp"
+                android:gravity="center_vertical"
+                android:textSize="10sp"
+                android:paddingLeft="20dp"
+                android:text="@string/ali_pay_info"/>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview"
@@ -376,7 +379,6 @@
 
                 </LinearLayout>
             </RelativeLayout>
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/divider_height"
