@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-    android:background="@mipmap/voip_bg">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@mipmap/voip_bg">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="120dp"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
         android:orientation="vertical">
@@ -44,7 +44,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="100dp"
         android:paddingLeft="50dp"
-        android:paddingRight="50dp">
+        android:paddingRight="50dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/answer"
@@ -64,17 +65,39 @@
 
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/decline_call"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/calling_lay"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="100dp"
-        android:layout_centerInParent="true"
-        android:scaleType="centerCrop"
-        android:background="@drawable/decline_call"
-        android:visibility="gone"/>
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:scaleType="centerCrop"
+            android:background="@mipmap/voip_voice_ban_on"/>
+
+        <ImageView
+            android:id="@+id/decline_call"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:scaleType="centerCrop"
+            android:background="@drawable/decline_call"/>
+
+        <ImageView
+            android:id="@+id/speaker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:scaleType="centerCrop"
+            android:background="@mipmap/voip_speaker_off"/>
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

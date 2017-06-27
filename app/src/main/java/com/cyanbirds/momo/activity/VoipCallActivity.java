@@ -41,12 +41,17 @@ public class VoipCallActivity extends BaseActivity {
     ImageView mDecline;
     @BindView(R.id.receive_call_lay)
     RelativeLayout mCallLay;
+    @BindView(R.id.calling_lay)
+    RelativeLayout mCallingLay;
     @BindView(R.id.decline_call)
     ImageView mDeclineCall;
+    @BindView(R.id.speaker)
+    ImageView mSpeaker;
 
     private CountDownTimer timer;
     private String from;
     private long time;
+    private boolean changeFlag = false;//切换图片
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +74,11 @@ public class VoipCallActivity extends BaseActivity {
         }
         if (!TextUtils.isEmpty(from)) {//主动拨打电话
             mCallLay.setVisibility(View.GONE);
-            mDeclineCall.setVisibility(View.VISIBLE);
-            time = 2000;
+            mCallingLay.setVisibility(View.VISIBLE);
+            time = 1000;
         } else {
             mCallLay.setVisibility(View.VISIBLE);
-            mDeclineCall.setVisibility(View.GONE);
+            mCallingLay.setVisibility(View.GONE);
             time = 50000;
         }
         timer = new CountDownTimer(time, 1000) {
@@ -101,7 +106,7 @@ public class VoipCallActivity extends BaseActivity {
         VibratorUtil.start();
     }
 
-    @OnClick({R.id.answer, R.id.decline, R.id.decline_call})
+    @OnClick({R.id.answer, R.id.decline, R.id.decline_call, R.id.speaker})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.answer:
@@ -121,6 +126,14 @@ public class VoipCallActivity extends BaseActivity {
                 timer.cancel();
                 VibratorUtil.cancel();
                 finish();
+                break;
+            case R.id.speaker:
+                if (changeFlag) {
+                    mSpeaker.setImageResource(R.mipmap.voip_speaker_off);
+                } else {
+                    mSpeaker.setImageResource(R.mipmap.voip_speaker_on);
+                }
+                changeFlag = !changeFlag;
                 break;
         }
     }
