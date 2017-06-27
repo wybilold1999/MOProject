@@ -86,8 +86,10 @@ public class PublishImageAdapter extends RecyclerView.Adapter<PublishImageAdapte
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            notifyItemRemoved(position);
-            mPhotoPathList.remove(position);
+            if (position > -1) {
+                notifyItemRemoved(position);
+                mPhotoPathList.remove(position);
+            }
         }
     }
 

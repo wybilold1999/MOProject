@@ -221,10 +221,12 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
         @Override
         public void onItemClick(View view, int position) {
             ClientUser clientUser = mAdapter.getItem(position);
-            Intent intent = new Intent(getActivity(), PersonalInfoActivity.class);
-            intent.putExtra(ValueKey.USER_ID, clientUser.userId);
-            intent.putExtra(ValueKey.FROM_ACTIVITY, "FindLoveFragment");
-            startActivity(intent);
+            if (null != clientUser) {
+                Intent intent = new Intent(getActivity(), PersonalInfoActivity.class);
+                intent.putExtra(ValueKey.USER_ID, clientUser.userId);
+                intent.putExtra(ValueKey.FROM_ACTIVITY, "FindLoveFragment");
+                startActivity(intent);
+            }
         }
     };
 

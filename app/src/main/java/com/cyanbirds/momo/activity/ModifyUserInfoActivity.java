@@ -985,7 +985,9 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 			}
 		} else if (resultCode == RESULT_OK && requestCode == ALBUMS_RESULT) {
 			Uri originalUri = data.getData();
-			cutPhoto(new File(FileUtils.getPath(this, originalUri)));
+			if (!TextUtils.isEmpty(FileUtils.getPath(this, originalUri))) {
+				cutPhoto(new File(FileUtils.getPath(this, originalUri)));
+			}
 		} else if (resultCode == RESULT_OK && requestCode == PHOTO_CUT_RESULT) {
 			mPortraitUri = data.getData();
 			if (mPortraitUri == null && mCutFile != null) {
