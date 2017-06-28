@@ -146,7 +146,8 @@
     <string name="qq">QQ号</string>
     <string name="weixin">微信号</string>
     <string name="ali_pay">支付宝支付(推荐)</string>
-    <string name="ali_pay_info">使用支付宝支付,额外赠送200金币</string>
+    <string name="ali_pay_info">使用支付宝支付,额外赠送500金币</string>
+    <string name="pay_info">额外赠送500金币</string>
     <string name="weixin_pay">微信支付</string>
     <string name="right_now_pay">立即支付</string>
     <string name="send_telephone_fare">(送%1$s元话费)</string>

@@ -24,15 +24,18 @@ import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.MemberBuy;
 import com.cyanbirds.momo.entity.PayResult;
+import com.cyanbirds.momo.entity.UserVipModel;
 import com.cyanbirds.momo.entity.WeChatPay;
 import com.cyanbirds.momo.eventtype.PayEvent;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.request.GetMemberBuyListRequest;
+import com.cyanbirds.momo.net.request.GetPayResultRequest;
 import com.cyanbirds.momo.net.request.RPAliPayOrderInfoRequest;
 import com.cyanbirds.momo.net.request.RPCreateOrderRequest;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.tencent.mm.sdk.modelpay.PayReq;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -96,7 +99,7 @@ public class RedPacketActivity extends BaseActivity {
 					// 判断resultStatus 为9000则代表支付成功
 					if (TextUtils.equals(resultStatus, "9000")) {
 						// 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
-						finishActivity();
+						new GetPayResultTask().request();
 					} else {
 						// 该笔订单真实的支付结果，需要依赖服务端的异步通知。
 						ToastUtil.showMessage("支付失败");
@@ -128,6 +131,7 @@ public class RedPacketActivity extends BaseActivity {
 	}
 
 	private void setupEvent() {
+		EventBus.getDefault().register(this);
 		mReadPacketAmount.setFocusable(true);
 		mReadPacketAmount.addTextChangedListener(new TextWatcher() {
 			@Override
@@ -170,14 +174,13 @@ public class RedPacketActivity extends BaseActivity {
 						mBtnSendMoney.setOnClickListener(new View.OnClickListener() {
 							@Override
 							public void onClick(View v) {
-								/*if (mMemberBuy != null) {
+								if (mMemberBuy != null) {
 									if (mPayType.equals(AppConstants.ALI_PAY_PLATFORM)) {
 										new GetAliPayOrderInfoTask().request(mMemberBuy.id, AppConstants.ALI_PAY_PLATFORM, mReadPacketAmount.getText().toString());
 									} else {
 										new CreateOrderTask().request(mMemberBuy.id, AppConstants.WX_PAY_PLATFORM, mReadPacketAmount.getText().toString());
 									}
-								}*/
-								finishActivity();
+								}
 							}
 						});
 					} else {
@@ -206,11 +209,6 @@ public class RedPacketActivity extends BaseActivity {
 		mSelectAlipay.setChecked(true);
 		mSelectWechatpay.setChecked(false);
 		new GetGoldListTask().request(MEMBER_BUY_TYPE_RED_PACKET);
-		if (AppManager.getClientUser().isShowLovers) {
-			mPayLay.setVisibility(View.VISIBLE);
-		} else {
-			mPayLay.setVisibility(View.GONE);
-		}
 	}
 
 	/**
@@ -326,7 +324,26 @@ public class RedPacketActivity extends BaseActivity {
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void paySuccess(PayEvent event) {
-		finishActivity();
+		new GetPayResultTask().request();
+	}
+
+	/**
+	 * 获取支付成功之后用户开通了哪项服务
+	 */
+	class GetPayResultTask extends GetPayResultRequest {
+		@Override
+		public void onPostExecute(UserVipModel userVipModel) {
+			AppManager.getClientUser().is_vip = userVipModel.isVip;
+			AppManager.getClientUser().is_download_vip = userVipModel.isDownloadVip;
+			AppManager.getClientUser().gold_num = userVipModel.goldNum;
+			finishActivity();
+		}
+
+		@Override
+		public void onErrorExecute(String error) {
+			ToastUtil.showMessage(error);
+			finishActivity();
+		}
 	}
 
 	private void finishActivity() {
@@ -346,5 +363,11 @@ public class RedPacketActivity extends BaseActivity {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == 0 && requestCode == SDK_PAY_FLAG) {
 		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		EventBus.getDefault().unregister(this);
 	}
 }

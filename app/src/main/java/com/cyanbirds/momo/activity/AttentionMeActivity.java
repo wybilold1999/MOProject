@@ -39,7 +39,7 @@ public class AttentionMeActivity extends BaseActivity {
     private AttentionMeAdapter mAdapter;
     private List<FollowModel> mFollowModels;
     private int pageNo = 1;
-    private int pageSize = 13;
+    private int pageSize = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,13 +73,6 @@ public class AttentionMeActivity extends BaseActivity {
     }
 
     private void setupData(){
-        if (AppManager.getClientUser().isShowVip) {
-            if (AppManager.getClientUser().is_vip) {
-                pageSize = 200;
-            }
-        } else {
-            pageSize = 200;
-        }
         mFollowModels = new ArrayList<>();
         mAdapter = new AttentionMeAdapter(AttentionMeActivity.this);
         mAdapter.setOnItemClickListener(mOnItemClickListener);

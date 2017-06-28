@@ -235,7 +235,7 @@
 						android:layout_toRightOf="@id/iv_recommend"
 						android:layout_marginLeft="5dp"
 						android:textSize="10sp"
-						android:text="额外赠送200金币"/>
+						android:text="@string/pay_info"/>
 
 					<CheckBox
 						android:id="@+id/select_alipay"
