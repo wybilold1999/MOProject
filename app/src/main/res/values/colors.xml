@@ -51,4 +51,6 @@
     <color name="send_money_limit_text">#e5a237</color>
     <color name="red_packet_bg">#fb9d3a</color>
 
+    <color name="half_transparent">#e0fffbf0</color>
+
 </resources>

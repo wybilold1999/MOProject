@@ -93,7 +93,13 @@ public class PreferencesUtils {
 	/** 抽奖次数*/
 	public static final String SETTINGS_REWARD_COUNT = "com.cyanbirds.momo_reward_count";
 	/** 定位到的城市*/
-	public static final String SETTINGS_CURRENT_CITY = "com.cyanbird.ttjy_current_city";
+	public static final String SETTINGS_CURRENT_CITY = "com.cyanbird.momo_current_city";
+	/** 最近喜欢我的userid*/
+	public static final String SETTINGS_LOVE_ME_USER_ID = "com.cyanbird.momo_love_me_user_id";
+	/** 最近关注我的userid*/
+	public static final String SETTINGS_ATTENTION_ME_USER_ID = "com.cyanbird.momo_attention_me_user_id";
+	/** 最近送我礼物的userid*/
+	public static final String SETTINGS_GIFT_ME_USER_ID = "com.cyanbird.momo_gift_me_user_id";
 
 	/**
 	 * 获取RL账号
@@ -1016,6 +1022,66 @@ public class PreferencesUtils {
 		SharedPreferences sp = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		sp.edit().putString(SETTINGS_CURRENT_CITY, city).commit();
+	}
+
+	/**
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static String getLoveMeUserId(final Context context) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return sp.getString(SETTINGS_LOVE_ME_USER_ID, "");
+	}
+
+	/**
+	 * @param context
+	 */
+	public static void setLoveMeUserId(final Context context, final String userId) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		sp.edit().putString(SETTINGS_LOVE_ME_USER_ID, userId).commit();
+	}
+
+	/**
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static String getAttentionMeUserId(final Context context) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return sp.getString(SETTINGS_ATTENTION_ME_USER_ID, "");
+	}
+
+	/**
+	 * @param context
+	 */
+	public static void setAttentionMeUserId(final Context context, final String userId) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		sp.edit().putString(SETTINGS_ATTENTION_ME_USER_ID, userId).commit();
+	}
+
+	/**
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static String getGiftMeUserId(final Context context) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return sp.getString(SETTINGS_GIFT_ME_USER_ID, "");
+	}
+
+	/**
+	 * @param context
+	 */
+	public static void setGiftMeUserId(final Context context, final String userId) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		sp.edit().putString(SETTINGS_GIFT_ME_USER_ID, userId).commit();
 	}
 
 }

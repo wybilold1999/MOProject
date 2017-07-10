@@ -1,12 +1,14 @@
 package com.cyanbirds.momo.entity;
 
+import java.io.Serializable;
+
 /**
  * 
  * @Description:喜欢模型
  * @author wangyb
  * @Date:2015年8月12日下午2:09:07
  */
-public class LoveModel {
+public class LoveModel implements Serializable {
 
 	/** 关注id */
 	public Integer id;

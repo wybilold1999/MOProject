@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  xmlns:card="http://schemas.android.com/apk/res-auto"
+			  xmlns:app="http://schemas.android.com/apk/res-auto"
 			  android:layout_width="match_parent"
 			  android:layout_height="match_parent"
 			  android:background="@color/divider_color"
@@ -10,59 +10,83 @@
 		android:id="@+id/toolbar_actionbar"
 		layout="@layout/toolbar_actionbar_with_headerbar" />
 
-	<com.stone.card.CardSlidePanel
-		android:id="@+id/image_slide_panel"
+	<RelativeLayout
+		android:id="@+id/loading_lay"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_marginTop="30dp"
-		card:bottomMarginTop="38dp"
-		card:itemMarginTop="10dp"
-		card:yOffsetStep="26dp">
+		android:background="@mipmap/bg_match_people"
+		android:layout_centerInParent="true"
+		android:visibility="gone">
 
-		<LinearLayout
-			android:id="@+id/card_bottom_layout"
-			android:layout_width="match_parent"
+		<ImageView
+			android:id="@+id/radar_img"
+			android:layout_width="300dp"
+			android:layout_height="300dp"
+			android:layout_centerInParent="true"
+			android:visibility="gone" />
+
+		<ImageView
+			android:id="@+id/radar_bttom_img"
+			android:layout_width="300dp"
+			android:layout_height="300dp"
+			android:layout_centerInParent="true"
+			android:src="@drawable/amain_setting_bg" />
+
+		<ImageView
+			android:id="@+id/radar_top_img"
+			android:layout_width="300dp"
+			android:layout_height="300dp"
+			android:layout_centerInParent="true"
+			android:src="@drawable/main_setting_bg"
+			android:visibility="gone" />
+
+		<RelativeLayout
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:gravity="center"
-			android:orientation="horizontal">
+			android:layout_centerInParent="true"
+			android:background="@drawable/circle">
 
-			<Button
-				android:id="@+id/card_left_btn"
-				android:layout_width="70dp"
-				android:layout_height="70dp"
-				android:background="@drawable/ignore_button" />
+			<com.facebook.drawee.view.SimpleDraweeView
+				android:id="@+id/portrait"
+				android:layout_width="100dp"
+				android:layout_height="100dp"
+				android:layout_centerInParent="true"
+				android:contentDescription="@null"
+				app:actualImageScaleType="fitCenter"
+				app:failureImage="@mipmap/default_head"
+				app:placeholderImage="@mipmap/default_head"
+				app:placeholderImageScaleType="fitCenter"
+				app:roundAsCircle="true"/>
 
-			<Button
-				android:id="@+id/personal_btn"
-				android:layout_width="40dp"
-				android:layout_height="40dp"
-				android:layout_marginLeft="10dp"
-				android:background="@drawable/home_button" />
+		</RelativeLayout>
 
-			<Button
-				android:id="@+id/card_right_btn"
-				android:layout_width="70dp"
-				android:layout_height="70dp"
-				android:layout_marginLeft="10dp"
-				android:background="@drawable/like_button" />
-		</LinearLayout>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentBottom="true"
+			android:layout_centerHorizontal="true"
+			android:layout_marginBottom="80dp"
+			android:text="正为你推荐有缘的人..."
+			android:textSize="18sp"/>
 
-		<com.stone.card.CardItemView
+	</RelativeLayout>
+
+	<FrameLayout
+		android:id="@+id/data_lay"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="top"
+		android:visibility="gone">
+
+		<include layout="@layout/card_buttons" />
+
+		<com.lorentzos.flingswipe.SwipeFlingAdapterView
+			android:id="@+id/frame"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content" />
+			android:layout_height="match_parent"
+			android:layout_marginBottom="100dp"
+			app:rotation_degrees="15"/>
 
-		<com.stone.card.CardItemView
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content" />
-
-		<com.stone.card.CardItemView
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content" />
-
-		<com.stone.card.CardItemView
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content" />
-
-	</com.stone.card.CardSlidePanel>
+	</FrameLayout>
 
 </LinearLayout>

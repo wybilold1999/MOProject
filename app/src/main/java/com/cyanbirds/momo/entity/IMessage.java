@@ -5,6 +5,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Property;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 import java.io.Serializable;
@@ -37,6 +38,9 @@ public class IMessage implements Serializable{
     @Property
     @NotNull
     public String talker;
+    /**聊天对象的url**/
+    @Transient
+    public String face_url;
     /** 消息创建者 */
     @Property
     @NotNull
@@ -96,7 +100,7 @@ public class IMessage implements Serializable{
     // 图片接收状态
     @Property
     public int imageStatus;
-    
+    @Transient
     public int imageProgress;
 
     @Generated(hash = 408529143)

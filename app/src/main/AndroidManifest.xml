@@ -337,11 +337,6 @@
             android:label="@string/publish_dynamic"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activity.RadarActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/find_yuan_fen"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name=".activity.CardActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="@string/yuan_fen"
@@ -435,6 +430,14 @@
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:windowSoftInputMode="adjustResize"
             android:label="@string/send_red_packet"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".activity.PopupLoveActivity"
+            android:theme="@style/myTransparent"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="portrait">
         </activity>
 

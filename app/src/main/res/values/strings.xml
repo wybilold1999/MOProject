@@ -326,4 +326,8 @@
     <string name="input_bank">输入收款人开户行</string>
     <string name="input_bank_no">输入开户行银行账号</string>
 
+    <string name="love_name"><Data><![CDATA[<b>%1$s</b> 刚喜欢了您哦！]]></Data></string>
+    <string name="send_msg">发送消息</string>
+    <string name="going_find">继续寻觅</string>
+
 </resources>

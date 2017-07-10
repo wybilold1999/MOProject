@@ -1,22 +1,34 @@
 package com.cyanbirds.momo.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.ScaleAnimation;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
+import com.cyanbirds.momo.adapter.CardAdapter;
 import com.cyanbirds.momo.config.ValueKey;
+import com.cyanbirds.momo.entity.CardModel;
 import com.cyanbirds.momo.entity.YuanFenModel;
+import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.request.AddLoveRequest;
 import com.cyanbirds.momo.net.request.GetYuanFenUserRequest;
 import com.cyanbirds.momo.net.request.SendGreetRequest;
 import com.cyanbirds.momo.utils.ToastUtil;
-import com.stone.card.CardDataItem;
-import com.stone.card.CardSlidePanel;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -25,123 +37,166 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 /**
  * 作者：wangyb
  * 时间：2016/9/18 20:07
  * 描述：卡片
  */
-public class CardActivity extends BaseActivity implements CardSlidePanel.CardSwitchListener {
+public class CardActivity extends BaseActivity implements SwipeFlingAdapterView.onFlingListener,
+		SwipeFlingAdapterView.OnItemClickListener {
 
-	@BindView(R.id.card_left_btn)
-	Button mCardLeftBtn;
-	@BindView(R.id.personal_btn)
-	Button mPersonalBtn;
-	@BindView(R.id.card_right_btn)
-	Button mCardRightBtn;
-	@BindView(R.id.image_slide_panel)
-	CardSlidePanel mImageSlidePanel;
+	@BindView(R.id.left)
+	ImageView mLeft;
+	@BindView(R.id.info)
+	ImageView mInfo;
+	@BindView(R.id.right)
+	ImageView mRight;
+	@BindView(R.id.frame)
+	SwipeFlingAdapterView mFrame;
+	@BindView(R.id.loading_lay)
+	RelativeLayout mLoadingLay;
+	@BindView(R.id.data_lay)
+	FrameLayout mDataLay;
+	@BindView(R.id.radar_img)
+	ImageView mRadarImg;
+	@BindView(R.id.radar_bttom_img)
+	ImageView mRadarBttomImg;
+	@BindView(R.id.radar_top_img)
+	ImageView mRadarTopImg;
+	@BindView(R.id.portrait)
+	SimpleDraweeView mPortrait;
 
-	private List<CardDataItem> dataList = new ArrayList<CardDataItem>();
-	private List<YuanFenModel> models;
-	private int curUserId;
-
-	private int pageNo = 0;
+	private Unbinder unbinder;
+	private CardModel curModel;
+	private int pageNo = 1;
 	private int pageSize = 200;
+	private Handler mHandler = new Handler();
+	private AnimationSet grayAnimal;
+	private List<CardModel> dataList = new ArrayList<CardModel>();
+	private CardAdapter mAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_card);
-		ButterKnife.bind(this);
+		unbinder = ButterKnife.bind(this);
 		Toolbar toolbar = getActionBarToolbar();
 		if (toolbar != null) {
 			toolbar.setNavigationIcon(R.mipmap.ic_up);
 		}
-
+		setupView();
 		setupEvent();
 		setupData();
 	}
 
+	private void setupView() {
+		mLoadingLay.setVisibility(View.VISIBLE);
+		mDataLay.setVisibility(View.GONE);
+	}
+
 	private void setupEvent() {
-		mImageSlidePanel.setCardSwitchListener(this);
+		mFrame.setOnItemClickListener(this);
+		mFrame.setFlingListener(this);
 	}
 
 	private void setupData() {
-		CardDataItem dataItem = null;
-		models = (List<YuanFenModel>) getIntent().getSerializableExtra(ValueKey.USER);
-		for (YuanFenModel model : models) {
-			dataItem = new CardDataItem();
-			dataItem.userId = model.uid;
-			dataItem.userName = model.nickname;
-			dataItem.imagePath = model.faceUrl;
-			dataItem.city = model.city;
-			dataItem.age = model.age;
-			dataItem.constellation = model.constellation;
-			dataItem.distance = model.distance == null ? 0.00 : model.distance;
-			dataItem.signature = model.signature;
-			dataItem.pictures = model.pictures;
-			dataList.add(dataItem);
+		dataList = new ArrayList<>();
+		mAdapter = new CardAdapter(this, dataList);
+		mFrame.setAdapter(mAdapter);
+
+		if (!TextUtils.isEmpty(AppManager.getClientUser().face_local)) {
+			mPortrait.setImageURI(Uri.parse("file://" + AppManager.getClientUser().face_local));
 		}
-		mImageSlidePanel.fillData(dataList);
 
+		startcircularAnima();
+		mHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				new GetYuanFenUserTask().request(pageNo, pageSize);
+			}
+		}, 3500);
 	}
 
-	@Override
-	public void onShow(int index) {
-		Log.d("test", "正在显示-" + dataList.get(index).userName);
-		curUserId = dataList.get(index).userId;
-		if (index >= dataList.size() - 3) {
-			//请求数据
-			new GetYuanFenUserTask().request(pageNo, pageSize);
-		}
-	}
-
-	@Override
-	public void onCardVanish(int index, int type) {
-		Log.d("test", "正在消失-" + dataList.get(index).userName + " 消失type=" + type);
-		if (type == 1) {//向右滑
-			new SenderGreetTask().request(String.valueOf(curUserId));
-			new AddLoveRequest().request(String.valueOf(curUserId));
-		}
-	}
-
-	@Override
-	public void onItemClick(View cardImageView, int index) {
-		Log.d("test", "卡片点击-" + dataList.get(index).userName);
-		Intent intent = new Intent(this, PersonalInfoActivity.class);
-		intent.putExtra(ValueKey.USER_ID, String.valueOf(dataList.get(index).userId));
-		startActivity(intent);
-	}
-
-	@OnClick({R.id.personal_btn})
-	public void onClick(View view) {
+	@OnClick({R.id.left, R.id.info, R.id.right})
+	public void onViewClicked(View view) {
 		switch (view.getId()) {
-			case R.id.personal_btn:
-				Intent intent = new Intent(this, PersonalInfoActivity.class);
-				intent.putExtra(ValueKey.USER_ID, String.valueOf(curUserId));
-				startActivity(intent);
+			case R.id.left:
+				mFrame.getTopCardListener().selectLeft();
+				break;
+			case R.id.info:
+				if (curModel != null) {
+					Intent intent = new Intent(this, PersonalInfoActivity.class);
+					intent.putExtra(ValueKey.USER_ID, String.valueOf(curModel.userId));
+					startActivity(intent);
+				}
+				break;
+			case R.id.right:
+				mFrame.getTopCardListener().selectRight();
 				break;
 		}
 	}
 
-	class SenderGreetTask extends SendGreetRequest {
-		@Override
-		public void onPostExecute(String s) {
-			ToastUtil.showMessage(s);
-		}
+	@Override
+	public void onItemClicked(int itemPosition, Object dataObject) {
+		CardModel model = (CardModel) dataObject;
+		Intent intent = new Intent(this, PersonalInfoActivity.class);
+		intent.putExtra(ValueKey.USER_ID, String.valueOf(model.userId));
+		startActivity(intent);
+	}
 
-		@Override
-		public void onErrorExecute(String error) {
+	@Override
+	public void removeFirstObjectInAdapter() {
+		if (dataList != null && dataList.size() > 0) {
+			dataList.remove(0);
+			mAdapter.notifyDataSetChanged();
+			if (dataList.size() > 0) {
+				curModel = dataList.get(0);
+			}
 		}
+	}
+
+	@Override
+	public void onLeftCardExit(Object dataObject) {
+
+	}
+
+	@Override
+	public void onRightCardExit(Object dataObject) {
+		CardModel cardModel = (CardModel) dataObject;
+		new SenderGreetTask().request(String.valueOf(cardModel.userId));
+		new AddLoveRequest().request(String.valueOf(cardModel.userId));
+	}
+
+	@Override
+	public void onAdapterAboutToEmpty(int itemsInAdapter) {
+		if (itemsInAdapter == 0) {
+			mLoadingLay.setVisibility(View.VISIBLE);
+			mDataLay.setVisibility(View.GONE);
+			mHandler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					new GetYuanFenUserTask().request(pageNo, pageSize);
+				}
+			}, 3500);
+		}
+	}
+
+	@Override
+	public void onScroll(float scrollProgressPercent) {
+
 	}
 
 	class GetYuanFenUserTask extends GetYuanFenUserRequest {
 		@Override
 		public void onPostExecute(List<YuanFenModel> yuanFenModels) {
+			mLoadingLay.setVisibility(View.GONE);
+			mDataLay.setVisibility(View.VISIBLE);
 			if (yuanFenModels != null && yuanFenModels.size() > 0) {
+				dataList.clear();
 				for (YuanFenModel model : yuanFenModels) {
-					CardDataItem dataItem = new CardDataItem();
+					CardModel dataItem = new CardModel();
 					dataItem.userId = model.uid;
 					dataItem.userName = model.nickname;
 					dataItem.imagePath = model.faceUrl;
@@ -153,13 +208,25 @@ public class CardActivity extends BaseActivity implements CardSlidePanel.CardSwi
 					dataItem.pictures = model.pictures;
 					dataList.add(dataItem);
 				}
-				mImageSlidePanel.fillData(dataList);
+				curModel = dataList.get(0);
+				mAdapter.notifyDataSetChanged();
 			}
 		}
 
 		@Override
 		public void onErrorExecute(String error) {
 			ToastUtil.showMessage(error);
+		}
+	}
+
+	class SenderGreetTask extends SendGreetRequest {
+		@Override
+		public void onPostExecute(String s) {
+			ToastUtil.showMessage(s);
+		}
+
+		@Override
+		public void onErrorExecute(String error) {
 		}
 	}
 
@@ -177,29 +244,105 @@ public class CardActivity extends BaseActivity implements CardSlidePanel.CardSwi
 		MobclickAgent.onPause(this);
 	}
 
-
-	private void prepareDataList() {
-		int num = imagePaths.length;
-
-		for (int j = 0; j < 3; j++) {
-			for (int i = 0; i < num; i++) {
-				CardDataItem dataItem = new CardDataItem();
-				dataItem.userName = "name=" + i;
-				dataItem.imagePath = imagePaths[i];
-				dataItem.imageNum = (int) (Math.random() * 6);
-				dataList.add(dataItem);
-			}
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (unbinder != null) {
+			unbinder.unbind();
 		}
 	}
 
-	String[] imagePaths = new String[]{"http://file.ynet.com/2/1609/18/11747137.jpg",
-			"http://file.ynet.com/2/1609/18/11747138.jpg", "http://file.ynet.com/2/1605/07/11271444.jpg",
-			"http://file.ynet.com/2/1605/07/11271021.jpg", "http://jiangsu.china.com.cn/uploadfile/2016/0918/1474190769213910.jpg",
-			"http://jiangsu.china.com.cn/uploadfile/2016/0918/1474190767625296.jpg",
-			"http://c.hiphotos.baidu.com/baike/c0%3Dbaike92%2C5%2C5%2C92%2C30/sign=84e2412ad0160924c828aa49b56e5e9f/7acb0a46f21fbe09597ce5686b600c338744adaf.jpg",
-			"http://h.hiphotos.baidu.com/baike/c0%3Dbaike80%2C5%2C5%2C80%2C26/sign=1430a2f37af0f736ccf344536b3cd87c/342ac65c1038534344a613ad9113b07ecb8088d5.jpg",
-			"http://photocdn.sohu.com/20151225/mp50597254_1451035687527_10_th_fv23.jpeg",
-			"http://imgsrc.baidu.com/forum/w%3D580/sign=034d5ea2bf389b5038ffe05ab534e5f1/f5b5c9ea15ce36d3e0a5c78c3cf33a87e850b1ed.jpg",
-			"http://n1.itc.cn/img8/wb/smccloud/2015/05/07/143099871291046796.JPEG"};
+	private void startcircularAnima() {
+		grayAnimal = playHeartbeatAnimation();
+		mRadarBttomImg.startAnimation(grayAnimal);
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				startwhiteAnimal();
+			}
+		}, 500);
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				startannularAnimat();
+			}
+		}, 700);
+	}
 
+	private AnimationSet playHeartbeatAnimation() {
+		AnimationSet animationSet = new AnimationSet(true);
+		ScaleAnimation sa = new ScaleAnimation(0.3f, 1.0f, 0.3f, 1.0f,
+				ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
+				ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
+		sa.setDuration(800);
+		sa.setFillAfter(true);
+		sa.setRepeatCount(0);
+		sa.setInterpolator(new LinearInterpolator());
+		animationSet.addAnimation(sa);
+		return animationSet;
+	}
+
+	private void startannularAnimat() {
+		mRadarImg.setVisibility(View.VISIBLE);
+		AnimationSet annularAnimat = getAnimAnnular();
+		annularAnimat.setAnimationListener(new Animation.AnimationListener() {
+
+			@Override
+			public void onAnimationStart(Animation animation) {
+
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				mRadarImg.setVisibility(View.GONE);
+			}
+		});
+		mRadarImg.startAnimation(annularAnimat);
+	}
+
+	private void startwhiteAnimal() {
+		AnimationSet whiteAnimal = playHeartbeatAnimation();
+		whiteAnimal.setRepeatCount(0);
+		whiteAnimal.setDuration(600);
+		mRadarTopImg.setVisibility(View.VISIBLE);
+		mRadarTopImg.startAnimation(whiteAnimal);
+		whiteAnimal.setAnimationListener(new Animation.AnimationListener() {
+			@Override
+			public void onAnimationStart(Animation animation) {
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				mRadarImg.setVisibility(View.GONE);
+				mRadarTopImg.setVisibility(View.GONE);
+				startcircularAnima();
+			}
+		});
+
+	}
+
+	private AnimationSet getAnimAnnular() {
+		AnimationSet animationSet = new AnimationSet(true);
+		ScaleAnimation sa = new ScaleAnimation(1.0f, 1.5f, 1.0f, 1.5f,
+				ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
+				ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
+		animationSet.addAnimation(new AlphaAnimation(1.0f, 0.1f));
+		animationSet.setDuration(400);
+		sa.setDuration(500);
+		sa.setFillAfter(true);
+		sa.setRepeatCount(0);
+		sa.setInterpolator(new LinearInterpolator());
+		animationSet.addAnimation(sa);
+		return animationSet;
+	}
 }

@@ -25,7 +25,6 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.PersonalInfoActivity;
-import com.cyanbirds.momo.activity.RadarActivity;
 import com.cyanbirds.momo.adapter.FindLoveAdapter;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.ClientUser;

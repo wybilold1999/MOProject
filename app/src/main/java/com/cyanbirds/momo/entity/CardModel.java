@@ -1,4 +1,4 @@
-package com.stone.card;
+package com.cyanbirds.momo.entity;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author xmuSistone
  */
-public class CardDataItem {
+public class CardModel {
     public int userId;
     public String imagePath;
     public String userName;
