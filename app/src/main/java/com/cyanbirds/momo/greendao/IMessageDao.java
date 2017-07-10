@@ -46,7 +46,6 @@ public class IMessageDao extends AbstractDao<IMessage, Long> {
         public final static Property ImgWidth = new Property(19, int.class, "imgWidth", false, "IMG_WIDTH");
         public final static Property ImgHigh = new Property(20, int.class, "imgHigh", false, "IMG_HIGH");
         public final static Property ImageStatus = new Property(21, int.class, "imageStatus", false, "IMAGE_STATUS");
-        public final static Property ImageProgress = new Property(22, int.class, "imageProgress", false, "IMAGE_PROGRESS");
     }
 
 
@@ -83,8 +82,7 @@ public class IMessageDao extends AbstractDao<IMessage, Long> {
                 "\"LONGITUDE\" REAL NOT NULL ," + // 18: longitude
                 "\"IMG_WIDTH\" INTEGER NOT NULL ," + // 19: imgWidth
                 "\"IMG_HIGH\" INTEGER NOT NULL ," + // 20: imgHigh
-                "\"IMAGE_STATUS\" INTEGER NOT NULL ," + // 21: imageStatus
-                "\"IMAGE_PROGRESS\" INTEGER NOT NULL );"); // 22: imageProgress
+                "\"IMAGE_STATUS\" INTEGER NOT NULL );"); // 21: imageStatus
     }
 
     /** Drops the underlying database table. */
@@ -134,7 +132,6 @@ public class IMessageDao extends AbstractDao<IMessage, Long> {
         stmt.bindLong(20, entity.getImgWidth());
         stmt.bindLong(21, entity.getImgHigh());
         stmt.bindLong(22, entity.getImageStatus());
-        stmt.bindLong(23, entity.getImageProgress());
     }
 
     @Override
@@ -178,7 +175,6 @@ public class IMessageDao extends AbstractDao<IMessage, Long> {
         stmt.bindLong(20, entity.getImgWidth());
         stmt.bindLong(21, entity.getImgHigh());
         stmt.bindLong(22, entity.getImageStatus());
-        stmt.bindLong(23, entity.getImageProgress());
     }
 
     @Override
@@ -210,8 +206,7 @@ public class IMessageDao extends AbstractDao<IMessage, Long> {
             cursor.getDouble(offset + 18), // longitude
             cursor.getInt(offset + 19), // imgWidth
             cursor.getInt(offset + 20), // imgHigh
-            cursor.getInt(offset + 21), // imageStatus
-            cursor.getInt(offset + 22) // imageProgress
+            cursor.getInt(offset + 21) // imageStatus
         );
         return entity;
     }
@@ -240,7 +235,6 @@ public class IMessageDao extends AbstractDao<IMessage, Long> {
         entity.setImgWidth(cursor.getInt(offset + 19));
         entity.setImgHigh(cursor.getInt(offset + 20));
         entity.setImageStatus(cursor.getInt(offset + 21));
-        entity.setImageProgress(cursor.getInt(offset + 22));
      }
     
     @Override

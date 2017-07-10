@@ -13,7 +13,6 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -58,8 +57,6 @@ public class PersonalInfoActivity extends BaseActivity {
 
 	@BindView(R.id.portrait)
 	SimpleDraweeView mPortrait;
-	@BindView(R.id.iv_isVip)
-	ImageView mIvIsVip;
 	@BindView(R.id.toolbar)
 	Toolbar mToolbar;
 	@BindView(R.id.collapsingToolbarLayout)
@@ -80,10 +77,6 @@ public class PersonalInfoActivity extends BaseActivity {
 	LinearLayout mBottomLayout;
 	@BindView(R.id.gift)
 	TextView mGift;
-	@BindView(R.id.age)
-	TextView mAge;
-	@BindView(R.id.city_distance)
-	TextView mCityDistance;
 	@BindView(R.id.identify_state)
 	TextView mIdentifyState;
 
@@ -338,27 +331,14 @@ public class PersonalInfoActivity extends BaseActivity {
 		}
 		mCollapsingToolbarLayout.setTitle(clientUser.user_name);
 		if (AppManager.getClientUser().isShowVip && clientUser.is_vip) {
-			mIvIsVip.setVisibility(View.VISIBLE);
 			mIdentifyState.setVisibility(View.VISIBLE);
 		} else {
 			mIdentifyState.setVisibility(View.GONE);
-			mIvIsVip.setVisibility(View.GONE);
 		}
-		mAge.setText(String.valueOf(clientUser.age) + "岁");
-		if (!TextUtils.isEmpty(clientUser.distance) && Double.parseDouble(clientUser.distance) != 0) {
-			mCityDistance.setText("," + mFormat.format(Double.parseDouble(clientUser.distance)) + "km");
-		} else if (!TextUtils.isEmpty(clientUser.city)) {
-			mCityDistance.setText(", " + clientUser.city);
-		}
-
 		if (mClientUser.isFollow) {
 			mAttention.setText("已关注");
 		} else {
 			mAttention.setText("关注");
-		}
-
-		if (AppManager.getClientUser().userId.equals(clientUser.userId)) {
-			mCityDistance.setVisibility(View.GONE);
 		}
 
 		TabFragmentAdapter fragmentAdapter = new TabFragmentAdapter(
@@ -382,11 +362,6 @@ public class PersonalInfoActivity extends BaseActivity {
 		}
 		mPortrait.setImageURI(Uri.parse(imagePath));
 		mCollapsingToolbarLayout.setTitle(AppManager.getClientUser().user_name);
-		if (clientUser.is_vip) {
-			mIvIsVip.setVisibility(View.VISIBLE);
-		} else {
-			mIvIsVip.setVisibility(View.GONE);
-		}
 	}
 
 	@Override

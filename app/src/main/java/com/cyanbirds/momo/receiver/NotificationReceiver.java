@@ -7,6 +7,7 @@ import android.content.Intent;
 import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.activity.ChatActivity;
 import com.cyanbirds.momo.activity.LauncherActivity;
+import com.cyanbirds.momo.activity.PersonalInfoActivity;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.db.ConversationSqlManager;
 import com.cyanbirds.momo.entity.ClientUser;
@@ -43,11 +44,19 @@ public class NotificationReceiver extends BroadcastReceiver {
                     MessageChangedListener.getInstance().notifyMessageChanged("");
                 }
             }
-            Intent chatIntent = new Intent(context, ChatActivity.class);
-            chatIntent.putExtra(ValueKey.USER, clientUser);
-            chatIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    | Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(chatIntent);
+            if (clientUser.isLocalMsg) {
+                Intent chatIntent = new Intent(context, PersonalInfoActivity.class);
+                chatIntent.putExtra(ValueKey.USER_ID, clientUser.userId);
+                chatIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(chatIntent);
+            } else {
+                Intent chatIntent = new Intent(context, ChatActivity.class);
+                chatIntent.putExtra(ValueKey.USER, clientUser);
+                chatIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(chatIntent);
+            }
         } else {
             Intent launcherIntent = new Intent(context, LauncherActivity.class);
             launcherIntent.setFlags(

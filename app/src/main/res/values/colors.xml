@@ -21,6 +21,7 @@
     <color name="reg_default">#282727</color>
 
     <color name="gray_background">#999999</color>
+    <color name="circle">#ff7a7a</color>
 
     <color name="sprot_text_color">#c416ff</color>
     <color name="music_text_color">#ffaec5</color>

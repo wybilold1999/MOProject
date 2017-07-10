@@ -51,6 +51,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -164,6 +165,16 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	CardView mMapCard;
 	@BindView(R.id.my_location)
 	TextView mMyLocation;
+	@BindView(R.id.nickname)
+	TextView mNickName;
+	@BindView(R.id.age)
+	TextView mAge;
+	@BindView(R.id.city_text)
+	TextView mCityText;
+	@BindView(R.id.city)
+	TextView mCity;
+	@BindView(R.id.is_vip)
+	ImageView mIsVip;
 
 	private AMap aMap;
 	private UiSettings mUiSettings;
@@ -184,6 +195,7 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	private LinearLayoutManager layoutManager;
 	private LinearLayoutManager mGiftLayoutManager;
 //	private Gson gson = new Gson();
+	private DecimalFormat mFormat;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -245,6 +257,7 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	}
 
 	private void setupData() {
+		mFormat = new DecimalFormat("#.00");
 		mVals = new ArrayList<>();
 		if (getArguments() != null) {
 			clientUser = (ClientUser) getArguments().getSerializable(ValueKey.ACCOUNT);
@@ -339,6 +352,20 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 		}
 		if (!TextUtils.isEmpty(clientUser.do_what_first)) {
 			mDoWhatFirst.setText(clientUser.do_what_first);
+		}
+		if (!TextUtils.isEmpty(clientUser.user_name)) {
+			mNickName.setText(clientUser.user_name);
+		}
+		if (AppManager.getClientUser().isShowVip && clientUser.is_vip) {
+			mIsVip.setVisibility(View.VISIBLE);
+		}
+		mAge.setText(String.valueOf(clientUser.age) + "岁");
+		if (!TextUtils.isEmpty(clientUser.distance) && Double.parseDouble(clientUser.distance) != 0) {
+			mCityText.setText("距离");
+			mCity.setText(mFormat.format(Double.parseDouble(clientUser.distance)) + "km");
+		} else if (!TextUtils.isEmpty(clientUser.city)) {
+			mCityText.setText("城市");
+			mCity.setText(clientUser.city);
 		}
 		if (!TextUtils.isEmpty(clientUser.conception)) {
 			mConception.setText(clientUser.conception);

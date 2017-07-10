@@ -103,14 +103,14 @@ public class IMessage implements Serializable{
     @Transient
     public int imageProgress;
 
-    @Generated(hash = 408529143)
+    @Generated(hash = 2109885016)
     public IMessage(Long id, @NotNull String msgId, @NotNull Long conversationId,
             @NotNull String content, @NotNull String talker,
             @NotNull String sender, @NotNull String sender_name, int msgType,
             int isSend, int status, long create_time, long send_time,
             boolean isRead, String fileUrl, String localPath, String fileName,
             int duration, double latitude, double longitude, int imgWidth,
-            int imgHigh, int imageStatus, int imageProgress) {
+            int imgHigh, int imageStatus) {
         this.id = id;
         this.msgId = msgId;
         this.conversationId = conversationId;
@@ -133,7 +133,6 @@ public class IMessage implements Serializable{
         this.imgWidth = imgWidth;
         this.imgHigh = imgHigh;
         this.imageStatus = imageStatus;
-        this.imageProgress = imageProgress;
     }
 
     @Generated(hash = 26802981)

@@ -271,6 +271,131 @@
 					android:orientation="vertical">
 
 					<RelativeLayout
+						android:id="@+id/nickname_lay"
+						android:layout_width="match_parent"
+						android:layout_height="50dp"
+						android:background="?android:selectableItemBackground"
+						android:clickable="true"
+						android:descendantFocusability="blocksDescendants">
+
+						<TextView
+							android:id="@+id/nickname_text"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_alignParentLeft="true"
+							android:layout_alignParentStart="true"
+							android:layout_centerVertical="true"
+							android:layout_marginLeft="20dp"
+							android:layout_marginStart="20dp"
+							android:text="昵称"
+							android:textSize="16sp"/>
+
+						<TextView
+							android:id="@+id/nickname"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_centerInParent="true"
+							android:layout_centerVertical="true"
+							android:layout_marginRight="10dp"
+							android:textColor="@color/body_text_1"/>
+
+						<ImageView
+							android:id="@+id/is_vip"
+							android:layout_width="12dp"
+							android:layout_height="12dp"
+							android:layout_toRightOf="@id/nickname"
+							android:layout_centerVertical="true"
+							android:layout_marginRight="20dp"
+							android:scaleType="fitCenter"
+							android:src="@mipmap/vip"
+							android:visibility="gone"/>
+
+						<View
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/divider_height"
+							android:layout_alignParentBottom="true"
+							android:layout_marginLeft="@dimen/divider_margin_left"
+							android:background="@color/divider_color"
+							android:contentDescription="@null"/>
+					</RelativeLayout>
+
+					<RelativeLayout
+						android:id="@+id/age_lay"
+						android:layout_width="match_parent"
+						android:layout_height="50dp"
+						android:background="?android:selectableItemBackground"
+						android:clickable="true"
+						android:descendantFocusability="blocksDescendants">
+
+						<TextView
+							android:id="@+id/age_text"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_alignParentLeft="true"
+							android:layout_alignParentStart="true"
+							android:layout_centerVertical="true"
+							android:layout_marginLeft="20dp"
+							android:layout_marginStart="20dp"
+							android:text="年龄"
+							android:textSize="16sp"/>
+
+						<TextView
+							android:id="@+id/age"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_centerInParent="true"
+							android:layout_centerVertical="true"
+							android:layout_marginRight="20dp"
+							android:textColor="@color/body_text_1"/>
+
+						<View
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/divider_height"
+							android:layout_alignParentBottom="true"
+							android:layout_marginLeft="@dimen/divider_margin_left"
+							android:background="@color/divider_color"
+							android:contentDescription="@null"/>
+					</RelativeLayout>
+
+					<RelativeLayout
+						android:id="@+id/city_lay"
+						android:layout_width="match_parent"
+						android:layout_height="50dp"
+						android:background="?android:selectableItemBackground"
+						android:clickable="true"
+						android:descendantFocusability="blocksDescendants">
+
+						<TextView
+							android:id="@+id/city_text"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_alignParentLeft="true"
+							android:layout_alignParentStart="true"
+							android:layout_centerVertical="true"
+							android:layout_marginLeft="20dp"
+							android:layout_marginStart="20dp"
+							android:text="城市"
+							android:textSize="16sp"/>
+
+						<TextView
+							android:id="@+id/city"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_centerInParent="true"
+							android:layout_centerVertical="true"
+							android:layout_marginRight="20dp"
+							android:textColor="@color/body_text_1"/>
+
+						<View
+							android:layout_width="match_parent"
+							android:layout_height="@dimen/divider_height"
+							android:layout_alignParentBottom="true"
+							android:layout_marginLeft="@dimen/divider_margin_left"
+							android:background="@color/divider_color"
+							android:contentDescription="@null"/>
+					</RelativeLayout>
+
+					<RelativeLayout
 						android:id="@+id/occupation_lay"
 						android:layout_width="match_parent"
 						android:layout_height="50dp"

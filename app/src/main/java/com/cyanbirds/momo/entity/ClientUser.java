@@ -128,4 +128,6 @@ public class ClientUser implements Serializable{
 
     public long loginTime;//登录时间
 
+    public boolean isLocalMsg;//是否是本地创建的消息(礼物、关注、喜欢)
+
 }
