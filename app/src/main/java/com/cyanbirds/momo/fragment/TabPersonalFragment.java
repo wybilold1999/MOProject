@@ -175,6 +175,8 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	TextView mCity;
 	@BindView(R.id.is_vip)
 	ImageView mIsVip;
+	@BindView(R.id.city_lay)
+	RelativeLayout mCityLay;
 
 	private AMap aMap;
 	private UiSettings mUiSettings;
@@ -360,12 +362,23 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 			mIsVip.setVisibility(View.VISIBLE);
 		}
 		mAge.setText(String.valueOf(clientUser.age) + "岁");
-		if (!TextUtils.isEmpty(clientUser.distance) && Double.parseDouble(clientUser.distance) != 0) {
-			mCityText.setText("距离");
-			mCity.setText(mFormat.format(Double.parseDouble(clientUser.distance)) + "km");
-		} else if (!TextUtils.isEmpty(clientUser.city)) {
-			mCityText.setText("城市");
-			mCity.setText(clientUser.city);
+		if (clientUser.userId.equals(AppManager.getClientUser().userId)) {
+			if (!TextUtils.isEmpty(clientUser.city)) {
+				mCityLay.setVisibility(View.VISIBLE);
+				mCityText.setText("城市");
+				mCity.setText(clientUser.city);
+			} else {
+				mCityLay.setVisibility(View.GONE);
+			}
+		} else {
+			mCityLay.setVisibility(View.VISIBLE);
+			if (!TextUtils.isEmpty(clientUser.distance) && Double.parseDouble(clientUser.distance) != 0) {
+				mCityText.setText("距离");
+				mCity.setText(mFormat.format(Double.parseDouble(clientUser.distance)) + "km");
+			} else if (!TextUtils.isEmpty(clientUser.city)) {
+				mCityText.setText("城市");
+				mCity.setText(clientUser.city);
+			}
 		}
 		if (!TextUtils.isEmpty(clientUser.conception)) {
 			mConception.setText(clientUser.conception);
