@@ -33,7 +33,7 @@ public class CheckUtil {
 	 */
 	public static boolean isMobileNO(String mobiles) {
 		Pattern p = Pattern
-				.compile("^0?(13[0-9]|15[012356789]|18[0123456789]|14[57])[0-9]{8}$");
+				.compile("^0?(13[0-9]|17[0-9]|15[012356789]|18[0123456789]|14[57])[0-9]{8}$");
 		Matcher m = p.matcher(mobiles);
 		return m.matches();
 	}
