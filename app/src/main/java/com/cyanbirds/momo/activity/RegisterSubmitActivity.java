@@ -18,6 +18,7 @@ import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.request.RegisterRequest;
 import com.cyanbirds.momo.utils.AESEncryptorUtil;
 import com.cyanbirds.momo.utils.CheckUtil;
+import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.ProgressDialogUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
@@ -109,6 +110,7 @@ public class RegisterSubmitActivity extends BaseActivity implements
 			AppManager.setClientUser(clientUser);
 			AppManager.saveUserInfo();
 			AppManager.getClientUser().loginTime = System.currentTimeMillis();
+			PreferencesUtils.setLoginTime(RegisterSubmitActivity.this, System.currentTimeMillis());
 			IMChattingHelper.getInstance().sendInitLoginMsg();
 			Intent intent = new Intent(RegisterSubmitActivity.this, MainActivity.class);
 			startActivity(intent);

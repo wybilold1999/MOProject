@@ -164,7 +164,7 @@ public class RedPacketActivity extends BaseActivity {
 						mBtnSendMoney.setTextColor(getResources().getColor(R.color.btn_send_money_text));
 						mBtnSendMoney.setBackgroundColor(getResources().getColor(R.color.btn_send_money_unenable));
 						mBtnSendMoney.setOnClickListener(null);
-					} else if (Double.parseDouble(s.toString()) > mMemberBuy.price) {
+					} else if (Double.parseDouble(s.toString()) >= mMemberBuy.price) {
 						mMoneyLimit.setVisibility(View.INVISIBLE);
 						mBtnSendMoney.setEnabled(true);
 						mBtnSendMoney.setClickable(true);

@@ -100,6 +100,8 @@ public class PreferencesUtils {
 	public static final String SETTINGS_ATTENTION_ME_USER_ID = "com.cyanbird.momo_attention_me_user_id";
 	/** 最近送我礼物的userid*/
 	public static final String SETTINGS_GIFT_ME_USER_ID = "com.cyanbird.momo_gift_me_user_id";
+	/** 登录时间*/
+	public static final String SETTINGS_LOGIN_TIME = "com.cyanbird.momo_login_time";
 
 	/**
 	 * 获取RL账号
@@ -1082,6 +1084,26 @@ public class PreferencesUtils {
 		SharedPreferences sp = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		sp.edit().putString(SETTINGS_GIFT_ME_USER_ID, userId).commit();
+	}
+
+	/**
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static long getLoginTime(final Context context) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return sp.getLong(SETTINGS_LOGIN_TIME, -1);
+	}
+
+	/**
+	 * @param context
+	 */
+	public static void setLoginTime(final Context context, final long loginTime) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		sp.edit().putLong(SETTINGS_LOGIN_TIME, loginTime).commit();
 	}
 
 }
