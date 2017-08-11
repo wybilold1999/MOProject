@@ -237,6 +237,7 @@ public class ConversationSqlManager extends DBManager {
 		public void onPostExecute(String s) {
 			mConversation.localPortrait = s;
 			updateConversation(mConversation);
+			MessageChangedListener.getInstance().notifyMessageChanged(String.valueOf(mConversation.id));
 		}
 
 		@Override

@@ -78,6 +78,8 @@ public class MyGoldActivity extends BaseActivity {
 	LinearLayout mPayLay;
 	@BindView(R.id.call_info)
 	TextView mCallInfo;
+	@BindView(R.id.alipay_lay_info)
+	TextView mAliPayInfo;
 
 	private static final int SDK_PAY_FLAG = 1;
 
@@ -210,6 +212,15 @@ public class MyGoldActivity extends BaseActivity {
 			mAdapter = new MyGoldAdapter(memberBuys, MyGoldActivity.this);
 			mAdapter.setOnItemClickListener(mOnItemClickListener);
 			mRecyclerView.setAdapter(mAdapter);
+
+			if (mMemberBuy.isShowAli) {
+				mAliPayInfo.setText(String.format(
+						getResources().getString(R.string.pay_info_ali),
+						mMemberBuy.descreption));
+				mAliPayInfo.setVisibility(View.VISIBLE);
+			} else {
+				mAliPayInfo.setVisibility(View.GONE);
+			}
 		}
 
 		@Override

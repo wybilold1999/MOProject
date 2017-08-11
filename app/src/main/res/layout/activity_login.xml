@@ -74,10 +74,11 @@
             android:id="@+id/forget_pwd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="right"
+            android:layout_marginRight="30dp"
             android:layout_marginTop="10dp"
             android:text="@string/forget_password"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:textColor="@color/colorPrimary"
             android:clickable="true"/>
 

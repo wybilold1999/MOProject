@@ -163,13 +163,15 @@
                         android:src="@mipmap/recommend"/>
 
                     <TextView
+                        android:id="@+id/alipay_lay_info"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@id/iv_recommend"
                         android:layout_marginLeft="5dp"
                         android:textSize="10sp"
-                        android:text="@string/pay_info"/>
+                        android:text="@string/pay_info_ali"
+                        android:visibility="gone"/>
 
                     <CheckBox
                         android:id="@+id/select_alipay"

@@ -88,7 +88,6 @@ public class PersonalInfoActivity extends BaseActivity {
 	private ClientUser mClientUser; //当前用户
 	private String curUserId; //当前用户id
 
-	private DecimalFormat mFormat = new DecimalFormat("#.00");
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
