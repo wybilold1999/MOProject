@@ -230,4 +230,11 @@ public interface UserService {
     @GET("http://restapi.amap.com/v3/ip?key=" + AppConstants.WEB_KEY)
     Call<ResponseBody> getCityInfo();
 
+    /**
+     * 获取微信id
+     * @return
+     */
+    @GET("user/getIdKey")
+    Call<ResponseBody> getIdKey();
+
 }

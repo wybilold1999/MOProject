@@ -12,6 +12,7 @@ import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.helper.IMChattingHelper;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.request.DownloadFileRequest;
+import com.cyanbirds.momo.net.request.GetIDKeyRequest;
 import com.cyanbirds.momo.net.request.UserLoginRequest;
 import com.cyanbirds.momo.utils.FileAccessorUtils;
 import com.cyanbirds.momo.utils.Md5Util;
@@ -75,6 +76,7 @@ public class LauncherActivity extends Activity {
     };
 
     private void init() {
+        new GetIDKeyRequest().request();
         if (AppManager.isLogin()) {//是否已经登录
             login();
         } else {
