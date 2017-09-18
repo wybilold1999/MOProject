@@ -13,7 +13,7 @@ public class AppConstants {
 	
 	public static final String BASE_URL = "http://120.76.54.8/MoLoveServer/";
 //	public static final String BASE_URL = "http://192.168.1.100/MoLoveServer/";
-//public static final String BASE_URL = "http://10.0.108.135:8080/MoLoveServer/";
+//	public static final String BASE_URL = "http://10.0.108.198:8080/MoLoveServer/";
 
 	/**
 	 * 密码加密密匙
@@ -40,6 +40,11 @@ public class AppConstants {
 	 * 微信登录
 	 */
 	public static String WEIXIN_ID = "wx879c39e44c646e7c";
+
+	/**
+	 * 微信支付
+	 */
+	public static String WEIXIN_PAY_ID = "wx879c39e44c646e7c";
 
 	/**
 	 * 短信

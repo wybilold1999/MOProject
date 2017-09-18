@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 
@@ -79,5 +80,11 @@ public class StringUtil {
 			e.printStackTrace();
 		}
 		return new ArrayList<String>();
+	}
+
+	public static int generateRandomValue() {
+		Random rand = new Random();
+		int randNum = rand.nextInt(30) + 20;
+		return randNum;
 	}
 }

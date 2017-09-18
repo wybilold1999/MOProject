@@ -234,7 +234,12 @@ public interface UserService {
      * 获取微信id
      * @return
      */
-    @GET("user/getIdKey")
-    Call<ResponseBody> getIdKey();
+    @FormUrlEncoded
+    @POST("user/getIdKey")
+    Call<ResponseBody> getIdKey(@Field("pay") String pay);
+
+    @FormUrlEncoded
+    @POST("memberOrders/outputMoney")
+    Call<ResponseBody> outputMoney(@Header("token") String token, @FieldMap ArrayMap<String, String> params);
 
 }

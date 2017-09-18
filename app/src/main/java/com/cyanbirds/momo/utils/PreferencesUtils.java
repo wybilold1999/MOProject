@@ -102,6 +102,8 @@ public class PreferencesUtils {
 	public static final String SETTINGS_GIFT_ME_USER_ID = "com.cyanbird.momo_gift_me_user_id";
 	/** 登录时间*/
 	public static final String SETTINGS_LOGIN_TIME = "com.cyanbird.momo_login_time";
+	/** 我的零钱*/
+	public static final String SETTINGS_MY_MONEY = "com.cyanbirds.momo_my_money";
 
 	/**
 	 * 获取RL账号
@@ -1104,6 +1106,26 @@ public class PreferencesUtils {
 		SharedPreferences sp = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		sp.edit().putLong(SETTINGS_LOGIN_TIME, loginTime).commit();
+	}
+
+	/**
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static float getMyMoney(final Context context) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return sp.getFloat(SETTINGS_MY_MONEY, 0);
+	}
+
+	/**
+	 * @param context
+	 */
+	public static void setMyMoney(final Context context, final float count) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		sp.edit().putFloat(SETTINGS_MY_MONEY, count).commit();
 	}
 
 }

@@ -442,6 +442,22 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity
+            android:name=".activity.MoneyPacketActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="@string/my_money"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".activity.MoneyOutputActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="@string/money_output"
+            android:screenOrientation="portrait">
+        </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.cyanbirds.momo.fileProvider"

@@ -17,15 +17,21 @@ import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
+import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.CityInfo;
+import com.cyanbirds.momo.entity.IDKey;
 import com.cyanbirds.momo.eventtype.LocationEvent;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.request.GetCityInfoRequest;
+import com.cyanbirds.momo.net.request.GetIDKeyRequest;
 import com.cyanbirds.momo.utils.PreferencesUtils;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,6 +68,7 @@ public class EntranceActivity extends BaseActivity implements AMapLocationListen
         ButterKnife.bind(this);
         saveFirstLauncher();
         setupViews();
+        new GetWeChatIdTask().request("");
         new GetCityInfoTask().request();
         initLocationClient();
         AppManager.requestLocationPermission(this);
@@ -84,6 +91,36 @@ public class EntranceActivity extends BaseActivity implements AMapLocationListen
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    class GetWeChatIdTask extends GetIDKeyRequest {
+        @Override
+        public void onPostExecute(List<IDKey> idKeys) {
+            if (idKeys != null && idKeys.size() > 0) {
+                for (IDKey idKey : idKeys) {
+                    if ("xiaomi".equals(idKey.platform)) {
+                        AppConstants.MI_PUSH_APP_ID = idKey.appId;
+                        AppConstants.MI_PUSH_APP_KEY = idKey.appKey;
+                    } else if ("wechat".equals(idKey.platform)) {
+                        AppConstants.WEIXIN_ID = idKey.appId;
+                    } else if ("qq".equals(idKey.platform)) {
+                        AppConstants.mAppid = idKey.appId;
+                    }
+                }
+            }
+            registerWeiXin();
+        }
+
+        @Override
+        public void onErrorExecute(String error) {
+            registerWeiXin();
+        }
+    }
+
+    private void registerWeiXin() {
+        // 通过WXAPIFactory工厂，获取IWXAPI的实例
+        AppManager.setIWXAPI(WXAPIFactory.createWXAPI(this, AppConstants.WEIXIN_ID, true));
+        AppManager.getIWXAPI().registerApp(AppConstants.WEIXIN_ID);
     }
 
     /**

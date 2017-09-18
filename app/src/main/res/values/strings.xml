@@ -22,6 +22,12 @@
     <string name="vip_center">会员中心</string>
     <string name="download_make_money">免费赚钱</string>
     <string name="identify">身份认证</string>
+    <string name="money_packet">钱包</string>
+    <string name="my_money">我的零钱</string>
+    <string name="input_money">充值</string>
+    <string name="ouput_money">提现</string>
+    <string name="money_output">零钱提现</string>
+    <string name="output_money_count">提现金额</string>
     <string name="message">私信</string>
     <string name="attention">关注</string>
     <string name="attentioned">已关注</string>
@@ -326,8 +332,17 @@
     <string name="input_name">输入收款人姓名</string>
     <string name="input_bank">输入收款人开户行</string>
     <string name="input_bank_no">输入开户行银行账号</string>
+    <string name="input_output_money">输入提现金额</string>
+    <string name="output_money_beyond">输入的提现金额超过零钱余额</string>
+    <string name="output_bank_password">请输入银行密码</string>
+    <string name="money_count">请输入银行密码</string>
+    <string name="money_count_zero">账户余额为零,不能提现</string>
+    <string name="output_success">提现成功</string>
+    <string name="output_faile">提现失败</string>
+    <string name="output_money_vip">您还不是会员，暂时不能提现，立即开通会员提现</string>
+    <string name="output_money_gold">您账户中金币数量不足，暂时不能提现，购买金币即可提现</string>
 
-    <string name="love_name"><Data><![CDATA[<b>%1$s</b> 刚喜欢了您哦！]]></Data></string>
+    <string name="love_name"><Data><![CDATA[<b>%1$s</b> 喜欢了您哦！]]></Data></string>
     <string name="send_msg">发送消息</string>
     <string name="going_find">继续寻觅</string>
 

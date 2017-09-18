@@ -205,7 +205,7 @@ public class PushMsgUtil {
 		message.talker = AppManager.getClientUser().userId;
 		message.sender = pushMsgModel.sender;
 		message.sender_name = pushMsgModel.senderName;
-		message.isRead = true;
+		message.isRead = false;
 		message.isSend = IMessage.MessageIsSend.RECEIVING;
 		message.create_time = pushMsgModel.serverTime;
 		message.send_time = message.create_time;

@@ -2,7 +2,6 @@ package com.cyanbirds.momo.net.request;
 
 import android.text.TextUtils;
 
-import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.entity.IDKey;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.base.ResultPostExecute;
@@ -26,8 +25,8 @@ import retrofit2.Callback;
 
 public class GetIDKeyRequest extends ResultPostExecute<List<IDKey>> {
 
-    public void request() {
-        Call<ResponseBody> call = AppManager.getUserService().getIdKey();
+    public void request(String pay) {
+        Call<ResponseBody> call = AppManager.getUserService().getIdKey(pay);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
@@ -35,16 +34,19 @@ public class GetIDKeyRequest extends ResultPostExecute<List<IDKey>> {
                     try {
                         parseJson(response.body().string());
                     } catch (IOException e) {
+                        onErrorExecute("");
                         e.printStackTrace();
                     } finally {
                         response.body().close();
                     }
                 } else {
+                    onErrorExecute("");
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                onErrorExecute("");
             }
         });
     }
@@ -57,20 +59,12 @@ public class GetIDKeyRequest extends ResultPostExecute<List<IDKey>> {
                 }.getType();
                 Gson gson = new Gson();
                 ArrayList<IDKey> idKeys = gson.fromJson(decryptData, listType);
-                if (idKeys != null && idKeys.size() > 0) {
-                    for (IDKey idKey : idKeys) {
-                        if ("xiaomi".equals(idKey.platform)) {
-                            AppConstants.MI_PUSH_APP_ID = idKey.appId;
-                            AppConstants.MI_PUSH_APP_KEY = idKey.appKey;
-                        } else if ("wechat".equals(idKey.platform)) {
-                            AppConstants.WEIXIN_ID = idKey.appId;
-                        } else if ("qq".equals(idKey.platform)) {
-                            AppConstants.mAppid = idKey.appId;
-                        }
-                    }
-                }
+                onPostExecute(idKeys);
+            } else {
+                onErrorExecute("");
             }
         } catch (Exception e) {
+            onErrorExecute("");
         }
     }
 

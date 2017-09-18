@@ -132,6 +132,7 @@
 		android:layout_marginLeft="30dp"
 		android:layout_marginRight="30dp"
 		android:layout_marginTop="20dp"
+		android:layout_marginBottom="20dp"
 		android:clickable="false"
 		android:enabled="false"
 		fancy:fb_defaultColor="@color/btn_send_money_unenable"
@@ -147,7 +148,8 @@
 		android:orientation="vertical"
 		android:background="@android:color/white"
 		android:layout_marginBottom="15dp"
-		android:layout_marginTop="30dp">
+		android:layout_marginTop="30dp"
+		android:visibility="gone">
 
 		<View
 			android:layout_width="match_parent"

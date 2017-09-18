@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,14 +36,22 @@ import butterknife.OnClick;
  */
 public class SettingActivity extends BaseActivity {
 
-    @BindView(R.id.banding_phone_lay)
-    RelativeLayout bandingPhoneLay;
-    @BindView(R.id.modify_pwd_lay)
-    RelativeLayout modifyPwdLay;
-    @BindView(R.id.quit)
-    RelativeLayout quit;
+    @BindView(R.id.switch_msg)
+    SwitchCompat mSwitchMsg;
+    @BindView(R.id.switch_msg_content)
+    SwitchCompat mSwitchMsgContent;
+    @BindView(R.id.switch_voice)
+    SwitchCompat mSwitchVoice;
+    @BindView(R.id.switch_vibrate)
+    SwitchCompat mSwitchVibrate;
     @BindView(R.id.is_bangding_phone)
-    TextView is_bangding_phone;
+    TextView mIsBangdingPhone;
+    @BindView(R.id.banding_phone_lay)
+    RelativeLayout mBandingPhoneLay;
+    @BindView(R.id.modify_pwd_lay)
+    RelativeLayout mModifyPwdLay;
+    @BindView(R.id.quit)
+    RelativeLayout mQuit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,17 +73,72 @@ public class SettingActivity extends BaseActivity {
 
     private void setupData() {
         if (AppManager.getClientUser().isCheckPhone) {
-            is_bangding_phone.setText(R.string.already_bangding);
+            mIsBangdingPhone.setText(R.string.already_bangding);
         } else {
-            is_bangding_phone.setText(R.string.un_bangding);
+            mIsBangdingPhone.setText(R.string.un_bangding);
+        }
+        if (PreferencesUtils.getNewMessageNotice(this)) {
+            mSwitchMsg.setChecked(true);
+        } else {
+            mSwitchMsg.setChecked(false);
+        }
+        if (PreferencesUtils.getShowMessageInfo(this)) {
+            mSwitchMsgContent.setChecked(true);
+        } else {
+            mSwitchMsgContent.setChecked(false);
+        }
+        if (PreferencesUtils.getNoticeVoice(this)) {
+            mSwitchVoice.setChecked(true);
+        } else {
+            mSwitchVoice.setChecked(false);
+        }
+        if (PreferencesUtils.getNoticeShock(this)) {
+            mSwitchVibrate.setChecked(true);
+        } else {
+            mSwitchVibrate.setChecked(false);
         }
     }
 
-
-    @OnClick({R.id.banding_phone_lay, R.id.modify_pwd_lay, R.id.quit})
-    public void onClick(View view) {
+    @OnClick({R.id.switch_msg, R.id.switch_msg_content, R.id.switch_voice, R.id.switch_vibrate, R.id.banding_phone_lay, R.id.modify_pwd_lay, R.id.quit})
+    public void onViewClicked(View view) {
         Intent intent = new Intent();
         switch (view.getId()) {
+            case R.id.switch_msg:
+                if (PreferencesUtils.getNewMessageNotice(this)) {
+                    mSwitchMsg.setChecked(false);
+                    PreferencesUtils.setNewMessageNotice(this, false);
+                } else {
+                    mSwitchMsg.setChecked(true);
+                    PreferencesUtils.setNewMessageNotice(this, true);
+                }
+                break;
+            case R.id.switch_msg_content:
+                if (PreferencesUtils.getShowMessageInfo(this)) {
+                    mSwitchMsgContent.setChecked(false);
+                    PreferencesUtils.setShowMessageInfo(this, false);
+                } else {
+                    mSwitchMsgContent.setChecked(true);
+                    PreferencesUtils.setShowMessageInfo(this, true);
+                }
+                break;
+            case R.id.switch_voice:
+                if (PreferencesUtils.getNoticeVoice(this)) {
+                    mSwitchVoice.setChecked(false);
+                    PreferencesUtils.setNoticeVoice(this, false);
+                } else {
+                    mSwitchVoice.setChecked(true);
+                    PreferencesUtils.setNoticeVoice(this, true);
+                }
+                break;
+            case R.id.switch_vibrate:
+                if (PreferencesUtils.getNoticeShock(this)) {
+                    mSwitchVibrate.setChecked(false);
+                    PreferencesUtils.setNoticeShock(this, false);
+                } else {
+                    mSwitchVibrate.setChecked(true);
+                    PreferencesUtils.setNoticeShock(this, true);
+                }
+                break;
             case R.id.banding_phone_lay:
                 //0=注册1=找回密码2=验证绑定手机
                 intent.setClass(this, FindPwdActivity.class);

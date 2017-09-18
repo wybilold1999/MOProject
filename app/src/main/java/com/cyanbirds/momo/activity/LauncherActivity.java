@@ -7,8 +7,10 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 
+import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.ClientUser;
+import com.cyanbirds.momo.entity.IDKey;
 import com.cyanbirds.momo.helper.IMChattingHelper;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.request.DownloadFileRequest;
@@ -22,6 +24,7 @@ import com.cyanbirds.momo.utils.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * @ClassName:LauncherActivity
@@ -76,7 +79,7 @@ public class LauncherActivity extends Activity {
     };
 
     private void init() {
-        new GetIDKeyRequest().request();
+        new GetWeChatIdTask().request("pay");
         if (AppManager.isLogin()) {//是否已经登录
             login();
         } else {
@@ -87,6 +90,28 @@ public class LauncherActivity extends Activity {
 				mHandler.postDelayed(firstLauncher, SHOW_TIME_MIN);
 			}
 
+        }
+    }
+
+    class GetWeChatIdTask extends GetIDKeyRequest {
+        @Override
+        public void onPostExecute(List<IDKey> idKeys) {
+            if (idKeys != null && idKeys.size() > 0) {
+                for (IDKey idKey : idKeys) {
+                    if ("xiaomi".equals(idKey.platform)) {
+                        AppConstants.MI_PUSH_APP_ID = idKey.appId;
+                        AppConstants.MI_PUSH_APP_KEY = idKey.appKey;
+                    } else if ("wechat".equals(idKey.platform)) {
+                        AppConstants.WEIXIN_PAY_ID = idKey.appId;
+                    } else if ("qq".equals(idKey.platform)) {
+                        AppConstants.mAppid = idKey.appId;
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onErrorExecute(String error) {
         }
     }
 

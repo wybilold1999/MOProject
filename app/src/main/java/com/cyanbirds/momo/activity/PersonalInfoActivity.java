@@ -162,8 +162,8 @@ public class PersonalInfoActivity extends BaseActivity {
 			startActivity(intent);
 		} else if (item.getItemId() == R.id.call) {
 			Intent intent = new Intent(this, VoipCallActivity.class);
-			intent.putExtra(ValueKey.IMAGE_URL, mClientUser.face_url);
-			intent.putExtra(ValueKey.USER_NAME, mClientUser.user_name);
+			intent.putExtra(ValueKey.IMAGE_URL, mClientUser == null ? "" : mClientUser.face_url);
+			intent.putExtra(ValueKey.USER_NAME, mClientUser == null ? "" : mClientUser.user_name);
 			intent.putExtra(ValueKey.FROM_ACTIVITY, "PersonalInfoActivity");
 			startActivity(intent);
 		} else {

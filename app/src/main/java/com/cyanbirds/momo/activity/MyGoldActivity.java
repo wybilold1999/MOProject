@@ -268,14 +268,14 @@ public class MyGoldActivity extends BaseActivity {
 		@Override
 		public void onPostExecute(WeChatPay weChatPay) {
 			PayReq payReq = new PayReq();
-			payReq.appId = AppConstants.WEIXIN_ID;
+			payReq.appId = AppConstants.WEIXIN_PAY_ID;
 			payReq.partnerId = weChatPay.mch_id;
 			payReq.prepayId = weChatPay.prepay_id;
 			payReq.packageValue = "Sign=WXPay";
 			payReq.nonceStr = weChatPay.nonce_str;
 			payReq.timeStamp = weChatPay.timeStamp;
 			payReq.sign = weChatPay.appSign;
-			CSApplication.api.sendReq(payReq);
+			AppManager.getIWX_PAY_API().sendReq(payReq);
 		}
 
 		@Override
