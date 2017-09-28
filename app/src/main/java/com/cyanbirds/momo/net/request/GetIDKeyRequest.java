@@ -25,8 +25,8 @@ import retrofit2.Callback;
 
 public class GetIDKeyRequest extends ResultPostExecute<List<IDKey>> {
 
-    public void request(String pay) {
-        Call<ResponseBody> call = AppManager.getUserService().getIdKey(pay);
+    public void request() {
+        Call<ResponseBody> call = AppManager.getUserService().getIdKeys();
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {

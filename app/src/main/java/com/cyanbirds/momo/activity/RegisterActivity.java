@@ -138,7 +138,11 @@ public class RegisterActivity extends BaseActivity {
                 SendAuth.Req req = new SendAuth.Req();
                 req.scope = "snsapi_userinfo";
                 req.state = "wechat_sdk_demo_test";
-                AppManager.getIWXAPI().sendReq(req);
+                if (null != AppManager.getIWXAPI()) {
+                    AppManager.getIWXAPI().sendReq(req);
+                } else {
+                    CSApplication.api.sendReq(req);
+                }
                 break;
         }
     }

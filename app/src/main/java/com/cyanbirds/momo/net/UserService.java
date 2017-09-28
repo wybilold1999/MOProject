@@ -231,12 +231,11 @@ public interface UserService {
     Call<ResponseBody> getCityInfo();
 
     /**
-     * 获取微信id
+     * 获取微信登录和支付id
      * @return
      */
-    @FormUrlEncoded
-    @POST("user/getIdKey")
-    Call<ResponseBody> getIdKey(@Field("pay") String pay);
+    @GET("user/getIdKeys")
+    Call<ResponseBody> getIdKeys();
 
     @FormUrlEncoded
     @POST("memberOrders/outputMoney")

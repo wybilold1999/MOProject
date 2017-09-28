@@ -34,7 +34,11 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler{
 	}
 
 	private void handleIntent(Intent paramIntent) {
-		AppManager.getIWXAPI().handleIntent(paramIntent, this);
+		if (null != AppManager.getIWXAPI()) {
+			AppManager.getIWXAPI().handleIntent(paramIntent, this);
+		} else {
+			CSApplication.api.handleIntent(paramIntent, this);
+		}
 	}
 
 	@Override

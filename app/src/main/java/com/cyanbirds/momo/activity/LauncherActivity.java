@@ -21,6 +21,7 @@ import com.cyanbirds.momo.utils.Md5Util;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.PushMsgUtil;
 import com.cyanbirds.momo.utils.ToastUtil;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
@@ -79,7 +80,7 @@ public class LauncherActivity extends Activity {
     };
 
     private void init() {
-        new GetWeChatIdTask().request("pay");
+        new GetWeChatIdTask().request();
         if (AppManager.isLogin()) {//是否已经登录
             login();
         } else {
@@ -102,17 +103,31 @@ public class LauncherActivity extends Activity {
                         AppConstants.MI_PUSH_APP_ID = idKey.appId;
                         AppConstants.MI_PUSH_APP_KEY = idKey.appKey;
                     } else if ("wechat".equals(idKey.platform)) {
-                        AppConstants.WEIXIN_PAY_ID = idKey.appId;
+                        if (!TextUtils.isEmpty(idKey.appId)) {
+                            String[] ids = idKey.appId.split(";");
+                            if (ids != null && ids.length == 2) {
+                                AppConstants.WEIXIN_ID = ids[0];
+                                AppConstants.WEIXIN_PAY_ID = ids[1];
+                            }
+                        }
                     } else if ("qq".equals(idKey.platform)) {
                         AppConstants.mAppid = idKey.appId;
                     }
                 }
             }
+            registerWeiXin();
         }
 
         @Override
         public void onErrorExecute(String error) {
+            registerWeiXin();
         }
+    }
+
+    private void registerWeiXin() {
+        // 通过WXAPIFactory工厂，获取IWXAPI的实例
+        AppManager.setIWXAPI(WXAPIFactory.createWXAPI(this, AppConstants.WEIXIN_ID, true));
+        AppManager.getIWXAPI().registerApp(AppConstants.WEIXIN_ID);
     }
 
 	/**

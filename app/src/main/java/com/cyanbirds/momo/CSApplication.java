@@ -50,7 +50,7 @@ public class CSApplication extends MultiDexApplication {
 	private static CSApplication sApplication;
 
 	// IWXAPI 是第三方app和微信通信的openapi接口
-//	public static IWXAPI api;
+	public static IWXAPI api;
 
 	public static synchronized CSApplication getInstance() {
 		return sApplication;
@@ -80,7 +80,7 @@ public class CSApplication extends MultiDexApplication {
 
 		registerActivityLifecycleCallbacks(AppActivityLifecycleCallbacks.getInstance());
 
-//		registerWeiXin();
+		registerWeiXin();
 
 //		Stetho.initialize(Stetho
 //				.newInitializerBuilder(this)
@@ -89,11 +89,11 @@ public class CSApplication extends MultiDexApplication {
 //						Stetho.defaultInspectorModulesProvider(this)).build());
 	}
 
-	/*private void registerWeiXin() {
+	private void registerWeiXin() {
 		// 通过WXAPIFactory工厂，获取IWXAPI的实例
 		api = WXAPIFactory.createWXAPI(this, AppConstants.WEIXIN_ID, true);
 		api.registerApp(AppConstants.WEIXIN_ID);
-	}*/
+	}
 
 	private void initFresco() {
 		DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(this)
