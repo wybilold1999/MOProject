@@ -5,19 +5,15 @@ import android.support.v4.util.ArrayMap;
 
 import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
-import com.cyanbirds.momo.config.AppConstants;
-import com.cyanbirds.momo.entity.Picture;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.base.ResultPostExecute;
 import com.cyanbirds.momo.utils.AESOperator;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -28,12 +24,11 @@ import retrofit2.Callback;
  * @datetime 2016-04-29 16:56 GMT+8
  * @email 395044952@qq.com
  */
-public class UploadPictureInfoRequest extends ResultPostExecute<List<String>> {
-    public void request(final List<Picture> picturesInfo) {
+public class UploadPictureInfoRequest extends ResultPostExecute<ArrayList<String>> {
+    public void request(String picUrlString) {
         ArrayMap<String, String> params = new ArrayMap<>();
-        Gson gson = new Gson();
         params.put("sessionId", AppManager.getClientUser().sessionId);
-        params.put("pictures", gson.toJson(picturesInfo));
+        params.put("pictures", picUrlString);
         Call<ResponseBody> call = AppManager.getUserService().uploadPic(params);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -78,7 +73,7 @@ public class UploadPictureInfoRequest extends ResultPostExecute<List<String>> {
             JsonArray array = new JsonParser().parse(data).getAsJsonArray();
             for(int i = 0; i < array.size(); i++){
                 JsonObject jsonObject = array.get(i).getAsJsonObject();
-                url.add(AppConstants.OSS_IMG_ENDPOINT + jsonObject.get("path").getAsString());
+                url.add(jsonObject.get("path").getAsString());
             }
             onPostExecute(url);
         } catch (Exception e) {

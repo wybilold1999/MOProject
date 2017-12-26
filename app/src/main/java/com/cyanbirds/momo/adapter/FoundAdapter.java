@@ -16,7 +16,6 @@ import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.PersonalInfoActivity;
 import com.cyanbirds.momo.activity.PhotoViewActivity;
 import com.cyanbirds.momo.config.ValueKey;
-import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.entity.PictureModel;
 
 import java.text.DecimalFormat;

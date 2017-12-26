@@ -2,6 +2,7 @@ package com.cyanbirds.momo.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -33,8 +34,6 @@ import butterknife.ButterKnife;
 
 public class FoundGridFragment extends Fragment {
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
     @BindView(R.id.recyclerview)
     RecyclerView mRecyclerView;
     @BindView(R.id.progress_bar)
@@ -62,6 +61,9 @@ public class FoundGridFragment extends Fragment {
         if (parent != null) {
             parent.removeView(rootView);
         }
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(
+                R.string.tab_found);
         return rootView;
     }
 

@@ -32,6 +32,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.cyanbirds.momo.fragment.FindLoveFragment;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
@@ -43,14 +44,9 @@ import com.cyanbirds.momo.entity.FederationToken;
 import com.cyanbirds.momo.entity.FollowModel;
 import com.cyanbirds.momo.entity.LoveModel;
 import com.cyanbirds.momo.entity.ReceiveGiftModel;
-import com.cyanbirds.momo.fragment.ContactsFragment;
 import com.cyanbirds.momo.fragment.FoundFragment;
-import com.cyanbirds.momo.fragment.FoundNewFragment;
-import com.cyanbirds.momo.fragment.HomeLoveFragment;
 import com.cyanbirds.momo.fragment.MessageFragment;
-import com.cyanbirds.momo.fragment.MyPersonalFragment;
 import com.cyanbirds.momo.fragment.PersonalFragment;
-import com.cyanbirds.momo.fragment.VideoShowFragment;
 import com.cyanbirds.momo.helper.SDKCoreHelper;
 import com.cyanbirds.momo.listener.MessageUnReadListener;
 import com.cyanbirds.momo.manager.AppManager;
@@ -66,7 +62,6 @@ import com.cyanbirds.momo.service.MyPushService;
 import com.cyanbirds.momo.utils.MsgUtil;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.PushMsgUtil;
-import com.cyanbirds.momo.utils.ToastUtil;
 import com.igexin.sdk.PushManager;
 import com.umeng.analytics.MobclickAgent;
 import com.xiaomi.mipush.sdk.MiPushClient;
@@ -127,7 +122,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 
 	public final static String CURRENT_TAB = "current_tab";
 	private static final TableConfig[] tableConfig = new TableConfig[] {
-			new TableConfig(R.string.tab_find_love, HomeLoveFragment.class,
+			new TableConfig(R.string.tab_find_love, FindLoveFragment.class,
 					R.drawable.tab_tao_love_selector),
 			new TableConfig(R.string.tab_found, FoundFragment.class,
 					R.drawable.tab_found_selector),

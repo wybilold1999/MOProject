@@ -105,11 +105,11 @@
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="fa3cd64cbf5d7d2e943e97eb74faeb37" />
+            android:value="fbe36160957cf56df2d658174f8f6136" />
 
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="598c2b2ff43e484b69001f56"/>
+            android:value="592ab9318630f50a79000442"/>
 
         <meta-data
             android:name="UMENG_CHANNEL"
@@ -229,12 +229,6 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".activity.PersonalInfoActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="个人信息"
-            android:screenOrientation="portrait"/>
-
-        <activity
             android:name=".activity.ModifySignatureActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="@string/personal_signature"
@@ -337,11 +331,6 @@
             android:name=".activity.ImagePreviewActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="@string/image_preview"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".activity.PublishDynamicActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/publish_dynamic"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.RadarActivity"
@@ -466,6 +455,19 @@
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:label="@string/money_output"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".activity.PersonalInfoActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:label="@string/personal_info"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".activity.PersonalPhotoActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:label="@string/personal_photos"
             android:screenOrientation="portrait">
         </activity>
 

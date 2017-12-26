@@ -46,6 +46,7 @@
 		android:src="@mipmap/ic_shuffle"
 		app:layout_anchor="@+id/recyclerview"
 		app:layout_anchorGravity="bottom|end"
-		app:layout_behavior="com.cyanbirds.momo.ui.widget.ScrollAwareFABBehavior"/>
+		app:layout_behavior="com.cyanbirds.momo.ui.widget.FABScrollBehavior"
+		android:visibility="gone"/>
 
 </android.support.design.widget.CoordinatorLayout>

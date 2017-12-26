@@ -111,8 +111,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         mSelectMan = (ImageView) findViewById(R.id.select_man);
         mSelectLady = (ImageView) findViewById(R.id.select_lady);
         mSexLay = (LinearLayout) findViewById(R.id.sex_img_layout);
+
+        mClientUser = new ClientUser();
+
         if (!AppManager.getClientUser().isShowNormal) {
             mSexLay.setVisibility(View.GONE);
+            mClientUser.sex = "男";
+            mClientUser.age = 20;
         } else {
             mSexLay.setVisibility(View.VISIBLE);
         }
@@ -185,6 +190,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         mCurrrentCity = event.city;
         if (!AppManager.getClientUser().isShowNormal) {
             mSexLay.setVisibility(View.GONE);
+            mClientUser.sex = "男";
+            mClientUser.age = 20;
         } else {
             mSexLay.setVisibility(View.VISIBLE);
         }

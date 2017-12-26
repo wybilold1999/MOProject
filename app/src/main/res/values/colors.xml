@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#5f7d88</color>
-    <color name="colorPrimaryDark">#54707a</color>
-    <color name="colorAccent">#54707a</color>
+    <color name="colorPrimary">#03b3ca</color>
+    <color name="colorPrimaryDark">#03b3ca</color>
+    <color name="colorAccent">#03b3ca</color>
 
     <!-- 图片选择背景 -->
     <color name="image_selected_color">#7f000000</color>
 
-    <color name="color_theme">#ef9a9a</color>
+    <color name="color_theme">#03b3ca</color>
     <!-- 分割线背景 -->
     <color name="divider_color">#E1E1E1</color>
     <color name="tabhost_color">#F3F3F3</color>

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.manager.AppManager;
+import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.StringUtil;
 import com.dl7.tag.TagLayout;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -39,11 +40,13 @@ public class FindLoveAdapter extends
 
     private OnItemClickListener mOnItemClickListener;
     private DecimalFormat mFormat;
+    private String mCurCity;//当前城市
 
     public FindLoveAdapter(List<ClientUser> clientUsers, Context mContext) {
         this.mClientUsers = clientUsers;
         this.mContext = mContext;
         mFormat = new DecimalFormat("#.00");
+        mCurCity = PreferencesUtils.getCity(mContext);
     }
 
     @Override
@@ -95,6 +98,8 @@ public class FindLoveAdapter extends
             itemViewHolder.constellation.setText(clientUser.constellation);
             if (null == clientUser.distance || Double.parseDouble(clientUser.distance) == 0.0) {
                 itemViewHolder.distance.setText("来自" + clientUser.city);
+            } else if (!TextUtils.isEmpty(mCurCity)){
+                itemViewHolder.distance.setText("来自" + mCurCity);
             } else {
                 itemViewHolder.distance.setText(mFormat.format(Double.parseDouble(clientUser.distance)) + " km");
             }

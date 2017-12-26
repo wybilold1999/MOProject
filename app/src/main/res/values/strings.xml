@@ -53,6 +53,10 @@
     <string name="reward">抽奖活动</string>
     <string name="reward_info">抽奖活动说明：\n\n 1、购买套餐达200元，可以进行3次抽奖 \n 2、活动截止日期2017-03-31</string>
     <string name="recommend">推荐用户失败,请重新获取</string>
+    <string name="personal_photos">个人相册</string>
+    <string name="city">城市</string>
+    <string name="college">教育程度</string>
+    <string name="social_id">联系方式</string>
 
     <string name="phone_un_register">该手机号码还未注册过该软件，请先注册</string>
     <string name="regist_params_error">注册参数错误，请检查</string>
@@ -156,6 +160,7 @@
     <string name="weixin_pay">微信支付</string>
     <string name="send_telephone_fare">(送%1$d元话费)</string>
     <string name="pay_type">请选择支付方式</string>
+    <string name="see_more">查看更多(8/%1$d)</string>
     <string name="location_symbol">[位置]</string>
     <string name="file_symbol">[文件]</string>
     <string name="image_symbol">[图片]</string>
