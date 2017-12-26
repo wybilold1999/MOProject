@@ -21,7 +21,6 @@ import com.cyanbirds.momo.net.request.OutputMoneyRequest;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.ProgressDialogUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
-import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -202,19 +201,5 @@ public class MoneyOutputActivity extends BaseActivity {
 			}
 		});
 		builder.show();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		MobclickAgent.onPageStart(this.getClass().getName());
-		MobclickAgent.onResume(this);
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		MobclickAgent.onPageEnd(this.getClass().getName());
-		MobclickAgent.onPause(this);
 	}
 }

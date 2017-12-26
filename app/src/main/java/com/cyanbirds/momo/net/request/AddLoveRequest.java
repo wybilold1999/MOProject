@@ -17,7 +17,7 @@ import retrofit2.Callback;
  * @datetime 2016-05-03 10:38 GMT+8
  * @email 395044952@qq.com
  */
-public class AddLoveRequest extends ResultPostExecute<String> {
+public class AddLoveRequest extends ResultPostExecute<Boolean> {
     public void request(final String loveId){
         Call<ResponseBody> call = AppManager.getLoveService().addLove(AppManager.getClientUser().sessionId, loveId);
         call.enqueue(new Callback<ResponseBody>() {
@@ -52,11 +52,12 @@ public class AddLoveRequest extends ResultPostExecute<String> {
             JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
             int code = obj.get("code").getAsInt();
             if(code == 0){
-                onPostExecute(obj.get("data").getAsString());
+                onPostExecute(obj.get("data").getAsBoolean());
+            } else {
+                onErrorExecute("");
             }
         } catch (Exception e) {
-            onErrorExecute(CSApplication.getInstance().getResources()
-                    .getString(R.string.like_faiure));
+            onErrorExecute("");
         }
     }
 }

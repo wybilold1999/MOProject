@@ -39,7 +39,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -162,8 +161,8 @@ public class PersonalInfoActivity extends BaseActivity {
 			startActivity(intent);
 		} else if (item.getItemId() == R.id.call) {
 			Intent intent = new Intent(this, VoipCallActivity.class);
-			intent.putExtra(ValueKey.IMAGE_URL, mClientUser == null ? "" : mClientUser.face_url);
-			intent.putExtra(ValueKey.USER_NAME, mClientUser == null ? "" : mClientUser.user_name);
+			intent.putExtra(ValueKey.IMAGE_URL, mClientUser.face_url);
+			intent.putExtra(ValueKey.USER_NAME, mClientUser.user_name);
 			intent.putExtra(ValueKey.FROM_ACTIVITY, "PersonalInfoActivity");
 			startActivity(intent);
 		} else {
@@ -208,7 +207,7 @@ public class PersonalInfoActivity extends BaseActivity {
 				break;
 			case R.id.love:
 				if (null != mClientUser) {
-					new SendGreetRequest().request(mClientUser.userId);
+					new SenderGreetTask().request(mClientUser.userId);
 					new AddLoveTask().request(mClientUser.userId);
 				}
 				break;
@@ -255,23 +254,31 @@ public class PersonalInfoActivity extends BaseActivity {
 		}
 	}
 
-	/**
-	 * 喜欢
-	 */
-	class AddLoveTask extends AddLoveRequest {
+	class SenderGreetTask extends SendGreetRequest {
 		@Override
 		public void onPostExecute(String s) {
-			if (s.equals("已喜欢")) {
-				mLove.setText(s);
-				ToastUtil.showMessage(R.string.like_success);
-			} else {
-				mLove.setText(R.string.like);
-			}
+			ToastUtil.showMessage(s);
 		}
 
 		@Override
 		public void onErrorExecute(String error) {
 			ToastUtil.showMessage(error);
+		}
+	}
+
+	class AddLoveTask extends AddLoveRequest {
+
+		@Override
+		public void onPostExecute(Boolean s) {
+			if (s) {
+				mLove.setText("已喜欢");
+			} else {
+				mLove.setText("喜欢");
+			}
+		}
+
+		@Override
+		public void onErrorExecute(String error) {
 		}
 	}
 
@@ -334,6 +341,7 @@ public class PersonalInfoActivity extends BaseActivity {
 		} else {
 			mIdentifyState.setVisibility(View.GONE);
 		}
+
 		if (mClientUser.isFollow) {
 			mAttention.setText("已关注");
 		} else {
@@ -344,7 +352,22 @@ public class PersonalInfoActivity extends BaseActivity {
 				getSupportFragmentManager(), fragmentList, tabList);
 		mViewpager.setAdapter(fragmentAdapter);//给ViewPager设置适配器
 		mTabLayout.setupWithViewPager(mViewpager);//将TabLayout和ViewPager关联起来。
-		mTabLayout.setTabsFromPagerAdapter(fragmentAdapter);
+		mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+			@Override
+			public void onTabSelected(TabLayout.Tab tab) {
+				mViewpager.setCurrentItem(tab.getPosition());
+			}
+
+			@Override
+			public void onTabUnselected(TabLayout.Tab tab) {
+
+			}
+
+			@Override
+			public void onTabReselected(TabLayout.Tab tab) {
+
+			}
+		});
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)

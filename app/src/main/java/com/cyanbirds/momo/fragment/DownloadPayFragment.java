@@ -1,14 +1,12 @@
 package com.cyanbirds.momo.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +21,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alipay.sdk.app.PayTask;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.sunfusheng.marqueeview.MarqueeView;
+import com.tencent.mm.sdk.modelpay.PayReq;
+import com.umeng.analytics.MobclickAgent;
 import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.adapter.DownloadPayAdapter;
@@ -42,10 +44,6 @@ import com.cyanbirds.momo.net.request.GetPayResultRequest;
 import com.cyanbirds.momo.net.request.GetUserNameRequest;
 import com.cyanbirds.momo.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.momo.utils.ToastUtil;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.sunfusheng.marqueeview.MarqueeView;
-import com.tencent.mm.sdk.modelpay.PayReq;
-import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -195,19 +193,12 @@ public class DownloadPayFragment extends Fragment{
 		new GetMemberBuyListTask().request(DOWNLOAD_VIP);
 		//获取用户名称
 		new GetUserNameTask().request(1, 100);
-
 		/**
 		 * 默认支付宝支付
 		 */
 		mPayType = AppConstants.ALI_PAY_PLATFORM;
 		mSelectAlipay.setChecked(true);
 		mSelectWechatpay.setChecked(false);
-
-		if (AppManager.getClientUser().isShowLovers) {
-			mPayLay.setVisibility(View.VISIBLE);
-		} else {
-			mPayLay.setVisibility(View.GONE);
-		}
 	}
 
 	@OnClick({R.id.btn_pay, R.id.select_alipay, R.id.alipay_lay, R.id.select_wechatpay, R.id.wechat_lay})
@@ -332,35 +323,17 @@ public class DownloadPayFragment extends Fragment{
 		@Override
 		public void onItemClick(View view, int position) {
 			memberBuy = mAdapter.getItem(position);
-			showPayDialog(memberBuy);
+			if (memberBuy.isShowAli) {
+				double price = memberBuy.price - memberBuy.aliPrice;
+				mAliPayInfo.setText(String.format(
+						getResources().getString(R.string.pay_info), String.valueOf(price)));
+				mAliPayInfo.setVisibility(View.VISIBLE);
+			} else {
+				mAliPayInfo.setVisibility(View.GONE);
+			}
 		}
 	};
 
-	private void showPayDialog(final MemberBuy memberBuy) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle(getResources().getString(R.string.pay_type));
-		builder.setNegativeButton(getResources().getString(R.string.cancel),
-				null);
-		builder.setItems(
-				new String[]{getResources().getString(R.string.ali_pay),
-						getResources().getString(R.string.weixin_pay)},
-				new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						switch (which) {
-							case 0:
-								new GetAliPayOrderInfoTask().request(memberBuy.id, AppConstants.ALI_PAY_PLATFORM);
-								break;
-							case 1:
-								new CreateOrderTask().request(memberBuy.id, AppConstants.WX_PAY_PLATFORM);
-								break;
-						}
-						dialog.dismiss();
-					}
-				});
-		builder.show();
-	}
 
 	class CreateOrderTask extends CreateOrderRequest {
 		@Override
@@ -373,7 +346,7 @@ public class DownloadPayFragment extends Fragment{
 			payReq.nonceStr = weChatPay.nonce_str;
 			payReq.timeStamp = weChatPay.timeStamp;
 			payReq.sign = weChatPay.appSign;
-			AppManager.getIWX_PAY_API().sendReq(payReq);
+			CSApplication.api.sendReq(payReq);
 		}
 
 		@Override

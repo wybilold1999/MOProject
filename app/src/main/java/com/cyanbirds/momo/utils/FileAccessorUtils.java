@@ -2,7 +2,6 @@ package com.cyanbirds.momo.utils;
 
 import android.os.Environment;
 
-
 import com.cyanbirds.momo.R;
 
 import java.io.File;
@@ -18,32 +17,35 @@ public class FileAccessorUtils {
 	
 	/** 默认路径 */
 	public static final String DEFAULT_PATH = getExternalStorePath()
-			+ "/molove";
+			+ "/youlove";
 	/** 文件存储路径 */
 	public static final String FILE_PATH = getExternalStorePath()
-			+ "/molove/.file";
+			+ "/youlove/.file";
 	/** 图像的存储路径 */
 	public static final String IMESSAGE_IMAGE = getExternalStorePath()
-			+ "/molove/.image";
+			+ "/youlove/.image";
 	/** 头像存储路径 */
 	public static final String FACE_IMAGE = getExternalStorePath()
-			+ "/molove/.face";
+			+ "/youlove/.face";
 	/** 语音存储路径 */
 	public static final String VOICE_PATH = getExternalStorePath()
-			+ "/molove/.voice";
+			+ "/youlove/.voice";
 	/** 视频存储路径 */
 	public static final String VIDEO_PATH = getExternalStorePath()
-			+ "/molove/.video";
+			+ "/youlove/.video";
 	/** 缓存路径 */
 	public static final String CACHE_PATH = getExternalStorePath()
-			+ "/molove/.cache";
+			+ "/youlove/.cache";
 	/** crash路径 */
 	public static final String CRASH_PATH = getExternalStorePath()
-			+ "/molove/.crash";
+			+ "/youlove/.crash";
 
 	/** APK文件暂时存放的路径 */
 	public static final String APK_PATH = getExternalStorePath()
-			+ "/molove/.apk";
+			+ "/youlove/.apk";
+	/** 在线表情存储路径 */
+	public static final String EXPRESSION_FILE = getExternalStorePath()
+			+ "/youlove/.expression";
 
 	/**
 	 * 外置存储卡的路径
@@ -69,6 +71,24 @@ public class FileAccessorUtils {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * 获取在线表情存放目录
+	 * @return
+	 */
+	public static File getExpressionPathName(){
+		if (!isExistExternalStore()) {
+			ToastUtil.showMessage(R.string.media_ejected);
+			return null;
+		}
+
+		File directory = new File(EXPRESSION_FILE);
+		if (!directory.exists() && !directory.mkdirs()) {
+			ToastUtil.showMessage("Path to file could not be created");
+			return null;
+		}
+		return directory;
 	}
 
 

@@ -7,25 +7,25 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.config.ValueKey;
+import com.cyanbirds.momo.entity.AllKeys;
 import com.cyanbirds.momo.entity.ClientUser;
-import com.cyanbirds.momo.entity.IDKey;
 import com.cyanbirds.momo.helper.IMChattingHelper;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.request.DownloadFileRequest;
 import com.cyanbirds.momo.net.request.GetIDKeyRequest;
+import com.cyanbirds.momo.net.request.UploadCityInfoRequest;
 import com.cyanbirds.momo.net.request.UserLoginRequest;
 import com.cyanbirds.momo.utils.FileAccessorUtils;
 import com.cyanbirds.momo.utils.Md5Util;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.PushMsgUtil;
 import com.cyanbirds.momo.utils.ToastUtil;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * @ClassName:LauncherActivity
@@ -46,10 +46,19 @@ public class LauncherActivity extends Activity {
                 case LONG_SCUESS:
                     long loadingTime = System.currentTimeMillis() - mStartTime;// 计算一下总共花费的时间
                     if (loadingTime < SHOW_TIME_MIN) {// 如果比最小显示时间还短，就延时进入MainActivity，否则直接进入
-                        mHandler.postDelayed(mainActivity, SHOW_TIME_MIN
-                                - loadingTime);
+                        if (AppManager.getClientUser().isShowNormal) {
+                            mHandler.postDelayed(mainActivity, SHOW_TIME_MIN
+                                    - loadingTime);
+                        } else {
+                            mHandler.postDelayed(mainNewActivity, SHOW_TIME_MIN
+                                    - loadingTime);
+                        }
                     } else {
-                        mHandler.postDelayed(mainActivity, 0);
+                        if (AppManager.getClientUser().isShowNormal) {
+                            mHandler.postDelayed(mainActivity, 0);
+                        } else {
+                            mHandler.postDelayed(mainNewActivity, 0);
+                        }
                     }
                     break;
                 case LONG_FAIURE:
@@ -67,6 +76,18 @@ public class LauncherActivity extends Activity {
         loadData();
     }
 
+    Runnable mainNewActivity = new Runnable() {
+
+        @Override
+        public void run() {
+            Intent intent = new Intent(LauncherActivity.this,
+                    MainNewActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
+    };
+
     Runnable mainActivity = new Runnable() {
 
         @Override
@@ -80,41 +101,34 @@ public class LauncherActivity extends Activity {
     };
 
     private void init() {
-        new GetWeChatIdTask().request();
+        new GetIdKeysTask().request();
+        if (!TextUtils.isEmpty(PreferencesUtils.getCurrentCity(this))) {
+            new UploadCityInfoTask().request(PreferencesUtils.getCurrentCity(this), "", "");
+        }
         if (AppManager.isLogin()) {//是否已经登录
             login();
         } else {
             if (AppManager.getClientUser() != null
 					&& !TextUtils.isEmpty(AppManager.getClientUser().userId)){// && Integer.parseInt(AppManager.getClientUser().userId) > 0) {
-				mHandler.postDelayed(firstLauncher, SHOW_TIME_MIN);
+				mHandler.postDelayed(noLogin, SHOW_TIME_MIN);
 			} else {
-				mHandler.postDelayed(firstLauncher, SHOW_TIME_MIN);
+				mHandler.postDelayed(noLogin, SHOW_TIME_MIN);
 			}
 
         }
     }
 
-    class GetWeChatIdTask extends GetIDKeyRequest {
+    class GetIdKeysTask extends GetIDKeyRequest {
         @Override
-        public void onPostExecute(List<IDKey> idKeys) {
-            if (idKeys != null && idKeys.size() > 0) {
-                for (IDKey idKey : idKeys) {
-                    if ("xiaomi".equals(idKey.platform)) {
-                        AppConstants.MI_PUSH_APP_ID = idKey.appId;
-                        AppConstants.MI_PUSH_APP_KEY = idKey.appKey;
-                    } else if ("wechat".equals(idKey.platform)) {
-                        if (!TextUtils.isEmpty(idKey.appId)) {
-                            String[] ids = idKey.appId.split(";");
-                            if (ids != null && ids.length == 2) {
-                                AppConstants.WEIXIN_ID = ids[0];
-                                AppConstants.WEIXIN_PAY_ID = ids[1];
-                            }
-                        }
-                    } else if ("qq".equals(idKey.platform)) {
-                        AppConstants.mAppid = idKey.appId;
-                    }
-                }
-            }
+        public void onPostExecute(AllKeys allKeys) {
+            AppConstants.WEIXIN_ID = allKeys.weChatId;
+            AppConstants.WEIXIN_PAY_ID = allKeys.weChatPayId;
+            AppConstants.YUNTONGXUN_ID = allKeys.ytxId;
+            AppConstants.YUNTONGXUN_TOKEN = allKeys.ytxKey;
+            AppConstants.MI_PUSH_APP_ID = allKeys.xmId;
+            AppConstants.MI_PUSH_APP_KEY = allKeys.xmKey;
+            AppConstants.mAppid = allKeys.qqId;
+            AppConstants.CHAT_LIMIT = allKeys.chatLimit;
             registerWeiXin();
         }
 
@@ -128,6 +142,37 @@ public class LauncherActivity extends Activity {
         // 通过WXAPIFactory工厂，获取IWXAPI的实例
         AppManager.setIWXAPI(WXAPIFactory.createWXAPI(this, AppConstants.WEIXIN_ID, true));
         AppManager.getIWXAPI().registerApp(AppConstants.WEIXIN_ID);
+    }
+
+    class UploadCityInfoTask extends UploadCityInfoRequest {
+
+        @Override
+        public void onPostExecute(String isShow) {
+            if ("0".equals(isShow)) {
+                AppManager.getClientUser().isShowDownloadVip = false;
+                AppManager.getClientUser().isShowGold = false;
+                AppManager.getClientUser().isShowLovers = false;
+                AppManager.getClientUser().isShowMap = false;
+                AppManager.getClientUser().isShowVideo = false;
+                AppManager.getClientUser().isShowVip = false;
+                AppManager.getClientUser().isShowRpt = false;
+                AppManager.getClientUser().isShowNormal = false;
+            } else {
+                AppManager.getClientUser().isShowNormal = true;
+            }
+        }
+
+        @Override
+        public void onErrorExecute(String error) {
+            AppManager.getClientUser().isShowDownloadVip = false;
+            AppManager.getClientUser().isShowGold = false;
+            AppManager.getClientUser().isShowLovers = false;
+            AppManager.getClientUser().isShowMap = false;
+            AppManager.getClientUser().isShowVideo = false;
+            AppManager.getClientUser().isShowVip = false;
+            AppManager.getClientUser().isShowRpt = false;
+            AppManager.getClientUser().isShowNormal = false;
+        }
     }
 
 	/**
@@ -179,7 +224,7 @@ public class LauncherActivity extends Activity {
             String userPwd = AppManager.getClientUser().userPwd;
             if(!TextUtils.isEmpty(userId) && !TextUtils.isEmpty(userPwd)){
                 new UserLoginTask().request(
-                        userId, userPwd, PreferencesUtils.getCurrentCity(this));
+                        userId, userPwd, AppManager.getClientUser().currentCity);
             }
         } catch (Exception e) {
             e.printStackTrace();

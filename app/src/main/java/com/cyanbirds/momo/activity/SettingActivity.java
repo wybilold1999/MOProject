@@ -9,9 +9,11 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.umeng.analytics.MobclickAgent;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.config.ValueKey;
+import com.cyanbirds.momo.db.ContactSqlManager;
 import com.cyanbirds.momo.db.ConversationSqlManager;
 import com.cyanbirds.momo.db.IMessageDaoManager;
 import com.cyanbirds.momo.db.MyGoldDaoManager;
@@ -21,7 +23,6 @@ import com.cyanbirds.momo.net.request.LogoutRequest;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.ProgressDialogUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
-import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -211,6 +212,7 @@ public class SettingActivity extends BaseActivity {
         IMessageDaoManager.reset();
         ConversationSqlManager.reset();
         MyGoldDaoManager.reset();
+        ContactSqlManager.reset();
     }
 
     @Override

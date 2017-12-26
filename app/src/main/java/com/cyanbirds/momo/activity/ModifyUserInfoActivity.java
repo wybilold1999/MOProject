@@ -6,7 +6,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AlertDialog.Builder;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -152,6 +152,10 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	TextView mQq;
 	@BindView(R.id.qq_lay)
 	RelativeLayout mQqLay;
+	@BindView(R.id.tv_friend)
+	TextView mTvFriend;
+	@BindView(R.id.card_friend)
+	CardView mCardFriend;
 
 	private String mPhotoPath;
 	private File mPhotoFile;
@@ -176,7 +180,6 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	 * 剪裁图片返回
 	 */
 	public final static int PHOTO_CUT_RESULT = 106;
-
 	/**
 	 * 读写文件夹
 	 */
@@ -185,7 +188,6 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	 * 跳转设置界面
 	 */
 	private final int REQUEST_PERMISSION_SETTING = 10001;
-
 	/**
 	 * 是否拥有读写权限
 	 */
@@ -228,6 +230,13 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 				new DownloadPortraitTask().request(clientUser.face_url,
 						FileAccessorUtils.getImagePathName().getAbsolutePath(),
 						Md5Util.md5(AppManager.getClientUser().face_url) + ".jpg");
+			}
+			if (AppManager.getClientUser().isShowLovers) {
+				mCardFriend.setVisibility(View.VISIBLE);
+				mTvFriend.setVisibility(View.VISIBLE);
+			} else {
+				mCardFriend.setVisibility(View.GONE);
+				mTvFriend.setVisibility(View.GONE);
 			}
 			if (!TextUtils.isEmpty(clientUser.user_name)) {
 				mNickName.setText(clientUser.user_name);
@@ -1011,7 +1020,6 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 			ProgressDialogUtils.getInstance(ModifyUserInfoActivity.this).dismiss();
 			clientUser.face_url = AppConstants.OSS_IMG_ENDPOINT + s;
 			clientUser.face_local = mPortraitUri.getPath();
-//			mPortraitPhoto.setImageURI(Uri.parse("file://" + mPortraitUri.getPath()));
 			mPortraitPhoto.setImageURI(clientUser.face_url);
 			AppManager.setClientUser(clientUser);
 			AppManager.saveUserInfo();
@@ -1041,7 +1049,6 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 
 	/**
 	 * 剪切图片
-	 *
 	 * @param file
 	 */
 	private void cutPhoto(File file) {
@@ -1055,7 +1062,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 			}
 		}
 
-//		Uri imageUri= FileProvider.getUriForFile(this, "com.cyanbirds.momo.fileProvider", file);//通过FileProvider创建一个content类型的Uri
+//		Uri imageUri=FileProvider.getUriForFile(this, "com.cyanbirds.momo.fileProvider", file);//通过FileProvider创建一个content类型的Uri
 		Uri imageUri = Uri.fromFile(file);
 		Intent intent = new Intent("com.android.camera.action.CROP");
 		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

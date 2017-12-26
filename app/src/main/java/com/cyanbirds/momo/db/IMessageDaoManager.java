@@ -115,16 +115,6 @@ public class IMessageDaoManager extends DBManager {
 	}
 	
 	/**
-	 * 查询消息列表
-	 */
-	public List<IMessage> queryAllIMessageList() {
-		/*QueryBuilder<IMessage> qb = mIMessageDao.queryBuilder();
-		List<IMessage> list = qb.list();
-		return list;*/
-		return null;
-	}
-
-	/**
 	 * 查询最近pageSize条消息
 	 */
 	public List<IMessage> queryIMessageList(String conversationId, int pageSize, String time) {

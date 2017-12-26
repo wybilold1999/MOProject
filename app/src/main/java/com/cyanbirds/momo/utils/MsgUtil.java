@@ -1,6 +1,5 @@
 package com.cyanbirds.momo.utils;
 
-
 import com.cyanbirds.momo.entity.IMessage;
 import com.cyanbirds.momo.manager.AppManager;
 

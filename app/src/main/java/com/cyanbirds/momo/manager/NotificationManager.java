@@ -73,21 +73,23 @@ public class NotificationManager {
         String content;
         int unReadNum = ConversationSqlManager.getInstance(mContext).getAnalyticsUnReadConversation();
         // 显示消息详情
-        if (PreferencesUtils.getShowMessageInfo(mContext)) {
-            if (TextUtils.isEmpty(message.sender_name)) {
-                title = mContext.getResources().getString(R.string.app_name);
-            } else {
-                title = message.sender_name;
-            }
+        /*if (PreferencesUtils.getShowMessageInfo(mContext)) {
+            title = mContext.getResources().getString(R.string.app_name_short);
             content = getTickerText(message);
         } else {
             int unContactNum = ConversationSqlManager
                     .getInstance(mContext).getConversationUnReadNum();
-            title = mContext.getResources().getString(R.string.app_name);
+            title = mContext.getResources().getString(R.string.app_name_short);
             content = String.format(
                     mContext.getResources().getString(R.string.notification_tips), unContactNum, unReadNum);
+        }*/
+        if (!TextUtils.isEmpty(message.face_url)) {
+            title = mContext.getResources().getString(R.string.app_name_short);
+        } else {
+            title = message.sender_name;
         }
-        builder.setTicker(title + "\n" + message.content);
+        content = getTickerText(message);
+        builder.setTicker(title + "\n" + content);
         // 设置通知内容的标题
         builder.setContentTitle(title);
         builder.setContentText(content);
@@ -108,8 +110,12 @@ public class NotificationManager {
         builder.setWhen(System.currentTimeMillis());
 
         ClientUser clientUser = new ClientUser();
-        clientUser.user_name = title;
+        clientUser.user_name = message.sender_name;
         clientUser.userId = message.sender;
+        if (!TextUtils.isEmpty(message.face_url)) {
+            clientUser.face_url = message.face_url;
+            clientUser.isLocalMsg = true;
+        }
 
         Intent intent = new Intent(mContext, NotificationReceiver.class);
         intent.putExtra(ValueKey.USER, clientUser);
@@ -137,6 +143,8 @@ public class NotificationManager {
             return mContext.getResources().getString(R.string.image_symbol);
         } else if (message.msgType == IMessage.MessageType.LOCATION) {
             return mContext.getResources().getString(R.string.location_symbol);
+        } else if (message.msgType == IMessage.MessageType.RED_PKT) {
+            return mContext.getResources().getString(R.string.rpt_symbol);
         }
         return "";
     }

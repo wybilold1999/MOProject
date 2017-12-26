@@ -33,33 +33,4 @@
 			android:text="女"/>
 	</RadioGroup>
 
-	<TextView
-		android:id="@+id/area"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:gravity="center"
-		android:padding="10dp"
-		android:text="地区"/>
-
-	<RadioGroup
-		android:id="@+id/rg_area"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal">
-
-		<RadioButton
-			android:id="@+id/all_country"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginLeft="20dp"
-			android:text="全国"/>
-
-		<RadioButton
-			android:id="@+id/same_city"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginLeft="20dp"
-			android:text="同城"/>
-	</RadioGroup>
-
 </LinearLayout>

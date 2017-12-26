@@ -68,7 +68,6 @@ public class CardActivity extends BaseActivity implements SwipeFlingAdapterView.
 	@BindView(R.id.portrait)
 	SimpleDraweeView mPortrait;
 
-	private Unbinder unbinder;
 	private CardModel curModel;
 	private int pageNo = 1;
 	private int pageSize = 200;
@@ -81,7 +80,7 @@ public class CardActivity extends BaseActivity implements SwipeFlingAdapterView.
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_card);
-		unbinder = ButterKnife.bind(this);
+		ButterKnife.bind(this);
 		Toolbar toolbar = getActionBarToolbar();
 		if (toolbar != null) {
 			toolbar.setNavigationIcon(R.mipmap.ic_up);
@@ -242,14 +241,6 @@ public class CardActivity extends BaseActivity implements SwipeFlingAdapterView.
 		super.onPause();
 		MobclickAgent.onPageEnd(this.getClass().getName());
 		MobclickAgent.onPause(this);
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		if (unbinder != null) {
-			unbinder.unbind();
-		}
 	}
 
 	private void startcircularAnima() {

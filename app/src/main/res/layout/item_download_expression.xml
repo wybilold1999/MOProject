@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:clickable="true"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin" >
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/expression_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@null"
+            app:actualImageScaleType="fitCenter"
+            app:failureImage="@drawable/default_photo_background"
+            app:placeholderImage="@drawable/default_photo_background"
+            app:placeholderImageScaleType="fitCenter"
+            app:roundedCornerRadius="5dp" />
+
+        <TextView
+            android:id="@+id/expression_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/expression_icon"
+            android:textSize="16sp" />
+
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:id="@+id/download_expression"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="5dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="5dp"
+            android:visibility="gone"
+            fancy:fb_borderColor="@color/colorPrimary"
+            fancy:fb_borderWidth="1dp"
+            fancy:fb_defaultColor="@android:color/transparent"
+            fancy:fb_focusColor="@android:color/darker_gray"
+            fancy:fb_fontIconSize="10sp"
+            fancy:fb_radius="4dp"
+            fancy:fb_text="@string/download"
+            fancy:fb_textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/already_download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="@string/already_download"
+            android:textColor="@color/gray_text"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/download_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -93,17 +93,19 @@ public class PreferencesUtils {
 	/** 抽奖次数*/
 	public static final String SETTINGS_REWARD_COUNT = "com.cyanbirds.momo_reward_count";
 	/** 定位到的城市*/
-	public static final String SETTINGS_CURRENT_CITY = "com.cyanbird.momo_current_city";
+	public static final String SETTINGS_CURRENT_CITY = "com.cyanbirds.momo_current_city";
 	/** 最近喜欢我的userid*/
-	public static final String SETTINGS_LOVE_ME_USER_ID = "com.cyanbird.momo_love_me_user_id";
+	public static final String SETTINGS_LOVE_ME_USER_ID = "com.cyanbirds.momo_love_me_user_id";
 	/** 最近关注我的userid*/
-	public static final String SETTINGS_ATTENTION_ME_USER_ID = "com.cyanbird.momo_attention_me_user_id";
+	public static final String SETTINGS_ATTENTION_ME_USER_ID = "com.cyanbirds.momo_attention_me_user_id";
 	/** 最近送我礼物的userid*/
-	public static final String SETTINGS_GIFT_ME_USER_ID = "com.cyanbird.momo_gift_me_user_id";
+	public static final String SETTINGS_GIFT_ME_USER_ID = "com.cyanbirds.momo_gift_me_user_id";
 	/** 登录时间*/
-	public static final String SETTINGS_LOGIN_TIME = "com.cyanbird.momo_login_time";
+	public static final String SETTINGS_LOGIN_TIME = "com.cyanbirds.momo_login_time";
 	/** 我的零钱*/
 	public static final String SETTINGS_MY_MONEY = "com.cyanbirds.momo_my_money";
+	/** 聊天次数限制*/
+	public static final String SETTINGS_CHAT_LIMIT = "com.cyanbirds.momo_chat_limit";
 
 	/**
 	 * 获取RL账号
@@ -1126,6 +1128,26 @@ public class PreferencesUtils {
 		SharedPreferences sp = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		sp.edit().putFloat(SETTINGS_MY_MONEY, count).commit();
+	}
+
+	/**
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static int getChatLimit(final Context context) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return sp.getInt(SETTINGS_CHAT_LIMIT, 0);
+	}
+
+	/**
+	 * @param context
+	 */
+	public static void setChatLimit(final Context context, final int count) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		sp.edit().putInt(SETTINGS_CHAT_LIMIT, count).commit();
 	}
 
 }

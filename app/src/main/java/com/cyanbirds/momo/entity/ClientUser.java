@@ -127,7 +127,12 @@ public class ClientUser implements Serializable{
     public String currentCity;//定位的当前城市
 
     public long loginTime;//登录时间
-
+    
     public boolean isLocalMsg;//是否是本地创建的消息(礼物、关注、喜欢)
+
+    /**
+     * 0:不显示  1：显示
+     */
+    public boolean isShowNormal; //主界面布局
 
 }

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,12 +19,14 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.text.style.URLSpan;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alipay.sdk.app.PayTask;
+import com.sunfusheng.marqueeview.MarqueeView;
+import com.tencent.mm.sdk.modelpay.PayReq;
+import com.umeng.analytics.MobclickAgent;
 import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
@@ -49,9 +52,6 @@ import com.cyanbirds.momo.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.momo.utils.DensityUtil;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
-import com.sunfusheng.marqueeview.MarqueeView;
-import com.tencent.mm.sdk.modelpay.PayReq;
-import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -85,6 +85,8 @@ public class VipCenterActivity extends BaseActivity {
 	RelativeLayout mVip7Lay;
 	@BindView(R.id.vip_8_lay)
 	RelativeLayout mVip8Lay;
+	@BindView(R.id.scrollView)
+	NestedScrollView mScrollView;
 
 	private MemberBuyAdapter mAdapter;
 
@@ -350,11 +352,7 @@ public class VipCenterActivity extends BaseActivity {
 		@Override
 		public void onItemClick(View view, int position) {
 			MemberBuy memberBuy = mAdapter.getItem(position);
-			if (AppManager.getClientUser().isShowLovers) {
-				showPayDialog(memberBuy);
-			} else {
-				new GetAliPayOrderInfoTask().request(memberBuy.id, AppConstants.ALI_PAY_PLATFORM);
-			}
+			showPayDialog(memberBuy);
 		}
 	};
 
@@ -444,7 +442,7 @@ public class VipCenterActivity extends BaseActivity {
 			payReq.nonceStr = weChatPay.nonce_str;
 			payReq.timeStamp = weChatPay.timeStamp;
 			payReq.sign = weChatPay.appSign;
-			AppManager.getIWX_PAY_API().sendReq(payReq);
+			CSApplication.api.sendReq(payReq);
 		}
 
 		@Override

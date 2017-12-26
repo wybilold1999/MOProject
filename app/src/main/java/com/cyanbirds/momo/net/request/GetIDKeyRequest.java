@@ -2,12 +2,14 @@ package com.cyanbirds.momo.net.request;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.cyanbirds.momo.config.AppConstants;
+import com.cyanbirds.momo.entity.AllKeys;
 import com.cyanbirds.momo.entity.IDKey;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.base.ResultPostExecute;
 import com.cyanbirds.momo.utils.AESOperator;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -23,7 +25,7 @@ import retrofit2.Callback;
  * 描述：获取微信id
  */
 
-public class GetIDKeyRequest extends ResultPostExecute<List<IDKey>> {
+public class GetIDKeyRequest extends ResultPostExecute<AllKeys> {
 
     public void request() {
         Call<ResponseBody> call = AppManager.getUserService().getIdKeys();
@@ -34,8 +36,8 @@ public class GetIDKeyRequest extends ResultPostExecute<List<IDKey>> {
                     try {
                         parseJson(response.body().string());
                     } catch (IOException e) {
-                        onErrorExecute("");
                         e.printStackTrace();
+                        onErrorExecute("");
                     } finally {
                         response.body().close();
                     }
@@ -55,11 +57,13 @@ public class GetIDKeyRequest extends ResultPostExecute<List<IDKey>> {
         try {
             String decryptData = AESOperator.getInstance().decrypt(json);
             if (!TextUtils.isEmpty(decryptData)) {
-                Type listType = new TypeToken<ArrayList<IDKey>>() {
-                }.getType();
                 Gson gson = new Gson();
-                ArrayList<IDKey> idKeys = gson.fromJson(decryptData, listType);
-                onPostExecute(idKeys);
+                AllKeys keys = gson.fromJson(decryptData, AllKeys.class);
+                if (null != keys) {
+                    onPostExecute(keys);
+                } else {
+                    onErrorExecute("");
+                }
             } else {
                 onErrorExecute("");
             }

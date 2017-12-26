@@ -9,7 +9,15 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
+import com.tencent.connect.UserInfo;
+import com.tencent.connect.common.Constants;
+import com.tencent.mm.sdk.modelmsg.SendAuth;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
+import com.umeng.analytics.MobclickAgent;
 import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
@@ -31,13 +39,6 @@ import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.ProgressDialogUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.cyanbirds.momo.utils.Util;
-import com.tencent.connect.UserInfo;
-import com.tencent.connect.common.Constants;
-import com.tencent.mm.sdk.modelmsg.SendAuth;
-import com.tencent.tauth.IUiListener;
-import com.tencent.tauth.Tencent;
-import com.tencent.tauth.UiError;
-import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -46,28 +47,21 @@ import org.json.JSONObject;
 
 import java.io.File;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import cn.smssdk.SMSSDK;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
  * Created by Administrator on 2016/4/23.
  */
-public class RegisterActivity extends BaseActivity {
-    @BindView(R.id.phone_num)
-    EditText phoneNum;
-    @BindView(R.id.next)
-    FancyButton next;
-    @BindView(R.id.qq_login)
-    ImageView qqLogin;
-    @BindView(R.id.weixin_login)
-    ImageView weiXinLogin;
-    @BindView(R.id.select_man)
-    ImageView mSelectMan;
-    @BindView(R.id.select_lady)
-    ImageView mSelectLady;
+public class RegisterActivity extends BaseActivity implements View.OnClickListener{
+
+    private EditText phoneNum;
+    private FancyButton next;
+    private ImageView qqLogin;
+    private ImageView weiXinLogin;
+    private ImageView mSelectMan;
+    private ImageView mSelectLady;
+    private LinearLayout mSexLay;
 
     /**
      * 相册返回
@@ -86,11 +80,11 @@ public class RegisterActivity extends BaseActivity {
     private String curLat;
     private String curLon;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        ButterKnife.bind(this);
         EventBus.getDefault().register(this);
         Toolbar toolbar = getActionBarToolbar();
         if (toolbar != null) {
@@ -104,17 +98,49 @@ public class RegisterActivity extends BaseActivity {
         mCurrrentCity = getIntent().getStringExtra(ValueKey.LOCATION);
         curLat = getIntent().getStringExtra(ValueKey.LATITUDE);
         curLon = getIntent().getStringExtra(ValueKey.LONGITUDE);
+
+        setupView();
+        setupEvent();
+    }
+
+    private void setupView() {
+        phoneNum = (EditText) findViewById(R.id.phone_num);
+        next = (FancyButton) findViewById(R.id.next);
+        weiXinLogin = (ImageView) findViewById(R.id.weixin_login);
+        qqLogin = (ImageView) findViewById(R.id.qq_login);
+        mSelectMan = (ImageView) findViewById(R.id.select_man);
+        mSelectLady = (ImageView) findViewById(R.id.select_lady);
+        mSexLay = (LinearLayout) findViewById(R.id.sex_img_layout);
+        if (!AppManager.getClientUser().isShowNormal) {
+            mSexLay.setVisibility(View.GONE);
+        } else {
+            mSexLay.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setupEvent() {
+        next.setOnClickListener(this);
+        mSelectMan.setOnClickListener(this);
+        mSelectLady.setOnClickListener(this);
+        qqLogin.setOnClickListener(this);
+        weiXinLogin.setOnClickListener(this);
     }
 
 
-    @OnClick({R.id.next, R.id.qq_login,
-            R.id.select_man, R.id.select_lady, R.id.weixin_login})
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.next:
-                if(checkInput()){
-                    new CheckPhoneIsRegisterTask().request(
-                            phoneNum.getText().toString().trim());
+                if (AppManager.getClientUser().isShowNormal) {
+                    if(checkInput()){
+                        new CheckPhoneIsRegisterTask().request(
+                                phoneNum.getText().toString().trim());
+                    }
+                } else {
+                    if (checkInputNoSex()) {
+                        new CheckPhoneIsRegisterTask().request(
+                                phoneNum.getText().toString().trim());
+                    }
                 }
                 break;
             case R.id.portrait :
@@ -147,6 +173,7 @@ public class RegisterActivity extends BaseActivity {
         }
     }
 
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void weiXinLogin(WeinXinEvent event) {
         ProgressDialogUtils.getInstance(RegisterActivity.this).show(R.string.dialog_request_login);
@@ -156,30 +183,44 @@ public class RegisterActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getCity(LocationEvent event) {
         mCurrrentCity = event.city;
+        if (!AppManager.getClientUser().isShowNormal) {
+            mSexLay.setVisibility(View.GONE);
+        } else {
+            mSexLay.setVisibility(View.VISIBLE);
+        }
     }
     
     class WXLoginTask extends WXLoginRequest {
         @Override
         public void onPostExecute(ClientUser clientUser) {
+            ProgressDialogUtils.getInstance(RegisterActivity.this).dismiss();
             MobclickAgent.onProfileSignIn(String.valueOf(AppManager
                     .getClientUser().userId));
-            if(!new File(FileAccessorUtils.FACE_IMAGE,
-                    Md5Util.md5(clientUser.face_url) + ".jpg").exists()
+            File faceLocalFile = new File(FileAccessorUtils.FACE_IMAGE,
+                    Md5Util.md5(clientUser.face_url) + ".jpg");
+            if(!faceLocalFile.exists()
                     && !TextUtils.isEmpty(clientUser.face_url)){
                 new DownloadPortraitTask().request(clientUser.face_url,
                         FileAccessorUtils.FACE_IMAGE,
                         Md5Util.md5(clientUser.face_url) + ".jpg");
+            } else {
+                clientUser.face_local = faceLocalFile.getAbsolutePath();
             }
             clientUser.currentCity = mCurrrentCity;
             clientUser.latitude = curLat;
             clientUser.longitude = curLon;
+            clientUser.isShowNormal = AppManager.getClientUser().isShowNormal;
             AppManager.setClientUser(clientUser);
             AppManager.saveUserInfo();
             AppManager.getClientUser().loginTime = System.currentTimeMillis();
             PreferencesUtils.setLoginTime(RegisterActivity.this, System.currentTimeMillis());
             IMChattingHelper.getInstance().sendInitLoginMsg();
             Intent intent = new Intent();
-            intent.setClass(RegisterActivity.this, MainActivity.class);
+            if (AppManager.getClientUser().isShowNormal) {
+                intent.setClass(RegisterActivity.this, MainActivity.class);
+            } else {
+                intent.setClass(RegisterActivity.this, MainNewActivity.class);
+            }
             startActivity(intent);
             finishAll();
         }
@@ -197,14 +238,19 @@ public class RegisterActivity extends BaseActivity {
             if(s){
                 ToastUtil.showMessage(R.string.phone_already_register);
             } else {
+                if (mClientUser == null) {
+                    mClientUser = new ClientUser();
+                    mClientUser.sex = "男";
+                    mClientUser.age = 20;
+                }
                 //获取验证码
                 String phone_num = phoneNum.getText().toString().trim();
                 mClientUser.mobile = phone_num;
+                mClientUser.currentCity = mCurrrentCity;
                 SMSSDK.getVerificationCode("86", phone_num);
                 Intent intent = new Intent(RegisterActivity.this, RegisterCaptchaActivity.class);
                 intent.putExtra(ValueKey.PHONE_NUMBER, phone_num);
                 intent.putExtra(ValueKey.INPUT_PHONE_TYPE, 0);
-                mClientUser.currentCity = mCurrrentCity;
                 intent.putExtra(ValueKey.USER, mClientUser);
                 startActivity(intent);
             }
@@ -306,22 +352,34 @@ public class RegisterActivity extends BaseActivity {
     class QqLoginTask extends QqLoginRequest {
         @Override
         public void onPostExecute(ClientUser clientUser) {
-            if(!new File(FileAccessorUtils.FACE_IMAGE,
-                    Md5Util.md5(clientUser.face_url) + ".jpg").exists()
+            ProgressDialogUtils.getInstance(RegisterActivity.this).dismiss();
+            MobclickAgent.onProfileSignIn(String.valueOf(AppManager
+                    .getClientUser().userId));
+            File faceLocalFile = new File(FileAccessorUtils.FACE_IMAGE,
+                    Md5Util.md5(clientUser.face_url) + ".jpg");
+            if(!faceLocalFile.exists()
                     && !TextUtils.isEmpty(clientUser.face_url)){
                 new DownloadPortraitTask().request(clientUser.face_url,
                         FileAccessorUtils.FACE_IMAGE,
                         Md5Util.md5(clientUser.face_url) + ".jpg");
+            } else {
+                clientUser.face_local = faceLocalFile.getAbsolutePath();
             }
             clientUser.currentCity = mCurrrentCity;
             clientUser.latitude = curLat;
             clientUser.longitude = curLon;
+            clientUser.isShowNormal = AppManager.getClientUser().isShowNormal;
             AppManager.setClientUser(clientUser);
             AppManager.saveUserInfo();
             AppManager.getClientUser().loginTime = System.currentTimeMillis();
             PreferencesUtils.setLoginTime(RegisterActivity.this, System.currentTimeMillis());
             IMChattingHelper.getInstance().sendInitLoginMsg();
-            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+            Intent intent = new Intent();
+            if (AppManager.getClientUser().isShowNormal) {
+                intent.setClass(RegisterActivity.this, MainActivity.class);
+            } else {
+                intent.setClass(RegisterActivity.this, MainNewActivity.class);
+            }
             startActivity(intent);
             finishAll();
         }
@@ -370,11 +428,13 @@ public class RegisterActivity extends BaseActivity {
                             mSelectLady.setImageResource(R.mipmap.radio_women_focused_bg);
                         }
                         dialog.dismiss();
-                        mClientUser.age = 21;
+                        mClientUser.age = 20;
                     }
                 });
         builder.show();
     }
+
+
 
     class DownloadPortraitTask extends DownloadFileRequest {
         @Override
@@ -410,11 +470,26 @@ public class RegisterActivity extends BaseActivity {
         return bool;
     }
 
+    private boolean checkInputNoSex() {
+        String message = "";
+        boolean bool = true;
+        if (TextUtils.isEmpty(phoneNum.getText().toString())) {
+            message = getResources().getString(R.string.input_phone);
+            bool = false;
+        } else if (!CheckUtil.isMobileNO(phoneNum.getText().toString())) {
+            message = getResources().getString(
+                    R.string.input_phone_number_error);
+            bool = false;
+        }
+        if (!bool)
+            ToastUtil.showMessage(message);
+        return bool;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         activityIsRunning = true;
-        ProgressDialogUtils.getInstance(this).dismiss();
         MobclickAgent.onPageStart(this.getClass().getName());
         MobclickAgent.onResume(this);
     }

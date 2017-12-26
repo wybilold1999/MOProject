@@ -135,14 +135,12 @@ public class MiMessageReceiver extends PushMessageReceiver {
 
     @Override
     public void onNotificationMessageArrived(Context context, final MiPushMessage message) {
-        if (AppManager.getClientUser().isShowVip) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    PushMsgUtil.getInstance().handlePushMsg(false, message.getContent());
-                }
-            });
-        }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                PushMsgUtil.getInstance().handlePushMsg(false, message.getContent());
+            }
+        });
     }
 
     @Override
@@ -192,9 +190,6 @@ public class MiMessageReceiver extends PushMessageReceiver {
         String command = message.getCommand();
         if (MiPushClient.COMMAND_REGISTER.equals(command)) {
             if (message.getResultCode() == ErrorCode.SUCCESS) {//注册成功
-                MiPushClient.unsetAlias(context, AppManager.getClientUser().userId, null);
-                MiPushClient.unsubscribe(context, "female", null);
-                MiPushClient.unsubscribe(context, "male", null);
                 if (!"-1".equals(AppManager.getClientUser().userId)) {
                     MiPushClient.setAlias(context, AppManager.getClientUser().userId, null);
                     if ("男".equals(AppManager.getClientUser().sex)) {

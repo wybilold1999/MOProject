@@ -10,7 +10,6 @@ import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.eventtype.SnackBarEvent;
 import com.cyanbirds.momo.utils.PreferencesUtils;
-import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -69,19 +68,5 @@ public class MoneyPacketActivity extends BaseActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 		EventBus.getDefault().unregister(this);
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		MobclickAgent.onPageStart(this.getClass().getName());
-		MobclickAgent.onResume(this);
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		MobclickAgent.onPageEnd(this.getClass().getName());
-		MobclickAgent.onPause(this);
 	}
 }

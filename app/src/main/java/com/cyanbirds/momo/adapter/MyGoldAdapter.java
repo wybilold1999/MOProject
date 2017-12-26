@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -44,8 +45,8 @@ public class MyGoldAdapter extends
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final MemberBuy memberBuy = mMemberBuys.get(position);
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        MemberBuy memberBuy = mMemberBuys.get(position);
         if (memberBuy == null) {
             return;
         }

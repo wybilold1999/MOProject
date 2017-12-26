@@ -45,6 +45,7 @@ import com.cyanbirds.momo.net.request.UpdateGoldRequest;
 import com.cyanbirds.momo.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.momo.utils.StringUtil;
 import com.dl7.tag.TagLayout;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -175,6 +176,10 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	TextView mCity;
 	@BindView(R.id.is_vip)
 	ImageView mIsVip;
+	@BindView(R.id.tv_friend)
+	TextView mTvFriend;
+	@BindView(R.id.card_friend)
+	CardView mCardFriend;
 	@BindView(R.id.city_lay)
 	RelativeLayout mCityLay;
 
@@ -192,12 +197,11 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	private ClientUser clientUser;
 	private List<String> mVals = null;
 	private List<String> mPhotoList;
+	private DecimalFormat mFormat = new DecimalFormat("#.00");
 
 	private TabPersonalPhotosAdapter mAdapter;
 	private LinearLayoutManager layoutManager;
 	private LinearLayoutManager mGiftLayoutManager;
-//	private Gson gson = new Gson();
-	private DecimalFormat mFormat;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -217,7 +221,6 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 		if (parent != null) {
 			parent.removeView(rootView);
 		}
-		ButterKnife.bind(this, rootView);
 		return rootView;
 	}
 
@@ -259,7 +262,6 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	}
 
 	private void setupData() {
-		mFormat = new DecimalFormat("#.00");
 		mVals = new ArrayList<>();
 		if (getArguments() != null) {
 			clientUser = (ClientUser) getArguments().getSerializable(ValueKey.ACCOUNT);
@@ -303,6 +305,13 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 				} else {
 					mGiftText.setVisibility(View.GONE);
 					mGiftCard.setVisibility(View.GONE);
+				}
+				if (AppManager.getClientUser().isShowLovers) {
+					mCardFriend.setVisibility(View.VISIBLE);
+					mTvFriend.setVisibility(View.VISIBLE);
+				} else {
+					mCardFriend.setVisibility(View.GONE);
+					mTvFriend.setVisibility(View.GONE);
 				}
 			}
 		}
@@ -596,21 +605,27 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		mapView.onDestroy();
+		if (mapView != null) {
+			mapView.onDestroy();
+		}
 		EventBus.getDefault().unregister(this);
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		mapView.onResume();
+		if (mapView != null) {
+			mapView.onResume();
+		}
 		MobclickAgent.onPageStart(this.getClass().getName());
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		mapView.onPause();
+		if (mapView != null) {
+			mapView.onPause();
+		}
 		MobclickAgent.onPageEnd(this.getClass().getName());
 	}
 
@@ -651,20 +666,10 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 			} else {
 				mMyLocation.setVisibility(View.GONE);
 				mMapCard.setVisibility(View.GONE);
-//				ToastUtil.showMessage(R.string.no_result);
 			}
-		} else if (rCode == 27) {
-			mMyLocation.setVisibility(View.GONE);
-			mMapCard.setVisibility(View.GONE);
-//			ToastUtil.showMessage(R.string.error_network);
-		} else if (rCode == 32) {
-			mMyLocation.setVisibility(View.GONE);
-			mMapCard.setVisibility(View.GONE);
-//			ToastUtil.showMessage(R.string.error_key);
 		} else {
 			mMyLocation.setVisibility(View.GONE);
 			mMapCard.setVisibility(View.GONE);
-//			ToastUtil.showMessage(getString(R.string.error_other) + rCode);
 		}
 	}
 

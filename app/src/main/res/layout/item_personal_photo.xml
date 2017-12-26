@@ -8,10 +8,11 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/photo"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="5dp"
         android:contentDescription="@null"
-        android:layout_centerInParent="true"
         app:actualImageScaleType="centerCrop"
         app:failureImage="@mipmap/default_pic"
         app:placeholderImage="@mipmap/default_pic"

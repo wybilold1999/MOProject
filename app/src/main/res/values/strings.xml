@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">茉茉交友</string>
+    <string name="app_name">同城有缘交友</string>
+    <string name="app_name_short">同城交友</string>
     <string name="setting">设置</string>
     <string name="about">关于</string>
 
@@ -32,7 +33,6 @@
     <string name="attention">关注</string>
     <string name="attentioned">已关注</string>
     <string name="my_attention">我的关注</string>
-    <string name="my_visitor">我的访客</string>
     <string name="my_gifts">我的礼物</string>
     <string name="send_red_packet">发红包</string>
     <string name="who_attention_me">谁关注我</string>
@@ -42,8 +42,6 @@
     <string name="user_info">用户信息</string>
     <string name="personal_setting">个人设置</string>
     <string name="personal_signature">个性签名</string>
-    <string name="personal_info">个人信息</string>
-    <string name="personal_photos">个人相册</string>
     <string name="select_image">选择图片</string>
     <string name="image_scan">图片浏览</string>
     <string name="lovers_service">红娘尊贵服务</string>
@@ -52,7 +50,11 @@
     <string name="party_detail">活动详情</string>
     <string name="tv_party_detail">【活动详情】</string>
     <string name="party_img">【活动图片】</string>
+    <string name="reward">抽奖活动</string>
+    <string name="reward_info">抽奖活动说明：\n\n 1、购买套餐达200元，可以进行3次抽奖 \n 2、活动截止日期2017-03-31</string>
+    <string name="recommend">推荐用户失败,请重新获取</string>
 
+    <string name="phone_un_register">该手机号码还未注册过该软件，请先注册</string>
     <string name="regist_params_error">注册参数错误，请检查</string>
     <string name="dynamic_content_hint">表达一下此刻的心情吧...</string>
     <string name="real_name">真实姓名</string>
@@ -70,7 +72,6 @@
     <string name="identified">已认证</string>
     <string name="submit">提交审核</string>
     <string name="org_price">原价%1$d金币</string>
-    <string name="vip_limit">%1$s个月</string>
     <string name="gift_market">礼物商城</string>
     <string name="gift">礼物</string>
     <string name="send_gift_success">赠送礼物成功，等待TA向你发出约会邀请吧</string>
@@ -95,7 +96,6 @@
     <string name="intrest">我的兴趣</string>
     <string name="turn_on_to_vip">只对会员开放</string>
     <string name="tab_photo_tips">还未上传过照片哦</string>
-    <string name="tab_video_tips">还未上传过视频哦</string>
     <string name="quit">退出</string>
     <string name="new_version">检测到有新版本</string>
     <string name="download">下载</string>
@@ -147,8 +147,6 @@
     <string name="bangding_success">绑定成功</string>
     <string name="bangding_faile">绑定失败</string>
     <string name="modify_user_info">完善资料,让更多人认识您</string>
-    <string name="college">教育程度</string>
-    <string name="city">城市</string>
     <string name="qq">QQ号</string>
     <string name="weixin">微信号</string>
     <string name="ali_pay">支付宝支付(推荐)</string>
@@ -156,8 +154,7 @@
     <string name="pay_info_ali">额外赠送%1$s金币</string>
     <string name="pay_info">立减%1$s元</string>
     <string name="weixin_pay">微信支付</string>
-    <string name="right_now_pay">立即支付</string>
-    <string name="send_telephone_fare">(送%1$s元话费)</string>
+    <string name="send_telephone_fare">(送%1$d元话费)</string>
     <string name="pay_type">请选择支付方式</string>
     <string name="location_symbol">[位置]</string>
     <string name="file_symbol">[文件]</string>
@@ -165,20 +162,22 @@
     <string name="voice_symbol">[语音]</string>
     <string name="voip_symbol">[电话]</string>
     <string name="rpt_symbol">[红包]</string>
-    <string name="un_send_msg">您还不是会员,不能发送消息,立即开通会员？</string>
-    <string name="see_more_data">您还不是会员,暂时只能查看前10位关注了您的用户,查看更多，立即开通会员？</string>
+    <string name="reward_count_over">您的抽奖次数已经用完，继续购买套餐又可获得3次抽奖机会</string>
+    <string name="no_reward_count">您的抽奖次数为0，购买套餐可获得3次抽奖机会</string>
     <string name="see_more_send_gift_data">您还不是会员,暂时只能查看前10位给您送礼物的用户,查看更多，立即开通会员？</string>
-    <string name="no_gold_un_send_msg">发送消息需账户中金币数量大于100，您账户中金币数量暂时不足，请先购买</string>
+    <string name="see_more_data">您还不是会员,，暂时只能查看前10位关注了您的用户，查看更多，立即开通会员？</string>
+    <string name="un_send_msg">您还不是会员,不能发送消息,立即开通会员？</string>
+    <string name="un_select_distance">您还不是会员,不能选择距离自己的范围,立即开通会员？</string>
     <string name="un_see_attention_and_love">查看更多,立即开通会员？</string>
     <string name="turn_vip">该视频只能是会员才可以观看,请先开通会员</string>
     <string name="buy_gold">查看该视频需要消耗%1$d枚金币,你的金币数量不足,请先购买</string>
     <string name="no_gold">你的金币数量不足,请先购买</string>
+    <string name="un_call">亲,升级VIP即可给所有人打电话,立即开通会员？</string>
+    <string name="un_see_video">亲,升级VIP即可观看所有人的视频,立即开通会员？</string>
     <string name="social_id_need_vip">您还不是会员,不能查看%1$s号,立即开通会员？</string>
     <string name="social_id_need_gold">查看%1$s号需账户中有金币，您账户中暂时无金币，请先购买</string>
     <string name="social_id_need_more_gold">查看%1$s号需账户中金币数量大于100，您账户中金币数量暂时不足，请先购买</string>
-    <string name="buy_gift">亲,升级VIP即可无限制赠送礼物,立即开通会员？</string>
-    <string name="un_call">亲,升级VIP即可给所有人打电话,立即开通会员？</string>
-    <string name="un_see_video">亲,升级VIP即可观看所有人的视频,立即开通会员？</string>
+    <string name="no_gold_un_send_msg">您账户中金币数量不足，暂时不能发送消息，购买金币即可无限畅聊</string>
     <string name="upload_portrait_tips">上传头像才能让更多人认识您</string>
     <string name="upload">上传</string>
     <string name="upload_success">上传成功</string>
@@ -210,12 +209,10 @@
     <string name="create_order_faiure">生成订单失败</string>
     <string name="input_msg">输入消息...</string>
     <string name="no_more_data">没有更多数据了</string>
-    <string name="social_id">联系方式</string>
-    <string name="see_more">查看更多(8/%1$d)</string>
     <string name="search">筛选</string>
     <string name="search_option">筛选条件</string>
     <string name="notification_tips">%1$d个联系人发来%2$d条消息</string>
-    <string name="init_official_message">与世界格格不入,但与你却惺惺相惜;在这里,与你相遇,相识,相知,相爱,相守一辈子。</string>
+    <string name="init_official_message">如今您的气质里，藏着您走过的路，读过的书和爱过的人，在这里遇见您可爱的TA</string>
     <string name="weibosdk_demo_toast_auth_success">授权成功</string>
     <string name="weibosdk_demo_toast_auth_failed">授权失败</string>
     <string name="weibosdk_demo_toast_auth_canceled">取消授权</string>
@@ -236,19 +233,14 @@
     <string name="get_balance_tip">账户余额需要满100元才能提现</string>
     <string name="exit_tips">别按了,再按就要离开您了</string>
     <string name="click_count_has_used">好厉害，今天已经赚了%1$d元，明天再继续赚吧</string>
-    <string name="already_download_vip">您已经是赚钱会员了哦!</string>
-    <string name="no_download_vip">您还不是赚钱会员哦，赶快开通会员去赚钱吧!</string>
-    <string name="already_download_vip_tips">您已经是赚钱会员了，赶快去下载赚钱吧</string>
-    <string name="between_lovers_vip">您已经是红娘尊贵会员了，摆脱单身指日可待</string>
     <string name="get_banlance">提现申请最少100元，必须为100的整数倍</string>
-    <string name="reward">抽奖活动</string>
-    <string name="reward_count_over">您的抽奖次数已经用完，继续购买套餐又可获得3次抽奖机会</string>
-    <string name="no_reward_count">您的抽奖次数为0，购买套餐可获得3次抽奖机会</string>
+    <string name="account_banlance">账户余额:%1$d元</string>
+    <string name="today_money">今日已赚:%1$d元</string>
+    <string name="get_read_phone_state">禁止后将无法使用聊天功能，是否重新获取？</string>
     <string name="access_location">获取您的位置后才能更精确的查看附近用户，是否获取？</string>
     <string name="open_location">获取您的位置后才能才能更精确的查看附近用户,请在权限选项中打开位置权限</string>
     <string name="open_camera_permission">打开相机权限才能拍照,请在权限选项中打开相机权限</string>
     <string name="open_write_external">获取存储权限后才能拍照,请在权限选项中打开存储权限</string>
-    <string name="phone_un_register">该手机号码还未注册过该软件，请先注册</string>
     <string name="calling">%1$s正在来电中...</string>
     <string name="decline_call">已拒绝来电</string>
     <string name="no_vip_receive_calling">您还不是会员,暂时无法接听,立即开通会员接听来电?</string>
@@ -274,6 +266,11 @@
     <string name="un_receive_rpt">您还不是会员,不能领取红包,立即开通会员领取红包？</string>
     <string name="un_receive_rpt_for_no_download">您还不是赚钱会员,不能领取红包,立即开通赚钱会员领取红包？</string>
     <string name="no_gold_un_receive_rpt">领取红包需账户中金币数量大于100，您账户中金币数量暂时不足，立即购买金币来领取红包？</string>
+    <string name="revoke_pkt">确定撤回该红包吗？</string>
+    <string name="receive_pkt">该红包已领</string>
+    <string name="revoked_pkt">该红包已被撤回</string>
+    <string name="chat_count_three">您的免费聊天次数还剩余3次</string>
+    <string name="chat_count_zero_bak">您的免费聊天次数已经用完，会员可无限畅聊，立即开通会员？</string>
 
     <string name="errcode_success">发送成功</string>
     <string name="errcode_cancel">发送取消</string>
@@ -342,8 +339,25 @@
     <string name="output_money_vip">您还不是会员，暂时不能提现，立即开通会员提现</string>
     <string name="output_money_gold">您账户中金币数量不足，暂时不能提现，购买金币即可提现</string>
 
+    <string name="reward_ing">抽奖活动火热进行中:</string>
+    <string name="reward_need">1.每次购买任意套餐达%1$d元，可以进行%2$d次抽奖</string>
+
     <string name="love_name"><Data><![CDATA[<b>%1$s</b> 喜欢了您哦！]]></Data></string>
     <string name="send_msg">发送消息</string>
     <string name="going_find">继续寻觅</string>
+
+    <string name="tab_contacts">通讯录</string>
+    <string name="personal_info">个人信息</string>
+    <string name="feed_back">反馈</string>
+    <string name="submit_success">提交成功</string>
+    <string name="input_hint">请输入您宝贵的意见或建议</string>
+    <string name="already_download">已下载</string>
+    <string name="download_failure">下载失败</string>
+    <string name="sticker_market">贴图商店</string>
+    <string name="action_delete_friends">删除好友</string>
+    <string name="action_add_friends">添加好友</string>
+    <string name="action_add_friends_success">添加好友成功</string>
+    <string name="phone_register">手机注册</string>
+    <string name="please_input_suggestion">您还未输入意见或建议</string>
 
 </resources>

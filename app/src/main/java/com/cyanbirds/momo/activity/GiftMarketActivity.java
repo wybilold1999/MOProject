@@ -123,9 +123,9 @@ public class GiftMarketActivity extends BaseActivity implements View.OnClickList
 		mGiftDialogView = LayoutInflater.from(this).inflate(R.layout.dialog_send_gift, null);
 		mGiftName = (TextView) mGiftDialogView.findViewById(R.id.gift_name);
 		mGiftUrl = (SimpleDraweeView) mGiftDialogView.findViewById(R.id.gift_url);
+		mAmount = (TextView) mGiftDialogView.findViewById(R.id.amount);
 		mVip = (ImageView) mGiftDialogView.findViewById(R.id.iv_vip);
 		mVipLay = (LinearLayout)  mGiftDialogView.findViewById(R.id.vip_lay);
-		mAmount = (TextView) mGiftDialogView.findViewById(R.id.amount);
 		mVipAmount = (TextView) mGiftDialogView.findViewById(R.id.vip_amount);
 		mMyPortrait = (SimpleDraweeView) mGiftDialogView.findViewById(R.id.my_portrait);
 		mOtherPortrait = (SimpleDraweeView) mGiftDialogView.findViewById(R.id.other_portrait);

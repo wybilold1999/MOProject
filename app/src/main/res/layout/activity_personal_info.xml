@@ -102,8 +102,8 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabIndicatorColor="@color/color_theme"
-            app:tabSelectedTextColor="@color/color_theme"
+            app:tabIndicatorColor="@color/colorPrimary"
+            app:tabSelectedTextColor="@color/colorPrimary"
             app:tabTextColor="@android:color/black"/>
 
         <View

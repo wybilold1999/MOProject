@@ -126,6 +126,7 @@ public class MessageAdapter extends
                 clientUser.face_local = conversation.localPortrait;
                 clientUser.user_name = conversation.talkerName;
                 clientUser.userId = conversation.talker;
+                clientUser.face_url = conversation.faceUrl;
                 intent.putExtra(ValueKey.USER, clientUser);
                 mContext.startActivity(intent);
                 mUnreadCount.setVisibility(View.GONE);

@@ -105,11 +105,11 @@
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="fbe36160957cf56df2d658174f8f6136" />
+            android:value="fa3cd64cbf5d7d2e943e97eb74faeb37" />
 
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="592ab9318630f50a79000442"/>
+            android:value="598c2b2ff43e484b69001f56"/>
 
         <meta-data
             android:name="UMENG_CHANNEL"
@@ -137,7 +137,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme="tencent1105980496"/>
+                <data android:scheme="tencent1105589350"/>
             </intent-filter>
         </activity>
 
@@ -201,11 +201,17 @@
         <activity
             android:name=".activity.LoginActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/login"
+            android:label="@string/login_register"
             android:screenOrientation="portrait"/>
 
         <activity
             android:name=".activity.MainActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:label="@string/login_register"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".activity.MainNewActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="@string/login_register"
             android:screenOrientation="portrait"/>
@@ -338,6 +344,11 @@
             android:label="@string/publish_dynamic"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".activity.RadarActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:label="@string/find_yuan_fen"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".activity.CardActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="@string/yuan_fen"
@@ -458,6 +469,40 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity
+            android:name=".activity.ContactInfoActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="@string/personal_info"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".activity.FeedBackActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="adjustResize"
+            android:label="@string/feed_back"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".activity.ModifyUserInfoNewActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:label="@string/modify_info"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".activity.DownloadExpressionActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:label="@string/sticker_market"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".activity.ExpressionActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:label="@string/sticker_market"
+            android:screenOrientation="portrait"/>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.cyanbirds.momo.fileProvider"
@@ -467,7 +512,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
 
         <!-- *****************************ECSDK核心服务类 （必须配置）Start******************************************** -->
         // SDK核心服务配置(必选配置)
@@ -518,12 +562,6 @@
         // *****************************ECSDK核心服务类 End*******************************************
         // 应用处理程序逻辑服务
         <service android:name=".receiver.YuntxNotifyReceiver$NotifyService" />
-
-        //下载主apk的service
-        <service android:name=".service.DownloadUpdateService"/>
-
-        //下载apk的service
-        <service android:name=".service.DownloadAppService"/>
 
         //====================小米推送开始=================================
         <service
@@ -659,8 +697,6 @@
 
         //====================极光推送开始=================================
 
-        <meta-data android:name="JPUSH_CHANNEL" android:value="developer-default"/>
-        <meta-data android:name="JPUSH_APPKEY" android:value="b46b32a3637ba13da18ea451" />
         <!-- Rich push 核心功能 since 2.0.6-->
         <activity
             android:name="cn.jpush.android.ui.PopWinActivity"
@@ -680,19 +716,12 @@
                 <category android:name="com.cyanbirds.momo" />
             </intent-filter>
         </activity>
-        <!-- Required  SDK核心功能-->
-        <service
-            android:name="cn.jpush.android.service.DownloadService"
-            android:enabled="true"
-            android:exported="false" >
-        </service>
-
 
         <!-- Required SDK 核心功能-->
         <!-- 可配置android:process参数将PushService放在其他进程中 -->
         <service
             android:name="cn.jpush.android.service.PushService"
-            android:enabled="true"
+            android:process=":mult"
             android:exported="false">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.REGISTER" />
@@ -732,9 +761,9 @@
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
                 <data android:scheme="package" />
             </intent-filter>
-
         </receiver>
 
         <!-- Required SDK核心功能-->
@@ -750,13 +779,21 @@
                 <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" /> <!--Required  用户接收SDK消息的intent-->
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" /> <!--Required  用户接收SDK通知栏信息的intent-->
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" /> <!--Required  用户打开自定义通知栏的intent-->
-                <action android:name="cn.jpush.android.intent.ACTION_RICHPUSH_CALLBACK" /> <!--Optional 用户接受Rich Push Javascript 回调函数的intent-->
                 <action android:name="cn.jpush.android.intent.CONNECTION" /><!-- 接收网络变化 连接/断开 since 1.6.3 -->
                 <category android:name="com.cyanbirds.momo" />
             </intent-filter>
         </receiver>
 
+        <!-- Required  . Enable it you can get statistics data with channel -->
+        <meta-data android:name="JPUSH_CHANNEL" android:value="developer-default"/>
+        <meta-data android:name="JPUSH_APPKEY" android:value="b46b32a3637ba13da18ea451" /> <!--  </>值来自开发者平台取得的AppKey-->
+
         //====================极光推送结束=================================
+
+        //====================魅族推送开始=================================
+
+        //====================魅族推送结束=================================
+
 
         <receiver android:name=".receiver.NotificationReceiver"/>
     </application>

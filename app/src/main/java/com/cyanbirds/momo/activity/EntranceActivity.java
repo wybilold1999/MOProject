@@ -15,6 +15,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.umeng.analytics.MobclickAgent;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.config.ValueKey;
@@ -23,7 +24,6 @@ import com.cyanbirds.momo.eventtype.LocationEvent;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.request.GetCityInfoRequest;
 import com.cyanbirds.momo.utils.PreferencesUtils;
-import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -202,7 +202,7 @@ public class EntranceActivity extends BaseActivity implements AMapLocationListen
         }
     }
 
-    private void showAccessLocationDialog(){
+    private void showAccessLocationDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.access_location);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -211,7 +211,7 @@ public class EntranceActivity extends BaseActivity implements AMapLocationListen
                 dialog.dismiss();
                 isSecondAccess = true;
                 if (Build.VERSION.SDK_INT >= 23) {
-                    ActivityCompat.requestPermissions(EntranceActivity.this, new String[] {android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    ActivityCompat.requestPermissions(EntranceActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                             REQUEST_LOCATION_PERMISSION);
                 }
             }

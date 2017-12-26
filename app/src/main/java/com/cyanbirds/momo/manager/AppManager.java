@@ -19,6 +19,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 import com.alibaba.sdk.android.oss.OSS;
+import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.entity.FederationToken;
@@ -30,7 +31,6 @@ import com.cyanbirds.momo.net.PictureService;
 import com.cyanbirds.momo.net.UserService;
 import com.cyanbirds.momo.net.VideoService;
 import com.cyanbirds.momo.utils.PreferencesUtils;
-import com.tencent.mm.sdk.openapi.IWXAPI;
 
 import java.io.File;
 import java.io.InputStreamReader;
@@ -81,7 +81,6 @@ public class AppManager {
 
 	private static IWXAPI sIWX_PAY_API;
 	private static IWXAPI sIWXAPI;
-
 
 	private static ExecutorService mExecutorService;
 
@@ -417,22 +416,6 @@ public class AppManager {
 		return strUUID;
 	}
 
-	public static IWXAPI getIWX_PAY_API() {
-		return sIWX_PAY_API;
-	}
-
-	public static void setIWX_PAY_API(IWXAPI IWX_PAY_API) {
-		sIWX_PAY_API = IWX_PAY_API;
-	}
-
-	public static IWXAPI getIWXAPI() {
-		return sIWXAPI;
-	}
-
-	public static void setIWXAPI(IWXAPI IWXAPI) {
-		sIWXAPI = IWXAPI;
-	}
-
 	/**
 	 * 是否登录判读
 	 * 
@@ -515,6 +498,22 @@ public class AppManager {
 	public static String getOSSFacePath() {
 		String path = "tan_love/img/tl_" + getUUID() + ".jpg";
 		return path;
+	}
+
+	public static IWXAPI getIWXAPI() {
+		return sIWXAPI;
+	}
+
+	public static void setIWXAPI(IWXAPI IWXAPI) {
+		sIWXAPI = IWXAPI;
+	}
+
+	public static IWXAPI getIWX_PAY_API() {
+		return sIWX_PAY_API;
+	}
+
+	public static void setIWX_PAY_API(IWXAPI IWX_PAY_API) {
+		sIWX_PAY_API = IWX_PAY_API;
 	}
 
 	/**

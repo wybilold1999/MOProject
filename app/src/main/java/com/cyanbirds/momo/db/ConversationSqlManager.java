@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.db.base.DBManager;
-import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.entity.Conversation;
 import com.cyanbirds.momo.greendao.ConversationDao;
 import com.cyanbirds.momo.listener.MessageChangedListener;
@@ -94,8 +93,10 @@ public class ConversationSqlManager extends DBManager {
 	 * 根据id查询会话
 	 * @return
 	 */
-	public Conversation queryConversationForById(String conversationId) {
-		return null;
+	public Conversation queryConversationForById(long conversationId) {
+		QueryBuilder<Conversation> qb = conversationDao.queryBuilder();
+		qb.where(ConversationDao.Properties.Id.eq(conversationId));
+		return qb.unique();
 	}
 
 	/**
@@ -130,7 +131,7 @@ public class ConversationSqlManager extends DBManager {
 
 	/**
 	 * 删除所有会话
-	 *
+	 * 
 	 * @return
 	 */
 	public void deleteAllConversation() {
@@ -156,27 +157,25 @@ public class ConversationSqlManager extends DBManager {
 	 * @param ecMessage
 	 * @return
 	 */
-	public long insertConversation(ClientUser clientUser, ECMessage ecMessage) {
+	public long insertConversation(ECMessage ecMessage) {
 		String talker = "";
 		String sender = "";
 		String talkerName = "";
 		String portraitUrl = "";
 		boolean isSend = false;
+		String[] userInfo = ecMessage.getUserData().split(";");
 		if (ecMessage.getDirection() == ECMessage.Direction.SEND) {
 			isSend = true;
 		}
 		if (isSend) {
-			talker = ecMessage.getTo();
-			sender = ecMessage.getForm();
-			talkerName = clientUser.user_name;
-			portraitUrl = clientUser.face_url;
+			talker = userInfo[3];
+			talkerName = userInfo[4];
+			portraitUrl = userInfo[5];
 		} else {
-			talker = ecMessage.getForm();
-			sender = ecMessage.getTo();
-			String[] userInfo = ecMessage.getUserData().split(";");
 			if (userInfo.length > 1) {
-				portraitUrl = userInfo[1];
-				talkerName = userInfo[0];
+				talker = userInfo[0];
+				talkerName = userInfo[1];
+				portraitUrl = userInfo[2];
 			}
 		}
 		//根据talker去查询有没有对应的会话
@@ -187,6 +186,7 @@ public class ConversationSqlManager extends DBManager {
 		conversation.talker = talker;
 		conversation.talkerName = talkerName;
 		conversation.createTime = ecMessage.getMsgTime();
+		conversation.faceUrl = portraitUrl;
 		if (!isSend && !"com.cyanbirds.momo.activity.ChatActivity".equals(AppManager.getTopActivity(mContext))) {
 			conversation.unreadCount++;
 		}
@@ -204,9 +204,9 @@ public class ConversationSqlManager extends DBManager {
 			conversation.type = ECMessage.Type.LOCATION.ordinal();
 		} else if (ecMessage.getType() == ECMessage.Type.FILE) {
 
-		} else if (ecMessage.getType() == ECMessage.Type.RICH_TEXT) {
+		} else if (ecMessage.getType() == ECMessage.Type.STATE) {
 			conversation.content = CSApplication.getInstance().getResources().getString(R.string.rpt_symbol);
-			conversation.type = ECMessage.Type.RICH_TEXT.ordinal();
+			conversation.type = ECMessage.Type.STATE.ordinal();
 		}
 		long id = conversationDao.insertOrReplace(conversation);
 		conversation.id = id;

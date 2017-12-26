@@ -4,8 +4,6 @@ import android.support.v4.util.ArrayMap;
 
 import com.cyanbirds.momo.config.AppConstants;
 
-import java.util.Map;
-
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -231,7 +229,7 @@ public interface UserService {
     Call<ResponseBody> getCityInfo();
 
     /**
-     * 获取微信登录和支付id
+     * 获取微信id
      * @return
      */
     @GET("user/getIdKeys")
@@ -241,4 +239,20 @@ public interface UserService {
     @POST("memberOrders/outputMoney")
     Call<ResponseBody> outputMoney(@Header("token") String token, @FieldMap ArrayMap<String, String> params);
 
+    /**
+     * 获取通讯录
+     * @param token
+     * @param params
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("user/contactList")
+    Call<ResponseBody> getContactList(@Header("token") String token, @FieldMap ArrayMap<String, String> params);
+
+    /**
+     * 获取表情组
+     * @return
+     */
+    @GET("expression/getExpressionGroup")
+    Call<ResponseBody> getExpressionGroup();
 }

@@ -1,7 +1,6 @@
 package com.cyanbirds.momo.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
@@ -11,16 +10,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.cyanbirds.momo.R;
-import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.db.MyGoldDaoManager;
 import com.cyanbirds.momo.entity.ApkInfo;
 import com.cyanbirds.momo.entity.Gold;
 import com.cyanbirds.momo.eventtype.MakeMoneyEvent;
 import com.cyanbirds.momo.eventtype.SnackBarEvent;
 import com.cyanbirds.momo.manager.AppManager;
-import com.cyanbirds.momo.service.DownloadAppService;
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -126,13 +123,6 @@ public class DownloadAppAdapter extends
                     gold.downloadTime = System.currentTimeMillis();
                     MyGoldDaoManager.getInstance(mContext).updateGold(gold);
                     EventBus.getDefault().post(new SnackBarEvent());
-
-					/**
-					 * 开启服务下载app
-                     */
-                    Intent intent = new Intent(mContext, DownloadAppService.class);
-                    intent.putExtra(ValueKey.DATA, mApkInfos.get(getAdapterPosition()));
-                    mContext.startService(intent);
                 }
             } else {//不是赚钱会员，每天只允许点一次；点第二次的时候提示不是赚钱会员
                 if (System.currentTimeMillis() > gold.downloadTime + daySpan) {
@@ -140,10 +130,6 @@ public class DownloadAppAdapter extends
                     gold.downloadTime = System.currentTimeMillis();
                     MyGoldDaoManager.getInstance(mContext).updateGold(gold);
                     EventBus.getDefault().post(new SnackBarEvent());
-
-                    Intent intent = new Intent(mContext, DownloadAppService.class);
-                    intent.putExtra(ValueKey.DATA, mApkInfos.get(getAdapterPosition()));
-                    mContext.startService(intent);
                 } else {
                     EventBus.getDefault().post(new MakeMoneyEvent());
                 }

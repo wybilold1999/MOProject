@@ -4,7 +4,6 @@ import android.support.v4.util.ArrayMap;
 
 import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
-import com.cyanbirds.momo.entity.YuanFenModel;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.base.ResultPostExecute;
 import com.cyanbirds.momo.utils.AESOperator;
@@ -76,7 +75,7 @@ public class GetUserPictureRequest extends ResultPostExecute<List<String>> {
                 return;
             }
             String dataString = obj.get("data").getAsString();
-            Type listType = new TypeToken<ArrayList<YuanFenModel>>() {
+            Type listType = new TypeToken<ArrayList<String>>() {
             }.getType();
             Gson gson = new Gson();
             List<String> urls = gson.fromJson(dataString, listType);

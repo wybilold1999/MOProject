@@ -62,7 +62,7 @@
     </style>
 
     <style name="Theme.AppStartLoad" parent="Theme.AppCompat">
-        <item name="android:windowBackground">@mipmap/lancher_img</item>
+        <item name="android:windowBackground">@mipmap/launcher_img</item>
         <item name="android:windowNoTitle">true</item>
     </style>
 

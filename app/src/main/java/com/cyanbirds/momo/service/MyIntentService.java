@@ -75,6 +75,7 @@ public class MyIntentService extends GTIntentService {
 	@Override
 	public void onReceiveCommandResult(Context context, GTCmdMessage cmdMessage) {
 		int action = cmdMessage.getAction();
+
 		if (action == PushConsts.SET_TAG_RESULT) {
 			setTagResult((SetTagCmdMessage) cmdMessage);
 		} else if ((action == PushConsts.THIRDPART_FEEDBACK)) {

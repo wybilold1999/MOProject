@@ -20,7 +20,6 @@ import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.LoveParty;
 import com.cyanbirds.momo.entity.PayResult;
 import com.cyanbirds.momo.entity.WeChatPay;
-import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.request.CreateOrderRequest;
 import com.cyanbirds.momo.net.request.GetAliPayOrderInfoRequest;
 import com.cyanbirds.momo.utils.StringUtil;
@@ -190,14 +189,14 @@ public class PartyDetailActivity extends BaseActivity {
 		@Override
 		public void onPostExecute(WeChatPay weChatPay) {
 			PayReq payReq = new PayReq();
-			payReq.appId = AppConstants.WEIXIN_PAY_ID;
+			payReq.appId = AppConstants.WEIXIN_ID;
 			payReq.partnerId = weChatPay.mch_id;
 			payReq.prepayId = weChatPay.prepay_id;
 			payReq.packageValue = "Sign=WXPay";
 			payReq.nonceStr = weChatPay.nonce_str;
 			payReq.timeStamp = weChatPay.timeStamp;
 			payReq.sign = weChatPay.appSign;
-			AppManager.getIWX_PAY_API().sendReq(payReq);
+			CSApplication.api.sendReq(payReq);
 		}
 
 		@Override

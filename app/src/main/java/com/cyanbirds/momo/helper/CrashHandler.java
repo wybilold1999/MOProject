@@ -14,7 +14,6 @@ import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.request.UploadCrashRequest;
 import com.cyanbirds.momo.utils.CheckUtil;
 import com.cyanbirds.momo.utils.FileAccessorUtils;
-import com.cyanbirds.momo.utils.NetworkUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -137,10 +136,6 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 		//CPU架构
 		pw.print("CPU ABI：");
 		pw.println(Build.CPU_ABI);
-
-		//网络环境
-		pw.print("NETWORK：");
-		pw.println(NetworkUtils.getNetType(mContext));
 
 	}
 

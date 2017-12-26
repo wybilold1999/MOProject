@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
@@ -17,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -85,8 +87,6 @@ public class ShareLocationActivity extends BaseActivity implements
 
 	private DialogInterface mDialog;
 
-	private Handler handler = new Handler();
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -96,7 +96,7 @@ public class ShareLocationActivity extends BaseActivity implements
 		setupViews();
 		setupData();
 		mapView.onCreate(savedInstanceState);// 此方法必须重写
-		init();
+		initMap();
 		setupEvent();
 	}
 
@@ -139,7 +139,7 @@ public class ShareLocationActivity extends BaseActivity implements
 	/**
 	 * 初始化AMap对象
 	 */
-	private void init() {
+	private void initMap() {
 		aMap = mapView.getMap();
 		mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
 		mUiSettings.setZoomControlsEnabled(false);
@@ -205,6 +205,7 @@ public class ShareLocationActivity extends BaseActivity implements
 		super.onDestroy();
 		mapView.onDestroy();
 	}
+
 
 	@Override
 	public void onLocationChanged(AMapLocation location) {

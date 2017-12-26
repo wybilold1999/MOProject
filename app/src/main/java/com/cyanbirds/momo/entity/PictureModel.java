@@ -43,5 +43,9 @@ public class PictureModel implements Serializable{
 	public boolean isVip;
 	/** 用户所在城市 */
 	public String city;
+	/** 年龄 */
+	public String age;
+	/** 星座 */
+	public String constellation;
 
 }

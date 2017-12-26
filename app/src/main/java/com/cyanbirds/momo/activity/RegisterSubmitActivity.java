@@ -107,12 +107,18 @@ public class RegisterSubmitActivity extends BaseActivity implements
 					.getClientUser().userId));
 			clientUser.userPwd = mClientUser.userPwd;
 			clientUser.currentCity = mClientUser.currentCity;
+			clientUser.isShowNormal = AppManager.getClientUser().isShowNormal;
 			AppManager.setClientUser(clientUser);
 			AppManager.saveUserInfo();
 			AppManager.getClientUser().loginTime = System.currentTimeMillis();
 			PreferencesUtils.setLoginTime(RegisterSubmitActivity.this, System.currentTimeMillis());
 			IMChattingHelper.getInstance().sendInitLoginMsg();
-			Intent intent = new Intent(RegisterSubmitActivity.this, MainActivity.class);
+			Intent intent = new Intent();
+			if (AppManager.getClientUser().isShowNormal) {
+				intent.setClass(RegisterSubmitActivity.this, MainActivity.class);
+			} else {
+				intent.setClass(RegisterSubmitActivity.this, MainNewActivity.class);
+			}
 			startActivity(intent);
 			finishAll();
 		}

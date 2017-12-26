@@ -32,6 +32,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.config.AppConstants;
@@ -42,10 +43,14 @@ import com.cyanbirds.momo.entity.FederationToken;
 import com.cyanbirds.momo.entity.FollowModel;
 import com.cyanbirds.momo.entity.LoveModel;
 import com.cyanbirds.momo.entity.ReceiveGiftModel;
-import com.cyanbirds.momo.fragment.FindLoveFragment;
+import com.cyanbirds.momo.fragment.ContactsFragment;
 import com.cyanbirds.momo.fragment.FoundFragment;
+import com.cyanbirds.momo.fragment.FoundNewFragment;
+import com.cyanbirds.momo.fragment.HomeLoveFragment;
 import com.cyanbirds.momo.fragment.MessageFragment;
+import com.cyanbirds.momo.fragment.MyPersonalFragment;
 import com.cyanbirds.momo.fragment.PersonalFragment;
+import com.cyanbirds.momo.fragment.VideoShowFragment;
 import com.cyanbirds.momo.helper.SDKCoreHelper;
 import com.cyanbirds.momo.listener.MessageUnReadListener;
 import com.cyanbirds.momo.manager.AppManager;
@@ -63,7 +68,6 @@ import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.PushMsgUtil;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.igexin.sdk.PushManager;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.yuntongxun.ecsdk.ECInitParams;
@@ -77,7 +81,6 @@ import cn.jpush.android.api.TagAliasCallback;
 
 public class MainActivity extends BaseActivity implements MessageUnReadListener.OnMessageUnReadListener, AMapLocationListener {
 
-	private String TAG = this.getClass().getSimpleName();
 	private FragmentTabHost mTabHost;
 	private int mCurrentTab;
 	private ClientConfiguration mOSSConf;
@@ -90,9 +93,11 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 	private static final int MSG_SET_TAGS = 1002;//极光推送设置tag
 
 	private long clickTime = 0; //记录第一次点击的时间
+
 	private AMapLocationClientOption mLocationOption;
 	private AMapLocationClient mlocationClient;
 	private boolean isSecondAccess = false;
+	private boolean isSecondRead = false;
 
 	private String curLat;
 	private String curLon;
@@ -122,7 +127,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 
 	public final static String CURRENT_TAB = "current_tab";
 	private static final TableConfig[] tableConfig = new TableConfig[] {
-			new TableConfig(R.string.tab_find_love, FindLoveFragment.class,
+			new TableConfig(R.string.tab_find_love, HomeLoveFragment.class,
 					R.drawable.tab_tao_love_selector),
 			new TableConfig(R.string.tab_found, FoundFragment.class,
 					R.drawable.tab_found_selector),
@@ -143,6 +148,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 		SDKCoreHelper.init(this, ECInitParams.LoginMode.FORCE_LOGIN);
 		updateConversationUnRead();
 
+
 		AppManager.getExecutorService().execute(new Runnable() {
 			@Override
 			public void run() {
@@ -150,6 +156,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 				 * 注册小米推送
 				 */
 				MiPushClient.registerPush(MainActivity.this, AppConstants.MI_PUSH_APP_ID, AppConstants.MI_PUSH_APP_KEY);
+
 				//个推
 				initGeTuiPush();
 
@@ -158,6 +165,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 				loadData();
 
 				initLocationClient();
+
 			}
 		});
 
@@ -227,6 +235,15 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 			ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
 					REQUEST_PERMISSION);
 		}
+
+		boolean readPhoneState =
+				pkgManager.checkPermission(Manifest.permission.READ_PHONE_STATE, getPackageName()) == PackageManager.PERMISSION_GRANTED;
+		if (Build.VERSION.SDK_INT >= 23 && !sdCardWritePermission) {
+			//请求权限
+			ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_PHONE_STATE},
+					REQUEST_PERMISSION);
+		}
+
 	}
 
 	/**
@@ -377,6 +394,9 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 		}
 	}
 
+	/**
+	 * 上传城市信息，用于控制区域显示
+	 */
 	class UploadCityInfoTask extends UploadCityInfoRequest {
 
 		@Override
@@ -438,7 +458,6 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 
 		@Override
 		public void onErrorExecute(String error) {
-			ToastUtil.showMessage(error);
 		}
 	}
 
@@ -524,11 +543,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 	 */
 	private void updateConversationUnRead() {
 		View view;
-		if (AppManager.getClientUser().isShowVideo) {
-			view = mTabHost.getTabWidget().getChildTabViewAt(3);
-		} else {
-			view = mTabHost.getTabWidget().getChildTabViewAt(2);
-		}
+		view = mTabHost.getTabWidget().getChildTabViewAt(2);
 		TextView unread_message_num = (TextView) view
 				.findViewById(R.id.unread_message_num);
 
@@ -548,7 +563,17 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 	@Override
 	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 		if (requestCode == REQUEST_PERMISSION) {
-
+			// 拒绝授权
+			if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+				// 勾选了不再提示
+				if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
+//					showOpenLocationDialog();
+				} else {
+					if (!isSecondRead) {
+						showReadPhoneStateDialog();
+					}
+				}
+			}
 		} else if (requestCode == REQUEST_LOCATION_PERMISSION) {
 			// 拒绝授权
 			if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
@@ -595,6 +620,24 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
 				isSecondAccess = true;
+				if (Build.VERSION.SDK_INT >= 23) {
+					ActivityCompat.requestPermissions(MainActivity.this, new String[] {android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION},
+							REQUEST_LOCATION_PERMISSION);
+				}
+
+			}
+		});
+		builder.show();
+	}
+
+	private void showReadPhoneStateDialog(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.get_read_phone_state);
+		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				isSecondRead = true;
 				if (Build.VERSION.SDK_INT >= 23) {
 					ActivityCompat.requestPermissions(MainActivity.this, new String[] {android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION},
 							REQUEST_LOCATION_PERMISSION);
@@ -672,5 +715,4 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 			initLocationClient();
 		}
 	}
-
 }

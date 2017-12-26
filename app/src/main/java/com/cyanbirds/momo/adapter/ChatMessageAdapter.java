@@ -32,6 +32,7 @@ import com.cyanbirds.momo.activity.PersonalInfoActivity;
 import com.cyanbirds.momo.activity.PhotoViewActivity;
 import com.cyanbirds.momo.activity.VipCenterActivity;
 import com.cyanbirds.momo.config.ValueKey;
+import com.cyanbirds.momo.db.ConversationSqlManager;
 import com.cyanbirds.momo.db.IMessageDaoManager;
 import com.cyanbirds.momo.entity.Conversation;
 import com.cyanbirds.momo.entity.IMessage;
@@ -47,7 +48,6 @@ import com.cyanbirds.momo.utils.ImageUtil;
 import com.cyanbirds.momo.utils.LinkUtil;
 import com.cyanbirds.momo.utils.Md5Util;
 import com.cyanbirds.momo.utils.PreferencesUtils;
-import com.cyanbirds.momo.utils.StringUtil;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -74,6 +74,7 @@ public class ChatMessageAdapter extends
      */
     private ArrayList<String> mShowTimePosition;
     private static Context mContext;
+    private String redPkt[] = null;//红包数据结构:祝福语;金额
 
     public ChatMessageAdapter(Context context, List<IMessage> messages, Conversation mConversation) {
         mContext = context;
@@ -116,10 +117,16 @@ public class ChatMessageAdapter extends
                             .setBackgroundResource(R.drawable.left_bubble_selector);
                     textHolder.message_text.setTextColor(Color.BLACK);
 
-                    if(!TextUtils.isEmpty(mConversation.localPortrait)){
+                    if(null != mConversation && !TextUtils.isEmpty(mConversation.localPortrait)){
                         if (mConversation.localPortrait.startsWith("res")) {
                             textHolder.portrait.setImageURI(Uri.parse(mConversation.localPortrait));
                         } else {
+                            textHolder.portrait.setImageURI(Uri.parse("file://" + mConversation.localPortrait));
+                        }
+                    } else {
+                        mConversation = ConversationSqlManager.getInstance(mContext)
+                                .queryConversationForById(message.conversationId);
+                        if (null != mConversation) {
                             textHolder.portrait.setImageURI(Uri.parse("file://" + mConversation.localPortrait));
                         }
                     }
@@ -227,13 +234,20 @@ public class ChatMessageAdapter extends
                             }
                         }
                     }
-                    if(!TextUtils.isEmpty(mConversation.localPortrait)){
+                    if(null != mConversation && !TextUtils.isEmpty(mConversation.localPortrait)){
                         if (mConversation.localPortrait.startsWith("res")) {
                             imageHolder.portrait.setImageURI(Uri.parse(mConversation.localPortrait));
                         } else {
                             imageHolder.portrait.setImageURI(Uri.parse("file://" + mConversation.localPortrait));
                         }
+                    } else {
+                        mConversation = ConversationSqlManager.getInstance(mContext)
+                                .queryConversationForById(message.conversationId);
+                        if (null != mConversation) {
+                            imageHolder.portrait.setImageURI(Uri.parse("file://" + mConversation.localPortrait));
+                        }
                     }
+
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageHolder.portrait
                             .getLayoutParams();
                     lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT,
@@ -291,10 +305,16 @@ public class ChatMessageAdapter extends
                 locationHolder.message_send_fail.setVisibility(View.GONE);
                 if (message.isSend == IMessage.MessageIsSend.RECEIVING) {
 
-                    if(!TextUtils.isEmpty(mConversation.localPortrait)){
+                    if(null != mConversation && !TextUtils.isEmpty(mConversation.localPortrait)){
                         if (mConversation.localPortrait.startsWith("res")) {
                             locationHolder.portrait.setImageURI(Uri.parse(mConversation.localPortrait));
                         } else {
+                            locationHolder.portrait.setImageURI(Uri.parse("file://" + mConversation.localPortrait));
+                        }
+                    } else {
+                        mConversation = ConversationSqlManager.getInstance(mContext)
+                                .queryConversationForById(message.conversationId);
+                        if (null != mConversation) {
                             locationHolder.portrait.setImageURI(Uri.parse("file://" + mConversation.localPortrait));
                         }
                     }
@@ -350,7 +370,7 @@ public class ChatMessageAdapter extends
                 locationHolder.location_info.setText(message.content);
                 setChatTime(locationHolder.chat_time, message.send_time,
                         showTimer);
-            }else if (message.msgType == IMessage.MessageType.VOIP) {
+            } else if (message.msgType == IMessage.MessageType.VOIP) {
                 // 普通消息
                 VoipViewHolder voipViewHolder = (VoipViewHolder) holder;
                 if (!TextUtils.isEmpty(message.content)) {
@@ -365,10 +385,16 @@ public class ChatMessageAdapter extends
                             .setBackgroundResource(R.drawable.left_bubble_selector);
                     voipViewHolder.message_text.setTextColor(Color.BLACK);
 
-                    if(!TextUtils.isEmpty(mConversation.localPortrait)){
+                    if(null != mConversation && !TextUtils.isEmpty(mConversation.localPortrait)){
                         if (mConversation.localPortrait.startsWith("res")) {
                             voipViewHolder.portrait.setImageURI(Uri.parse(mConversation.localPortrait));
                         } else {
+                            voipViewHolder.portrait.setImageURI(Uri.parse("file://" + mConversation.localPortrait));
+                        }
+                    } else {
+                        mConversation = ConversationSqlManager.getInstance(mContext)
+                                .queryConversationForById(message.conversationId);
+                        if (null != mConversation) {
                             voipViewHolder.portrait.setImageURI(Uri.parse("file://" + mConversation.localPortrait));
                         }
                     }
@@ -425,16 +451,25 @@ public class ChatMessageAdapter extends
                 // 红包消息
                 RedViewHolder redViewHolder = (RedViewHolder) holder;
                 if (!TextUtils.isEmpty(message.content)) {
-                    redViewHolder.message_text.setText(message.content);
+                    redPkt = message.content.split(";");
+                    if (redPkt != null && redPkt.length == 2) {
+                        redViewHolder.message_text.setText(redPkt[0]);
+                    }
                 }
                 redViewHolder.nickname.setVisibility(View.GONE);
                 redViewHolder.message_send_fail.setVisibility(View.GONE);
                 redViewHolder.progress_bar.setVisibility(View.GONE);
                 if (message.isSend == IMessage.MessageIsSend.RECEIVING) {
-                    if(!TextUtils.isEmpty(mConversation.localPortrait)){
+                    if(null != mConversation && !TextUtils.isEmpty(mConversation.localPortrait)){
                         if (mConversation.localPortrait.startsWith("res")) {
                             redViewHolder.portrait.setImageURI(Uri.parse(mConversation.localPortrait));
                         } else {
+                            redViewHolder.portrait.setImageURI(Uri.parse("file://" + mConversation.localPortrait));
+                        }
+                    } else {
+                        mConversation = ConversationSqlManager.getInstance(mContext)
+                                .queryConversationForById(message.conversationId);
+                        if (null != mConversation) {
                             redViewHolder.portrait.setImageURI(Uri.parse("file://" + mConversation.localPortrait));
                         }
                     }
@@ -460,12 +495,12 @@ public class ChatMessageAdapter extends
                                 } else if (AppManager.getClientUser().gold_num < 100) {
                                     showGoldDialog(mContext.getResources().getString(R.string.no_gold_un_receive_rpt));
                                 } else if (message.isRead){
-//                                    ToastUtil.showMessage(R.string.cancel_red_packet);
-                                    ToastUtil.showMessage("红包已领");
+                                    ToastUtil.showMessage(R.string.receive_pkt);
                                 } else {
                                     float count = PreferencesUtils.getMyMoney(mContext);
-                                    PreferencesUtils.setMyMoney(mContext, count + StringUtil.generateRandomValue());
-                                    EventBus.getDefault().post(new SnackBarEvent());
+                                    float moneyPkt = Float.parseFloat(redPkt[1]);
+                                    PreferencesUtils.setMyMoney(mContext, count + moneyPkt);
+                                    EventBus.getDefault().post(new SnackBarEvent(moneyPkt + "元红包已存入您的钱包"));
                                     message.isRead = true;
                                     IMessageDaoManager.getInstance(mContext).updateIMessage(message);
                                     notifyDataSetChanged();
@@ -476,12 +511,12 @@ public class ChatMessageAdapter extends
                                 } else if (AppManager.getClientUser().gold_num < 100) {
                                     showGoldDialog(mContext.getResources().getString(R.string.no_gold_un_receive_rpt));
                                 } else if (message.isRead){
-//                                    ToastUtil.showMessage(R.string.cancel_red_packet);
-                                    ToastUtil.showMessage("红包已领");
+                                    ToastUtil.showMessage(R.string.receive_pkt);
                                 } else {
                                     float count = PreferencesUtils.getMyMoney(mContext);
-                                    PreferencesUtils.setMyMoney(mContext, count + StringUtil.generateRandomValue());
-                                    EventBus.getDefault().post(new SnackBarEvent());
+                                    float moneyPkt = Float.parseFloat(redPkt[1]);
+                                    PreferencesUtils.setMyMoney(mContext, count + moneyPkt);
+                                    EventBus.getDefault().post(new SnackBarEvent(moneyPkt + "元红包已存入您的钱包"));
                                     message.isRead = true;
                                     IMessageDaoManager.getInstance(mContext).updateIMessage(message);
                                     notifyDataSetChanged();
@@ -528,16 +563,20 @@ public class ChatMessageAdapter extends
                                     showVipDialog(mContext.getResources().getString(R.string.un_cancel_red_packet_for_td));
                                 } else if (AppManager.getClientUser().gold_num < 100) {
                                     showGoldDialog(mContext.getResources().getString(R.string.no_gold_un_cancel_red_packet));
+                                } else if (message.isRead) {
+                                    ToastUtil.showMessage(R.string.revoked_pkt);
                                 } else {
-                                    ToastUtil.showMessage(R.string.cancel_red_packet_tips);
+                                    showRevokePkt(message);//撤销红包对话框
                                 }
                             } else {
                                 if (!AppManager.getClientUser().is_vip) {
                                     showVipDialog(mContext.getResources().getString(R.string.un_cancel_red_packet));
                                 } else if (AppManager.getClientUser().gold_num < 100) {
                                     showGoldDialog(mContext.getResources().getString(R.string.no_gold_un_cancel_red_packet));
+                                } else if (message.isRead) {
+                                    ToastUtil.showMessage(R.string.revoked_pkt);
                                 } else {
-                                    ToastUtil.showMessage(R.string.cancel_red_packet_tips);
+                                    showRevokePkt(message);//撤销红包对话框
                                 }
                             }
                         }
@@ -735,7 +774,7 @@ public class ChatMessageAdapter extends
                 case R.id.message_send_fail:
                     break;
                 case R.id.portrait:
-                    if(null != mConversation && !"-1".equals(mConversation.talker)){
+                    if(mConversation != null && !"-1".equals(mConversation.talker)){
                         Intent intent = new Intent(mContext, PersonalInfoActivity.class);
                         intent.putExtra(ValueKey.USER_ID, mConversation.talker);
                         mContext.startActivity(intent);
@@ -857,11 +896,9 @@ public class ChatMessageAdapter extends
                     mContext.startActivity(intent);
                     break;
                 case R.id.message_send_fail:
-//                    resendDialog(message, position);
                     break;
             }
         }
-
     }
 
     public class VoipViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
@@ -990,6 +1027,33 @@ public class ChatMessageAdapter extends
                 dialog.dismiss();
                 Intent intent = new Intent(mContext, MyGoldActivity.class);
                 mContext.startActivity(intent);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    /**
+     * 撤销红包对话框
+     */
+    private void showRevokePkt(final IMessage message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setMessage(mContext.getResources().getString(R.string.revoke_pkt));
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                float count = PreferencesUtils.getMyMoney(mContext);
+                PreferencesUtils.setMyMoney(mContext, count + Float.parseFloat(redPkt[1]));
+                EventBus.getDefault().post(new SnackBarEvent("撤回的红包已存入您的钱包"));
+                message.isRead = true;
+                IMessageDaoManager.getInstance(mContext).updateIMessage(message);
+                notifyDataSetChanged();
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

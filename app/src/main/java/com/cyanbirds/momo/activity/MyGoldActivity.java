@@ -1,12 +1,11 @@
 package com.cyanbirds.momo.activity;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alipay.sdk.app.PayTask;
+import com.tencent.mm.sdk.modelpay.PayReq;
+import com.umeng.analytics.MobclickAgent;
 import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
@@ -38,8 +39,6 @@ import com.cyanbirds.momo.ui.widget.DividerItemDecoration;
 import com.cyanbirds.momo.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.momo.utils.DensityUtil;
 import com.cyanbirds.momo.utils.ToastUtil;
-import com.tencent.mm.sdk.modelpay.PayReq;
-import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -64,6 +63,8 @@ public class MyGoldActivity extends BaseActivity {
 	RecyclerView mRecyclerView;
 	@BindView(R.id.my_gold_num)
 	TextView mMyGoldNum;
+	@BindView(R.id.call_info)
+	TextView mCallInfo;
 	@BindView(R.id.btn_pay)
 	FancyButton mBtnPay;
 	@BindView(R.id.select_alipay)
@@ -76,10 +77,12 @@ public class MyGoldActivity extends BaseActivity {
 	RelativeLayout mWechatLay;
 	@BindView(R.id.pay_lay)
 	LinearLayout mPayLay;
-	@BindView(R.id.call_info)
-	TextView mCallInfo;
+	@BindView(R.id.scrollView)
+	NestedScrollView mScrollView;
 	@BindView(R.id.alipay_lay_info)
 	TextView mAliPayInfo;
+
+
 
 	private static final int SDK_PAY_FLAG = 1;
 
@@ -167,7 +170,7 @@ public class MyGoldActivity extends BaseActivity {
 	}
 
 	@OnClick({R.id.btn_pay, R.id.select_alipay, R.id.alipay_lay, R.id.select_wechatpay, R.id.wechat_lay})
-	public void onViewClicked(View view) {
+	public void onClick(View view) {
 		switch (view.getId()) {
 			case R.id.select_alipay:
 				mPayType = AppConstants.ALI_PAY_PLATFORM;
@@ -212,7 +215,6 @@ public class MyGoldActivity extends BaseActivity {
 			mAdapter = new MyGoldAdapter(memberBuys, MyGoldActivity.this);
 			mAdapter.setOnItemClickListener(mOnItemClickListener);
 			mRecyclerView.setAdapter(mAdapter);
-
 			if (mMemberBuy.isShowAli) {
 				mAliPayInfo.setText(String.format(
 						getResources().getString(R.string.pay_info_ali),
@@ -234,35 +236,8 @@ public class MyGoldActivity extends BaseActivity {
 		@Override
 		public void onItemClick(View view, int position) {
 			mMemberBuy = mAdapter.getItem(position);
-//			showPayDialog(memberBuy);
 		}
 	};
-
-	private void showPayDialog(final MemberBuy memberBuy) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(getResources().getString(R.string.pay_type));
-		builder.setNegativeButton(getResources().getString(R.string.cancel),
-				null);
-		builder.setItems(
-				new String[]{getResources().getString(R.string.ali_pay),
-						getResources().getString(R.string.weixin_pay)},
-				new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						switch (which) {
-							case 0:
-								new GetAliPayOrderInfoTask().request(memberBuy.id, AppConstants.ALI_PAY_PLATFORM);
-								break;
-							case 1:
-								new CreateOrderTask().request(memberBuy.id, AppConstants.WX_PAY_PLATFORM);
-								break;
-						}
-						dialog.dismiss();
-					}
-				});
-		builder.show();
-	}
 
 	class CreateOrderTask extends CreateOrderRequest {
 		@Override
@@ -275,7 +250,7 @@ public class MyGoldActivity extends BaseActivity {
 			payReq.nonceStr = weChatPay.nonce_str;
 			payReq.timeStamp = weChatPay.timeStamp;
 			payReq.sign = weChatPay.appSign;
-			AppManager.getIWX_PAY_API().sendReq(payReq);
+			CSApplication.api.sendReq(payReq);
 		}
 
 		@Override
@@ -347,6 +322,7 @@ public class MyGoldActivity extends BaseActivity {
 			ToastUtil.showMessage(error);
 		}
 	}
+
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

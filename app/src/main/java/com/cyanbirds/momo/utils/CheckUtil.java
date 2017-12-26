@@ -32,8 +32,9 @@ public class CheckUtil {
 	 * @return
 	 */
 	public static boolean isMobileNO(String mobiles) {
+		String regex = "^0?(13[0-9]|17[0-9]|15[012356789]|18[0123456789]|14[57])[0-9]{8}$";
 		Pattern p = Pattern
-				.compile("^0?(13[0-9]|17[0-9]|15[012356789]|18[0123456789]|14[57])[0-9]{8}$");
+				.compile(regex);
 		Matcher m = p.matcher(mobiles);
 		return m.matches();
 	}

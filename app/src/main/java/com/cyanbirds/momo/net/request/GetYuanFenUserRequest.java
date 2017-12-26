@@ -1,6 +1,7 @@
 package com.cyanbirds.momo.net.request;
 
 import android.support.v4.util.ArrayMap;
+import android.util.Log;
 
 import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
@@ -80,7 +81,7 @@ public class GetYuanFenUserRequest extends ResultPostExecute<List<YuanFenModel>>
             onPostExecute(models);
         } catch (Exception e) {
             onErrorExecute(CSApplication.getInstance().getResources()
-                    .getString(R.string.data_parser_error));
+                    .getString(R.string.recommend));
         }
     }
 }

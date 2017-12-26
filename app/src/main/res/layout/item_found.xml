@@ -38,8 +38,8 @@
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/portrait"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
@@ -58,8 +58,10 @@
                     android:id="@+id/tv_user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:ellipsize="end"
                     android:layout_marginLeft="7dp"
-                    android:textSize="14sp"/>
+                    android:textSize="12sp"/>
 
                 <TextView
                     android:id="@+id/from_city"
@@ -67,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_gravity="center_vertical"
-                    android:textSize="12sp"
+                    android:textSize="10sp"
                     android:textColor="@color/gray_text"/>
 
                 <RelativeLayout
@@ -78,8 +80,8 @@
 
                     <ImageView
                         android:id="@+id/distance_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
                         android:layout_centerVertical="true"
                         android:layout_margin="5dp"
                         android:src="@mipmap/distance"/>
@@ -94,7 +96,8 @@
                         android:layout_marginRight="5dp"
                         android:layout_toRightOf="@id/distance_icon"
                         android:text="23.78公里"
-                        android:textColor="@color/gray_text"/>
+                        android:textColor="@color/gray_text"
+                        android:textSize="10sp"/>
 
                 </RelativeLayout>
 
