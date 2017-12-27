@@ -53,19 +53,19 @@ android {
     }
 
     productFlavors {
-//        baidu {}
-//        c360 {}
-//        xiaomi {}
-//        tencent {}
+        baidu {}
+        c360 {}
+        xiaomi {}
+        tencent {}
         meizu {}
-//        oppo {}
-//        vivo {}
-//        huawei {}
-//        sanxing {}
-//        sj91 {}
-//        androidmarket {}
-//        sougou {}
-//        youyi {}
+        oppo {}
+        vivo {}
+        huawei {}
+        sanxing {}
+        sj91 {}
+        androidmarket {}
+        sougou {}
+        youyi {}
 
 
         productFlavors.all { flavor ->
