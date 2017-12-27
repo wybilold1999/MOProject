@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.cyanbirds.momo.db.ExpressionGroupSqlManager;
+import com.cyanbirds.momo.db.ExpressionSqlManager;
 import com.umeng.analytics.MobclickAgent;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
@@ -213,6 +215,8 @@ public class SettingActivity extends BaseActivity {
         ConversationSqlManager.reset();
         MyGoldDaoManager.reset();
         ContactSqlManager.reset();
+        ExpressionGroupSqlManager.reset();
+        ExpressionSqlManager.reset();
     }
 
     @Override
