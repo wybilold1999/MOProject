@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,10 @@ import android.widget.TextView;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.ContactInfoActivity;
 import com.cyanbirds.momo.config.ValueKey;
+import com.cyanbirds.momo.entity.Contact;
 import com.cyanbirds.momo.entity.PictureModel;
 import com.cyanbirds.momo.manager.AppManager;
+import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.text.DecimalFormat;
@@ -33,14 +36,16 @@ public class FoundGridAdapter extends
     private static final int TYPE_FOOTER = 1;
     private boolean mShowFooter = false;
 
-    private List<PictureModel> pictureModels;
+    private List<Contact> mContacts;
     private Context mContext;
     private DecimalFormat mFormat;
+    private String mCurCity;//当前城市
 
-    public FoundGridAdapter(List<PictureModel> pics, Context context) {
-        this.pictureModels = pics;
+    public FoundGridAdapter(List<Contact> pics, Context context) {
+        this.mContacts = pics;
         mContext = context;
         mFormat = new DecimalFormat("#.00");
+        mCurCity = PreferencesUtils.getCity(mContext);
     }
 
     @Override
@@ -59,38 +64,25 @@ public class FoundGridAdapter extends
     @Override
     public int getItemCount() {
         int begin = mShowFooter?1:0;
-        if(pictureModels == null) {
+        if(mContacts == null) {
             return begin;
         }
-        return pictureModels.size() + begin;
+        return mContacts.size() + begin;
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if(holder instanceof ItemViewHolder) {
             ItemViewHolder viewHolder = (ItemViewHolder) holder;
-            PictureModel model = pictureModels.get(position);
+            Contact model = mContacts.get(position);
             if(model == null){
                 return;
             }
-            viewHolder.portrait.setImageURI(Uri.parse(model.path));
-            viewHolder.mUserName.setText(model.nickname);
-            if (null == model.distance || model.distance == 0.00) {
-                viewHolder.mFromCity.setVisibility(View.VISIBLE);
-                viewHolder.mDistanceLayout.setVisibility(View.GONE);
-                viewHolder.mFromCity.setText("来自" + model.city);
-            } else {
-                viewHolder.mDistanceLayout.setVisibility(View.VISIBLE);
-                viewHolder.mFromCity.setVisibility(View.GONE);
-                viewHolder.mDistance.setText(mFormat.format(model.distance) + " km");
-            }
-            if (AppManager.getClientUser().isShowVip && model.isVip) {
-                viewHolder.mIsVip.setVisibility(View.VISIBLE);
-            } else {
-                viewHolder.mIsVip.setVisibility(View.GONE);
-            }
-            viewHolder.mAge.setText(model.age);
+            viewHolder.portrait.setImageURI(Uri.parse(model.face_url));
+            viewHolder.mUserName.setText(model.user_name);
+            viewHolder.mAge.setText(model.birthday);
             viewHolder.mConstellation.setText(model.constellation);
+            viewHolder.state_marry.setText("情感状态：" + model.state_marry);
         }
     }
 
@@ -120,24 +112,18 @@ public class FoundGridAdapter extends
 
     class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         SimpleDraweeView portrait;
-        TextView mDistance;
         TextView mUserName;
         TextView mAge;
         TextView mConstellation;
-        TextView mFromCity;
-        ImageView mIsVip;
-        RelativeLayout mDistanceLayout;
+        TextView state_marry;
         RelativeLayout mItemLay;
         public ItemViewHolder(View itemView) {
             super(itemView);
             portrait = (SimpleDraweeView) itemView.findViewById(R.id.portrait);
-            mDistance = (TextView) itemView.findViewById(R.id.distance);
             mUserName = (TextView) itemView.findViewById(R.id.tv_user_name);
+            state_marry = (TextView) itemView.findViewById(R.id.state_marry);
             mAge = (TextView) itemView.findViewById(R.id.age);
             mConstellation = (TextView) itemView.findViewById(R.id.constellation);
-            mFromCity = (TextView) itemView.findViewById(R.id.from_city);
-            mIsVip = (ImageView) itemView.findViewById(R.id.is_vip);
-            mDistanceLayout = (RelativeLayout) itemView.findViewById(R.id.distance_layout);
             mItemLay = (RelativeLayout) itemView.findViewById(R.id.item_lay);
             mItemLay.setOnClickListener(this);
         }
@@ -149,9 +135,10 @@ public class FoundGridAdapter extends
                 return;
             }
             Intent intent = new Intent();
-            PictureModel model = pictureModels.get(position);
+            Contact contact = mContacts.get(position);
+            intent.putExtra(ValueKey.CONTACT, contact);
+            intent.putExtra(ValueKey.FROM_ACTIVITY, this.getClass().getSimpleName());
             intent.setClass(mContext, ContactInfoActivity.class);
-            intent.putExtra(ValueKey.USER_ID, String.valueOf(model.usersId));
             mContext.startActivity(intent);
         }
     }
@@ -164,8 +151,8 @@ public class FoundGridAdapter extends
         return this.mShowFooter;
     }
 
-    public void setPictureModels(List<PictureModel> pictureModels){
-        this.pictureModels = pictureModels;
+    public void setClientUsers(List<Contact> users){
+        this.mContacts = users;
         this.notifyDataSetChanged();
     }
 }
