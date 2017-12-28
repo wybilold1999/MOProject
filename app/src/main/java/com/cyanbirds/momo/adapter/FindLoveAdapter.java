@@ -98,7 +98,7 @@ public class FindLoveAdapter extends
             itemViewHolder.constellation.setText(clientUser.constellation);
             if (null == clientUser.distance || Double.parseDouble(clientUser.distance) == 0.0) {
                 itemViewHolder.distance.setText("来自" + clientUser.city);
-            } else if (!TextUtils.isEmpty(mCurCity)){
+            } else if (!TextUtils.isEmpty(mCurCity) && !"待定".equals(mCurCity)){
                 itemViewHolder.distance.setText("来自" + mCurCity);
             } else {
                 itemViewHolder.distance.setText(mFormat.format(Double.parseDouble(clientUser.distance)) + " km");
