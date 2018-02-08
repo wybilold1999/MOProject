@@ -306,6 +306,7 @@
     <string name="create_order_ing">正在生成订单，请稍后...</string>
     <string name="dialog_get_balance">正在提现，请稍后...</string>
     <string name="wait">请稍后...</string>
+    <string name="dialog_apply_for">正在申请中，请稍后...</string>
 
     <!-- 高德地图分享位置 -->
     <string name="no_result">对不起，没有搜索到相关数据！</string>
@@ -364,5 +365,33 @@
     <string name="action_add_friends_success">添加好友成功</string>
     <string name="phone_register">手机注册</string>
     <string name="please_input_suggestion">您还未输入意见或建议</string>
+
+    <string name="tv_appointment">约会</string>
+    <string name="tv_appointment_content">约会内容</string>
+    <string name="tv_project">约会项目</string>
+    <string name="tv_appointment_info">约会信息</string>
+    <string name="tv_appointment_time">约会时间</string>
+    <string name="tv_appointment_long">时长</string>
+    <string name="tv_appointment_address">地点</string>
+    <string name="tv_appointment_remark">留言</string>
+    <string name="tv_appointment_remark_content">请尊重对方并详细说明本次约会的具体内容，这样被对方接受的概率更大。</string>
+    <string name="appointment_apply_for">约会申请</string>
+    <string name="right_now_sure">马上约TA</string>
+    <string name="appointment_apply_for_success">约会申请成功，等待对方回应</string>
+    <string name="appointment_apply_for_faiure">约会申请失败</string>
+    <string name="appointment_time">约会时间必须大于当前时间</string>
+    <string name="appointment_info">约会详情</string>
+    <string name="select_appointment_location_tips">请选择要约会的位置</string>
+    <string name="appointment_status"><Data><![CDATA[申请状态：<font color="#ff0000"><b>%1$s</b></font>]]></Data></string>
+    <string name="appointment_invite">约会邀请</string>
+    <string name="appointment_invite_info"><Data><![CDATA[<font color="#ff0000"><b>%1$s</b></font> 向您发出了约会邀请]]></Data></string>
+    <string name="check_appointment_invite_info">查看约会详情</string>
+    <string name="no_my_appointment_list">您还未发出过约会申请哦！</string>
+    <string name="no_appointment_me_list">您还未收到过约会申请哦！</string>
+
+    <string name="official_qq">如有任何疑问，可联系官方客服QQ：2350635875</string>
+    <string name="tv_fare">充值送话费！让您尽情谈情，尽情约爱！</string>
+    <string name="tv_fare_info">1.限时抢购单次充值满100即有机会获赠话费\n2.绑定手机充值话费将会自动充值到您的手机中</string>
+    <string name="tv_refund">退费说明：\n我司为了更加重视和关注完善用户体验，根据有旧版本的用户的相关反馈，特意提供退费联系人信息。也请新用户继续监督和提供宝贵的意见和建议。谢谢！\n注意，退款需要提供以下信息：\n1.退款方式\n2.退款联系人相关信息\n3.支付宝账户、微信账户、银行卡号 三者选一\n\n客服QQ：2350635875</string>
 
 </resources>

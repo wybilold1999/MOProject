@@ -46,6 +46,9 @@ public class QqLoginRequest extends ResultPostExecute<ClientUser> {
 		} else {
 			params.put("currentCity", "");
 		}
+		params.put("province", PreferencesUtils.getCurrentProvince(CSApplication.getInstance()));
+		params.put("latitude", PreferencesUtils.getLatitude(CSApplication.getInstance()));
+		params.put("longitude", PreferencesUtils.getLongitude(CSApplication.getInstance()));
 		params.put("loginTime", String.valueOf(PreferencesUtils.getLoginTime(CSApplication.getInstance())));
 		Call<ResponseBody> call = AppManager.getUserService().qqLogin(AppManager.getClientUser().sessionId, params);
 		call.enqueue(new Callback<ResponseBody>() {
@@ -106,6 +109,8 @@ public class QqLoginRequest extends ResultPostExecute<ClientUser> {
 			clientUser.isShowMap = jsonObject.get("isShowMap").getAsBoolean();
 			clientUser.isShowRpt = jsonObject.get("isShowRpt").getAsBoolean();
 			clientUser.isShowTd = jsonObject.get("isShowTd").getAsBoolean();
+            clientUser.isShowAppointment = jsonObject.get("isShowAppointment").getAsBoolean();
+            clientUser.isShowNormal = jsonObject.get("isShow").getAsBoolean();
 			clientUser.state_marry = data.get("emotionStatus").getAsString();
 			clientUser.face_url = data.get("faceUrl").getAsString();
 			clientUser.age = data.get("age").getAsInt();

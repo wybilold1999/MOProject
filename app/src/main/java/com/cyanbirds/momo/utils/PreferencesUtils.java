@@ -106,6 +106,16 @@ public class PreferencesUtils {
 	public static final String SETTINGS_MY_MONEY = "com.cyanbirds.momo_my_money";
 	/** 聊天次数限制*/
 	public static final String SETTINGS_CHAT_LIMIT = "com.cyanbirds.momo_chat_limit";
+	/** 省份*/
+	public static final String SETTINGS_CURRENT_PROVINCE = "com.cyanbirds.momo_current_province";
+	/** 经度*/
+	public static final String SETTINGS_LATITUDE = "com.cyanbirds.momo_latitude";
+	/** 纬度*/
+	public static final String SETTINGS_LONGITUDE = "com.cyanbirds.momo_longitude";
+	/** (我约会的)改变约会状态的userid*/
+	public static final String SETTINGS_I_APPOINT_USER_ID = "com.cyanbirds.momo_i_appoint_user_id";
+	/** (约我的)改变约会状态的userid*/
+	public static final String SETTINGS_APPOINT_ME_USER_ID = "com.cyanbirds.momo_appoint_me_user_id";
 
 	/**
 	 * 获取RL账号
@@ -1148,6 +1158,70 @@ public class PreferencesUtils {
 		SharedPreferences sp = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		sp.edit().putInt(SETTINGS_CHAT_LIMIT, count).commit();
+	}
+
+	/**
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static String getCurrentProvince(final Context context) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return sp.getString(SETTINGS_CURRENT_PROVINCE, "");
+	}
+
+	/**
+	 * @param context
+	 */
+	public static void setCurrentProvince(final Context context, final String province) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		sp.edit().putString(SETTINGS_CURRENT_PROVINCE, province).commit();
+	}
+
+	/**
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static String getAppointMeUserId(final Context context) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return sp.getString(SETTINGS_APPOINT_ME_USER_ID, "");
+	}
+
+	/**
+	 * @param context
+	 */
+	public static void setAppointMeUserId(final Context context, final String userId) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		sp.edit().putString(SETTINGS_APPOINT_ME_USER_ID, userId).commit();
+	}
+
+	public static void setLatitude(final Context context, final String lat) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		sp.edit().putString(SETTINGS_LATITUDE, lat).commit();
+	}
+
+	public static String getLatitude(final Context context) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return sp.getString(SETTINGS_LATITUDE, "");
+	}
+
+	public static void setLongitude(final Context context, final String longitude) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		sp.edit().putString(SETTINGS_LONGITUDE, longitude).commit();
+	}
+
+	public static String getLongitude(final Context context) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return sp.getString(SETTINGS_LONGITUDE, "");
 	}
 
 }

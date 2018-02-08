@@ -427,4 +427,21 @@
         <item>听音乐</item>
     </string-array>
 
+    <string-array name="appointment_content">
+        <item>看电影</item>
+        <item>吃饭</item>
+        <item>逛街</item>
+        <item>唱歌</item>
+        <item>运动</item>
+        <item>其他</item>
+    </string-array>
+
+    <string-array name="appointment_long">
+        <item>1小时</item>
+        <item>2小时</item>
+        <item>3小时</item>
+        <item>4小时</item>
+        <item>5小时</item>
+    </string-array>
+
 </resources>

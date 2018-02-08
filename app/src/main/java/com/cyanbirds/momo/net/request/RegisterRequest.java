@@ -9,6 +9,7 @@ import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.base.ResultPostExecute;
 import com.cyanbirds.momo.utils.AESOperator;
+import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -43,6 +44,9 @@ public class RegisterRequest extends ResultPostExecute<ClientUser> {
         } else {
             params.put("currentCity", "");
         }
+        params.put("province", PreferencesUtils.getCurrentProvince(CSApplication.getInstance()));
+        params.put("latitude", PreferencesUtils.getLatitude(CSApplication.getInstance()));
+        params.put("longitude", PreferencesUtils.getLongitude(CSApplication.getInstance()));
         Call<ResponseBody> call = AppManager.getUserService().userRegister(params);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -102,6 +106,8 @@ public class RegisterRequest extends ResultPostExecute<ClientUser> {
             clientUser.isShowMap = jsonObject.get("isShowMap").getAsBoolean();
             clientUser.isShowRpt = jsonObject.get("isShowRpt").getAsBoolean();
             clientUser.isShowTd = jsonObject.get("isShowTd").getAsBoolean();
+            clientUser.isShowAppointment = jsonObject.get("isShowAppointment").getAsBoolean();
+            clientUser.isShowNormal = jsonObject.get("isShow").getAsBoolean();
             clientUser.state_marry = data.get("emotionStatus").getAsString();
             clientUser.face_url = data.get("faceUrl").getAsString();
             clientUser.age = data.get("age").getAsInt();

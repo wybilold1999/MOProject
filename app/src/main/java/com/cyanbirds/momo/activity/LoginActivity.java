@@ -164,47 +164,28 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
         @Override
         public void onPostExecute(CityInfo cityInfo) {
-            mCityInfo = cityInfo;
-            mCurrrentCity = cityInfo.city;
-            PreferencesUtils.setCurrentCity(LoginActivity.this, mCurrrentCity);
-            EventBus.getDefault().post(new LocationEvent(mCurrrentCity));
-        }
+            try {
+                mCurrrentCity = cityInfo.city;
+                PreferencesUtils.setCurrentCity(LoginActivity.this, mCurrrentCity);
+                PreferencesUtils.setCurrentProvince(LoginActivity.this, cityInfo.province);
+                EventBus.getDefault().post(new LocationEvent(mCurrrentCity));
 
-        @Override
-        public void onErrorExecute(String error) {
-        }
-    }
+                String[] rectangle = cityInfo.rectangle.split(";");
+                String[] leftBottom = rectangle[0].split(",");
+                String[] rightTop = rectangle[1].split(",");
 
-    class UploadCityInfoTask extends UploadCityInfoRequest {
+                double lat = Double.parseDouble(leftBottom[1]) + (Double.parseDouble(rightTop[1]) - Double.parseDouble(leftBottom[1])) / 5;
+                curLat = String.valueOf(lat);
 
-        @Override
-        public void onPostExecute(String isShow) {
-            if ("0".equals(isShow)) {
-                AppManager.getClientUser().isShowDownloadVip = false;
-                AppManager.getClientUser().isShowGold = false;
-                AppManager.getClientUser().isShowLovers = false;
-                AppManager.getClientUser().isShowMap = false;
-                AppManager.getClientUser().isShowVideo = false;
-                AppManager.getClientUser().isShowVip = false;
-                AppManager.getClientUser().isShowRpt = false;
-                AppManager.getClientUser().isShowNormal = false;
-            } else {
-                AppManager.getClientUser().isShowNormal = true;
+                double lon = Double.parseDouble(leftBottom[0]) + (Double.parseDouble(rightTop[0]) - Double.parseDouble(leftBottom[0])) / 5;
+                curLon = String.valueOf(lon);
+            } catch (Exception e) {
+
             }
-            EventBus.getDefault().post(new LocationEvent(mCurrrentCity));
         }
 
         @Override
         public void onErrorExecute(String error) {
-            AppManager.getClientUser().isShowDownloadVip = false;
-            AppManager.getClientUser().isShowGold = false;
-            AppManager.getClientUser().isShowLovers = false;
-            AppManager.getClientUser().isShowMap = false;
-            AppManager.getClientUser().isShowVideo = false;
-            AppManager.getClientUser().isShowVip = false;
-            AppManager.getClientUser().isShowRpt = false;
-            AppManager.getClientUser().isShowNormal = false;
-            EventBus.getDefault().post(new LocationEvent(mCurrrentCity));
         }
     }
 
@@ -233,28 +214,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             curLat = String.valueOf(aMapLocation.getLatitude());
             curLon = String.valueOf(aMapLocation.getLongitude());
             mCurrrentCity = aMapLocation.getCity();
-            EventBus.getDefault().post(new LocationEvent(mCurrrentCity));
             PreferencesUtils.setCurrentCity(this, mCurrrentCity);
-            new UploadCityInfoTask().request(mCurrrentCity, curLat, curLon);
-        } else {
-            if (mCityInfo != null) {
-                try {
-                    String[] rectangle = mCityInfo.rectangle.split(";");
-                    String[] leftBottom = rectangle[0].split(",");
-                    String[] rightTop = rectangle[1].split(",");
-
-                    double lat = Double.parseDouble(leftBottom[1]) + (Double.parseDouble(rightTop[1]) - Double.parseDouble(leftBottom[1])) / 5;
-                    curLat = String.valueOf(lat);
-
-                    double lon = Double.parseDouble(leftBottom[0]) + (Double.parseDouble(rightTop[0]) - Double.parseDouble(leftBottom[0])) / 5;
-                    curLon = String.valueOf(lon);
-
-                    new UploadCityInfoTask().request(mCurrrentCity, curLat, curLon);
-                } catch (Exception e) {
-
-                }
-            }
+            PreferencesUtils.setCurrentProvince(LoginActivity.this, aMapLocation.getProvince());
+            EventBus.getDefault().post(new LocationEvent(mCurrrentCity));
         }
+
+        PreferencesUtils.setLatitude(this, curLat);
+        PreferencesUtils.setLongitude(this, curLon);
     }
 
     @Override

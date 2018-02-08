@@ -29,4 +29,34 @@ public interface LoveService {
     @FormUrlEncoded
     @POST("greet/sendGreet")
     Call<ResponseBody> sendGreet(@Header("token") String token, @Field("greetId") String greetId);
+
+    /**
+     * 约会申请
+     * @param token
+     * @param params
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("love/applyForAppointment")
+    Call<ResponseBody> applyForAppointment(@Header("token") String token, @FieldMap ArrayMap<String, String> params);
+
+    /**
+     * 获取约会申请列表
+     * @param token
+     * @param params
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("love/getAppointmentList")
+    Call<ResponseBody> getAppointmentList(@Header("token") String token, @FieldMap ArrayMap<String, String> params);
+
+    /**
+     * 更新约会申请
+     * @param token
+     * @param params
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("love/updateAppointment")
+    Call<ResponseBody> updateAppointment(@Header("token") String token, @FieldMap ArrayMap<String, String> params);
 }
