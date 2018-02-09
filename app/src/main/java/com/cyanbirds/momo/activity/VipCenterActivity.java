@@ -20,6 +20,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,7 +28,6 @@ import com.alipay.sdk.app.PayTask;
 import com.sunfusheng.marqueeview.MarqueeView;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.umeng.analytics.MobclickAgent;
-import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.adapter.MemberBuyAdapter;
@@ -63,6 +63,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * @author Cloudsoar(wangyb)
@@ -72,13 +73,13 @@ import butterknife.ButterKnife;
 public class VipCenterActivity extends BaseActivity {
 
 	@BindView(R.id.toolbar)
-	Toolbar mToolbar;
+    Toolbar mToolbar;
 	@BindView(R.id.marqueeView)
-	MarqueeView mMarqueeView;
+    MarqueeView mMarqueeView;
 	@BindView(R.id.recyclerview)
-	RecyclerView mRecyclerView;
+    RecyclerView mRecyclerView;
 	@BindView(R.id.vertical_text)
-	VerticalMarqueeTextView mVerticalText;
+    VerticalMarqueeTextView mVerticalText;
 	@BindView(R.id.preferential)
 	TextView mPreferential;//优惠的说明文字，可以控制什么时候显示
 	@BindView(R.id.vip_7_lay)
@@ -86,7 +87,13 @@ public class VipCenterActivity extends BaseActivity {
 	@BindView(R.id.vip_8_lay)
 	RelativeLayout mVip8Lay;
 	@BindView(R.id.scrollView)
-	NestedScrollView mScrollView;
+    NestedScrollView mScrollView;
+	@BindView(R.id.vip_9_lay)
+	RelativeLayout mVip9Lay;
+	@BindView(R.id.pref_tel_fare_lay)
+	LinearLayout mPrefTelFareLay;
+	@BindView(R.id.name_list)
+	TextView mTvNameList;
 
 	private MemberBuyAdapter mAdapter;
 
@@ -125,11 +132,11 @@ public class VipCenterActivity extends BaseActivity {
 					// 判断resultStatus 为9000则代表支付成功
 					if (TextUtils.equals(resultStatus, "9000")) {
 						// 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
-						ToastUtil.showMessage("支付成功");
+						ToastUtil.showMessage(R.string.pay_success);
 						new GetPayResultTask().request();
 					} else {
 						// 该笔订单真实的支付结果，需要依赖服务端的异步通知。
-						ToastUtil.showMessage("支付失败");
+						ToastUtil.showMessage(R.string.pay_ali_failure);
 					}
 					break;
 				}
@@ -183,7 +190,22 @@ public class VipCenterActivity extends BaseActivity {
 			mVip7Lay.setVisibility(View.GONE);
 			mVip8Lay.setVisibility(View.GONE);
 		}
+		if (AppManager.getClientUser().isShowVideo) {
+			mVip9Lay.setVisibility(View.VISIBLE);
+		} else {
+			mVip9Lay.setVisibility(View.GONE);
+		}
 		new GetMemberBuyListTask().request(NORMAL_VIP);
+	}
+
+	@OnClick({R.id.vip_9_lay})
+	public void onClick(View view) {
+		switch (view.getId()) {
+			case R.id.vip_9_lay:
+				Intent intent = new Intent(this, VideoListActivity.class);
+				startActivity(intent);
+				break;
+		}
 	}
 
 	/**
@@ -311,6 +333,15 @@ public class VipCenterActivity extends BaseActivity {
 						array.add(Integer.parseInt(memberBuys.get(i).preferential));
 					}
 				}
+				if (array.size() == 0) {
+					mPrefTelFareLay.setVisibility(View.VISIBLE);
+					mTvNameList.setVisibility(View.GONE);
+					mVerticalText.setVisibility(View.GONE);
+				} else {
+					mPrefTelFareLay.setVisibility(View.GONE);
+					mTvNameList.setVisibility(View.VISIBLE);
+					mVerticalText.setVisibility(View.VISIBLE);
+				}
 			}
 			new GetUserNameTask().request(1, 100);
 		}
@@ -414,18 +445,6 @@ public class VipCenterActivity extends BaseActivity {
 		}
 	}
 
-	/*class UpdateVipTask extends UpdateVipRequest {
-		@Override
-		public void onPostExecute(String s) {
-			AppManager.getClientUser().is_vip = true;
-		}
-
-		@Override
-		public void onErrorExecute(String error) {
-		}
-	}*/
-
-
 	/*********************************************************************************************************************/
 
 	/**
@@ -442,7 +461,7 @@ public class VipCenterActivity extends BaseActivity {
 			payReq.nonceStr = weChatPay.nonce_str;
 			payReq.timeStamp = weChatPay.timeStamp;
 			payReq.sign = weChatPay.appSign;
-			CSApplication.api.sendReq(payReq);
+			AppManager.getIWX_PAY_API().sendReq(payReq);
 		}
 
 		@Override

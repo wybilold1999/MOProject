@@ -505,6 +505,45 @@
             android:label="@string/sticker_market"
             android:screenOrientation="portrait"/>
 
+        <activity
+            android:name=".activity.PersonalVideoActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:label="@string/personal_info"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".activity.VideoListActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="@string/video_show"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".activity.AppointmentActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="@string/appointment_apply_for"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".activity.AppointmentInfoActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="@string/appointment_info"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".activity.MyAppointmentActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="@string/my_appointment"
+            android:screenOrientation="portrait">
+        </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.cyanbirds.momo.fileProvider"

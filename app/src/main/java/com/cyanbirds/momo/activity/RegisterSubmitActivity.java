@@ -107,7 +107,6 @@ public class RegisterSubmitActivity extends BaseActivity implements
 					.getClientUser().userId));
 			clientUser.userPwd = mClientUser.userPwd;
 			clientUser.currentCity = mClientUser.currentCity;
-			clientUser.isShowNormal = AppManager.getClientUser().isShowNormal;
 			AppManager.setClientUser(clientUser);
 			AppManager.saveUserInfo();
 			AppManager.getClientUser().loginTime = System.currentTimeMillis();

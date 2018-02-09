@@ -710,4 +710,8 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 			initLocationClient();
 		}
 	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+	}
 }

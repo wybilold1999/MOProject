@@ -17,23 +17,6 @@
 			android:layout_height="match_parent"
 			android:orientation="vertical">
 
-			<com.facebook.drawee.view.SimpleDraweeView
-				android:id="@+id/portrait"
-				android:layout_width="match_parent"
-				android:layout_height="150dp"
-				android:layout_centerVertical="true"
-				android:contentDescription="@null"
-				app:actualImageScaleType="fitXY"
-				app:failureImage="@mipmap/default_pic"
-				app:placeholderImage="@mipmap/default_pic"
-				app:placeholderImageScaleType="fitXY"
-				app:roundedCornerRadius="0dp"/>
-
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="5dp"
-				android:background="@color/gray_text"/>
-
 			<android.support.v7.widget.RecyclerView
 				android:id="@+id/vip_recyclerview"
 				android:layout_width="match_parent"

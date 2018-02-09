@@ -2,7 +2,6 @@ package com.cyanbirds.momo.activity;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,7 +16,8 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.alipay.sdk.app.PayTask;
-import com.cyanbirds.momo.CSApplication;
+import com.tencent.mm.sdk.modelpay.PayReq;
+import com.umeng.analytics.MobclickAgent;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.adapter.BetweenLoversAdapter;
@@ -41,9 +41,6 @@ import com.cyanbirds.momo.ui.widget.DividerItemDecoration;
 import com.cyanbirds.momo.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.momo.utils.DensityUtil;
 import com.cyanbirds.momo.utils.ToastUtil;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.tencent.mm.sdk.modelpay.PayReq;
-import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -62,12 +59,10 @@ import butterknife.ButterKnife;
  */
 public class BetweenLoversActivity extends BaseActivity {
 
-	@BindView(R.id.portrait)
-	SimpleDraweeView mPortrait;
 	@BindView(R.id.vip_recyclerview)
-	RecyclerView mVipRecyclerview;
+    RecyclerView mVipRecyclerview;
 	@BindView(R.id.love_recyclerview)
-	RecyclerView mLoveRecyclerview;
+    RecyclerView mLoveRecyclerview;
 	
 	private LoverMemberBuyAdapter mVipAdapter;
 	private LinearLayoutManager layoutManager;
@@ -96,11 +91,11 @@ public class BetweenLoversActivity extends BaseActivity {
 					// 判断resultStatus 为9000则代表支付成功
 					if (TextUtils.equals(resultStatus, "9000")) {
 						// 该笔订单是否真实支付成功，需要依赖服务端的异步通知。
-						ToastUtil.showMessage("支付成功");
+						ToastUtil.showMessage(R.string.pay_success);
 						new GetPayResultTask().request();
 					} else {
 						// 该笔订单真实的支付结果，需要依赖服务端的异步通知。
-						ToastUtil.showMessage("支付失败");
+						ToastUtil.showMessage(R.string.pay_ali_failure);
 					}
 					break;
 				}
@@ -119,7 +114,6 @@ public class BetweenLoversActivity extends BaseActivity {
 		if (toolbar != null) {
 			toolbar.setNavigationIcon(R.mipmap.ic_up);
 		}
-		mPortrait.setImageURI(Uri.parse("http://cdn.wmlover.cn/style/assets/wap/ID13/banner.jpg"));
 		setupView();
 		setupData();
 	}
@@ -219,7 +213,7 @@ public class BetweenLoversActivity extends BaseActivity {
 			payReq.nonceStr = weChatPay.nonce_str;
 			payReq.timeStamp = weChatPay.timeStamp;
 			payReq.sign = weChatPay.appSign;
-			CSApplication.api.sendReq(payReq);
+			AppManager.getIWX_PAY_API().sendReq(payReq);
 		}
 
 		@Override

@@ -34,6 +34,7 @@
     <string name="attentioned">已关注</string>
     <string name="my_attention">我的关注</string>
     <string name="my_gifts">我的礼物</string>
+    <string name="my_appointment">我的约会</string>
     <string name="send_red_packet">发红包</string>
     <string name="who_attention_me">谁关注我</string>
     <string name="who_good_for_me">谁赞了我</string>
@@ -393,5 +394,10 @@
     <string name="tv_fare">充值送话费！让您尽情谈情，尽情约爱！</string>
     <string name="tv_fare_info">1.限时抢购单次充值满100即有机会获赠话费\n2.绑定手机充值话费将会自动充值到您的手机中</string>
     <string name="tv_refund">退费说明：\n我司为了更加重视和关注完善用户体验，根据有旧版本的用户的相关反馈，特意提供退费联系人信息。也请新用户继续监督和提供宝贵的意见和建议。谢谢！\n注意，退款需要提供以下信息：\n1.退款方式\n2.退款联系人相关信息\n3.支付宝账户、微信账户、银行卡号 三者选一\n\n客服QQ：2350635875</string>
+
+    <string name="pay_success">支付成功</string>
+    <string name="pay_ali_failure">支付失败,请重试</string>
+    <string name="pay_wechat_failure">支付失败,请使用支付宝支付</string>
+    <string name="tab_video_tips">还未上传过视频哦</string>
 
 </resources>

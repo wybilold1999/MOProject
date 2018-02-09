@@ -255,4 +255,13 @@ public interface UserService {
      */
     @GET("expression/getExpressionGroup")
     Call<ResponseBody> getExpressionGroup();
+
+    /**
+     * 获取用户信息、视频信息、相册信息
+     * @param token
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("video/getUserVideoPhotoList")
+    Call<ResponseBody> getUserVideoPhotoList(@Field("userId") String userId, @Header("token") String token);
 }

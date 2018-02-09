@@ -16,10 +16,9 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.umeng.analytics.MobclickAgent;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.config.ValueKey;
-import com.cyanbirds.momo.utils.ToastUtil;
-import com.umeng.analytics.MobclickAgent;
 
 public class VideoPlayActivity extends Activity implements OnClickListener, OnPreparedListener, OnCompletionListener {
 

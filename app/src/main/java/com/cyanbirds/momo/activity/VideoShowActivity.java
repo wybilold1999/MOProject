@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.umeng.analytics.MobclickAgent;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.adapter.VideoShowAdapter;
@@ -13,7 +14,6 @@ import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.VideoModel;
 import com.cyanbirds.momo.net.request.GetVideoListRequest;
 import com.cyanbirds.momo.ui.widget.CircularProgress;
-import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
 public class VideoShowActivity extends BaseActivity {
 
 	@BindView(R.id.recyclerview)
-	RecyclerView mRecyclerview;
+    RecyclerView mRecyclerview;
 	@BindView(R.id.progress_bar)
 	CircularProgress mProgressBar;
 
