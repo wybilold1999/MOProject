@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.umeng.analytics.MobclickAgent;
-import com.youdo.karma.R;
-import com.youdo.karma.adapter.TabPhotosAdapter;
-import com.youdo.karma.config.ValueKey;
+import com.cyanbirds.momo.R;
+import com.cyanbirds.momo.adapter.TabPhotosAdapter;
+import com.cyanbirds.momo.config.ValueKey;
 
 import java.util.List;
 

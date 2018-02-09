@@ -235,6 +235,12 @@ public class PersonalInfoActivity extends BaseActivity implements GeocodeSearch.
 			}
 			new GetUserInfoTask().request(curUserId);
 		}
+
+		if (AppManager.getClientUser().isShowAppointment) {
+			mLove.setText(R.string.tv_appointment);
+		} else {
+			mLove.setText(R.string.like);
+		}
 	}
 
 	/**
@@ -509,15 +515,6 @@ public class PersonalInfoActivity extends BaseActivity implements GeocodeSearch.
 			}
 			mIntrestFlowlayout.setTags(mVals);
 		}
-		/*if (AppManager.getClientUser().isShowLovers) {
-			mCardFriend.setVisibility(View.VISIBLE);
-			mTvFriend.setVisibility(View.VISIBLE);
-			mGift.setVisibility(View.VISIBLE);
-		} else {
-			mCardFriend.setVisibility(View.GONE);
-			mTvFriend.setVisibility(View.GONE);
-			mGift.setVisibility(View.GONE);
-		}*/
 	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
@@ -586,9 +583,19 @@ public class PersonalInfoActivity extends BaseActivity implements GeocodeSearch.
 				startActivity(intent);
 				break;
 			case R.id.love:
-				if (mClientUser != null) {
-					new SenderGreetTask().request(mClientUser.userId);
-					new AddLoveTask().request(mClientUser.userId);
+				if (AppManager.getClientUser().isShowAppointment && !TextUtils.isEmpty(curUserId)) {
+					if (mClientUser != null) {
+						intent.setClass(this, AppointmentActivity.class);
+						intent.putExtra(ValueKey.USER_ID, curUserId);
+						intent.putExtra(ValueKey.USER_NAME, mClientUser.user_name);
+						intent.putExtra(ValueKey.IMAGE_URL, mClientUser.face_url);
+						startActivity(intent);
+					}
+				} else {
+					if (null != mClientUser) {
+						new SenderGreetTask().request(mClientUser.userId);
+						new AddLoveTask().request(mClientUser.userId);
+					}
 				}
 				break;
 			case R.id.message:
@@ -606,18 +613,22 @@ public class PersonalInfoActivity extends BaseActivity implements GeocodeSearch.
 				break;
 			case R.id.check_view_wechat:
 				if (AppManager.getClientUser().is_vip) {
-					if (AppManager.getClientUser().gold_num < 1) {
+					if (AppManager.getClientUser().isShowGold && AppManager.getClientUser().gold_num < 1) {
 						String tips = String.format(getResources().getString(R.string.social_id_need_gold), "微信");
 						showBuyGoldDialog(tips);
-					} else if (AppManager.getClientUser().gold_num < 101){
+					} else if (AppManager.getClientUser().isShowGold && AppManager.getClientUser().gold_num < 101){
 						String tips = String.format(getResources().getString(R.string.social_id_need_more_gold), "微信");
 						showBuyGoldDialog(tips);
 					} else {
 						mWechatId.setText(mClientUser.weixin_no);
-						if (!AppManager.getClientUser().is_download_vip) {
-							//更新服务器上的金币数量
-							AppManager.getClientUser().gold_num -= 101;
-							new UpdateGoldTask().request(AppManager.getClientUser().gold_num, "");
+						if (AppManager.getClientUser().isShowDownloadVip) {
+							if (!AppManager.getClientUser().is_download_vip) {
+								if (AppManager.getClientUser().isShowGold) {
+									//更新服务器上的金币数量
+									AppManager.getClientUser().gold_num -= 101;
+									new UpdateGoldTask().request(AppManager.getClientUser().gold_num, "");
+								}
+							}
 						}
 					}
 				} else {
@@ -626,18 +637,22 @@ public class PersonalInfoActivity extends BaseActivity implements GeocodeSearch.
 				break;
 			case R.id.check_view_qq:
 				if (AppManager.getClientUser().is_vip) {
-					if (AppManager.getClientUser().gold_num < 1) {
+					if (AppManager.getClientUser().isShowGold && AppManager.getClientUser().gold_num < 1) {
 						String tips = String.format(getResources().getString(R.string.social_id_need_gold), "QQ");
 						showBuyGoldDialog(tips);
-					} else if (AppManager.getClientUser().gold_num < 101){
+					} else if (AppManager.getClientUser().isShowGold && AppManager.getClientUser().gold_num < 101){
 						String tips = String.format(getResources().getString(R.string.social_id_need_more_gold), "QQ");
 						showBuyGoldDialog(tips);
 					} else {
 						mQqId.setText(mClientUser.qq_no);
-						if (!AppManager.getClientUser().is_download_vip) {
-							//更新服务器上的金币数量
-							AppManager.getClientUser().gold_num -= 101;
-							new UpdateGoldTask().request(AppManager.getClientUser().gold_num, "");
+						if (AppManager.getClientUser().isShowDownloadVip) {
+							if (!AppManager.getClientUser().is_download_vip) {
+								if (AppManager.getClientUser().isShowGold) {
+									//更新服务器上的金币数量
+									AppManager.getClientUser().gold_num -= 101;
+									new UpdateGoldTask().request(AppManager.getClientUser().gold_num, "");
+								}
+							}
 						}
 					}
 				} else {

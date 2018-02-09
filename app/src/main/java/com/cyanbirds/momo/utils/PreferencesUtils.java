@@ -1224,4 +1224,24 @@ public class PreferencesUtils {
 		return sp.getString(SETTINGS_LONGITUDE, "");
 	}
 
+	/**
+	 * @param context
+	 */
+	public static void setIAppointUserId(final Context context, final String userId) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		sp.edit().putString(SETTINGS_I_APPOINT_USER_ID, userId).commit();
+	}
+
+	/**
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static String getIAppointUserId(final Context context) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return sp.getString(SETTINGS_I_APPOINT_USER_ID, "");
+	}
+
 }
