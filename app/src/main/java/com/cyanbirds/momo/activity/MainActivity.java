@@ -34,23 +34,19 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.cyanbirds.momo.entity.AppointmentModel;
-import com.cyanbirds.momo.fragment.FindLoveFragment;
-import com.cyanbirds.momo.fragment.HomeLoveFragment;
-import com.cyanbirds.momo.net.request.GetAppointmentListRequest;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.db.ConversationSqlManager;
+import com.cyanbirds.momo.entity.AppointmentModel;
 import com.cyanbirds.momo.entity.CityInfo;
 import com.cyanbirds.momo.entity.FederationToken;
 import com.cyanbirds.momo.entity.FollowModel;
 import com.cyanbirds.momo.entity.LoveModel;
 import com.cyanbirds.momo.entity.ReceiveGiftModel;
 import com.cyanbirds.momo.fragment.FoundFragment;
+import com.cyanbirds.momo.fragment.HomeLoveFragment;
 import com.cyanbirds.momo.fragment.MessageFragment;
 import com.cyanbirds.momo.fragment.PersonalFragment;
 import com.cyanbirds.momo.helper.SDKCoreHelper;
@@ -58,6 +54,7 @@ import com.cyanbirds.momo.listener.MessageUnReadListener;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.manager.NotificationManager;
 import com.cyanbirds.momo.net.request.FollowListRequest;
+import com.cyanbirds.momo.net.request.GetAppointmentListRequest;
 import com.cyanbirds.momo.net.request.GetCityInfoRequest;
 import com.cyanbirds.momo.net.request.GetLoveFormeListRequest;
 import com.cyanbirds.momo.net.request.GetOSSTokenRequest;
@@ -65,14 +62,18 @@ import com.cyanbirds.momo.net.request.GiftsListRequest;
 import com.cyanbirds.momo.net.request.UploadCityInfoRequest;
 import com.cyanbirds.momo.service.MyIntentService;
 import com.cyanbirds.momo.service.MyPushService;
+import com.cyanbirds.momo.utils.DateUtil;
 import com.cyanbirds.momo.utils.MsgUtil;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.PushMsgUtil;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.igexin.sdk.PushManager;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.yuntongxun.ecsdk.ECInitParams;
 
+import java.util.Calendar;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -83,6 +84,7 @@ import cn.jpush.android.api.TagAliasCallback;
 import static com.cyanbirds.momo.entity.AppointmentModel.AppointStatus.ACCEPT;
 import static com.cyanbirds.momo.entity.AppointmentModel.AppointStatus.DECLINE;
 import static com.cyanbirds.momo.entity.AppointmentModel.AppointStatus.MY_WAIT_CALL_BACK;
+import static com.cyanbirds.momo.utils.DateUtil.TIMESTAMP_PATTERN;
 
 public class MainActivity extends BaseActivity implements MessageUnReadListener.OnMessageUnReadListener, AMapLocationListener {
 
@@ -171,6 +173,8 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 
 				initLocationClient();
 
+				initFareGetTime();
+
 			}
 		});
 
@@ -200,7 +204,8 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 			}, 5000 * 10);
 		}
 
-		if (AppManager.getClientUser().isShowVip && AppManager.getClientUser().isShowAppointment) {
+		if (AppManager.getClientUser().versionCode <= AppManager.getVersionCode() &&
+				AppManager.getClientUser().isShowVip && AppManager.getClientUser().isShowAppointment) {
 			//我约的
 			new GetIAppointmentListTask().request(1, 1, AppManager.getClientUser().userId, 0);
 			//约我的
@@ -213,6 +218,25 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 		// 通过WXAPIFactory工厂，获取IWXAPI的实例
 		AppManager.setIWX_PAY_API(WXAPIFactory.createWXAPI(this, AppConstants.WEIXIN_PAY_ID, true));
 		AppManager.getIWX_PAY_API().registerApp(AppConstants.WEIXIN_PAY_ID);
+	}
+
+	/**
+	 * 初始化当月是否可以领取话费
+	 */
+	private void initFareGetTime() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+		calendar.set(Calendar.HOUR_OF_DAY, 23);
+		calendar.set(Calendar.MINUTE, 59);
+		calendar.set(Calendar.SECOND, 59);
+		String lastDay = DateUtil.formatDateByFormat(calendar.getTime(), TIMESTAMP_PATTERN);
+		try {
+			if (System.currentTimeMillis() > Long.parseLong(lastDay)) {
+				PreferencesUtils.setIsCanGetFare(this, true);
+			}
+		} catch (Exception e) {
+
+		}
 	}
 
 	/**
