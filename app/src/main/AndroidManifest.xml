@@ -544,6 +544,22 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity
+            android:name=".activity.GetTelFareRuleActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="@string/get_tel_fare"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".activity.GetTelFareActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="@string/get_tel_fare"
+            android:screenOrientation="portrait">
+        </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.cyanbirds.momo.fileProvider"
@@ -837,6 +853,8 @@
 
 
         <receiver android:name=".receiver.NotificationReceiver"/>
+        //下载主apk的service
+        <service android:name=".service.DownloadUpdateService"/>
     </application>
 
 </manifest>

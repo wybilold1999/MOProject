@@ -132,6 +132,7 @@ public class WXLoginRequest extends ResultPostExecute<ClientUser> {
 			clientUser.versionCode = data.get("versionCode").getAsInt();
 			clientUser.apkUrl = data.get("apkUrl").getAsString();
 			clientUser.versionUpdateInfo = data.get("versionUpdateInfo").getAsString();
+			clientUser.isForceUpdate = data.get("isForceUpdate").getAsBoolean();
 			clientUser.imgUrls = data.get("pictures") == null ? "" : data.get("pictures").getAsString();
 			clientUser.gifts = data.get("gifts").getAsString();
 			onPostExecute(clientUser);

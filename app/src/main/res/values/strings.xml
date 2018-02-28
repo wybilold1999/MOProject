@@ -308,6 +308,7 @@
     <string name="dialog_get_balance">正在提现，请稍后...</string>
     <string name="wait">请稍后...</string>
     <string name="dialog_apply_for">正在申请中，请稍后...</string>
+    <string name="dialog_geting_tel_fare">正在领取，请稍后...</string>
 
     <!-- 高德地图分享位置 -->
     <string name="no_result">对不起，没有搜索到相关数据！</string>
@@ -399,5 +400,21 @@
     <string name="pay_ali_failure">支付失败,请重试</string>
     <string name="pay_wechat_failure">支付失败,请使用支付宝支付</string>
     <string name="tab_video_tips">还未上传过视频哦</string>
+
+    <string name="geting_tel_fare">充值送话费活动火热进行中!</string>
+    <string name="get_tel_fare">领取话费</string>
+    <string name="get_tel_fare_activity">--------送话费活动介绍--------</string>
+    <string name="get_tel_fare_qualification">(一) 参与资格</string>
+    <string name="get_tel_fare_rule">(二) 领取规则</string>
+    <string name="get_tel_fare_condition">(三) 领取条件</string>
+    <string name="get_tel_fare_way">(四) 领取方式</string>
+    <string name="no_join_activity">您还没有参加充值返话费活动!</string>
+    <string name="right_now_join_activity">立即参加</string>
+    <string name="input_get_fare_tel">请输入您要领取话费的手机号码</string>
+    <string name="right_now_get">立即领取</string>
+    <string name="get_tel_fare_success">领取话费成功！请在48小时内联系运营商，查询话费是否到账</string>
+    <string name="login_count_less">您在最近两个月内累计登陆未超过20天，不满足领取条件，无法领取话费！</string>
+    <string name="current_month_geted">当月话费已经领取，该月无法再继续领取！</string>
+    <string name="bg_downloading">后台下载中...</string>
 
 </resources>

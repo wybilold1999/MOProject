@@ -337,10 +337,12 @@ public class VipCenterActivity extends BaseActivity {
 					mPrefTelFareLay.setVisibility(View.VISIBLE);
 					mTvNameList.setVisibility(View.GONE);
 					mVerticalText.setVisibility(View.GONE);
+					PreferencesUtils.setIsHasGetFareActivity(VipCenterActivity.this, false);
 				} else {
 					mPrefTelFareLay.setVisibility(View.GONE);
 					mTvNameList.setVisibility(View.VISIBLE);
 					mVerticalText.setVisibility(View.VISIBLE);
+					PreferencesUtils.setIsHasGetFareActivity(VipCenterActivity.this, true);
 				}
 			}
 			new GetUserNameTask().request(1, 100);
@@ -435,6 +437,11 @@ public class VipCenterActivity extends BaseActivity {
 			if (mMemberBuy != null) {
 				if (mMemberBuy.price > 200) {
 					PreferencesUtils.setRewardCount(VipCenterActivity.this, 3);
+				}
+				if (mMemberBuy.price > 150) {
+					PreferencesUtils.setWhichVip(VipCenterActivity.this, 0);
+				} else {
+					PreferencesUtils.setWhichVip(VipCenterActivity.this, 1);
 				}
 			}
 		}

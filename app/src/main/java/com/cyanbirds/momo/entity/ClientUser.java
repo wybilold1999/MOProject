@@ -84,6 +84,10 @@ public class ClientUser implements Serializable{
      * 版本更新的信息
      */
     public String versionUpdateInfo;
+    /**
+     * 是否强制升级
+     */
+    public boolean isForceUpdate;
 	/**
      * 用户获得的礼物
      */

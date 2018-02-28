@@ -9,8 +9,8 @@ android {
         applicationId "com.cyanbirds.momo"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 4
-        versionName "1.0.14"
+        versionCode 5
+        versionName "1.1.5"
         multiDexEnabled true
 
     }
