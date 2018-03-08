@@ -9,11 +9,13 @@ import android.os.Handler;
 import android.os.Process;
 import android.util.Log;
 
+import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.activity.LauncherActivity;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.request.UploadCrashRequest;
 import com.cyanbirds.momo.utils.CheckUtil;
 import com.cyanbirds.momo.utils.FileAccessorUtils;
+import com.cyanbirds.momo.utils.PreferencesUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -118,6 +120,10 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 		pw.print(packageInfo.versionName);
 		pw.print("_");
 		pw.println(packageInfo.versionCode);
+
+		//手机型号
+		pw.print("city：");
+		pw.println(PreferencesUtils.getCurrentCity(CSApplication.getInstance()));
 
 		//Android版本号
 		pw.print("OS Version：");
