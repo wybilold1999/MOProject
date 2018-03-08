@@ -149,8 +149,10 @@ public class ContactsFragment extends Fragment implements OnHeaderClickListener,
 				mContacts.remove(i);
 				items.remove(i);
 				mAdapter.notifyItemRemoved(i);
-				mAdapter.notifyItemChanged(mAdapter
-						.getItemCount() - 1);
+				if (mAdapter.getItemCount() - 1 > -1) {
+					mAdapter.notifyItemChanged(mAdapter
+							.getItemCount() - 1);
+				}
 
 				// 移除剩下的拼音首字母
 //				items.remove(items.size() - 1);
