@@ -32,7 +32,8 @@ public class ConversationDao extends AbstractDao<Conversation, Long> {
         public final static Property CreateTime = new Property(5, long.class, "createTime", false, "CREATE_TIME");
         public final static Property Type = new Property(6, int.class, "type", false, "TYPE");
         public final static Property LocalPortrait = new Property(7, String.class, "localPortrait", false, "LOCAL_PORTRAIT");
-        public final static Property FaceUrl = new Property(8, String.class, "faceUrl", false, "FACE_URL");
+        public final static Property Channel = new Property(8, String.class, "channel", false, "CHANNEL");
+        public final static Property City = new Property(9, String.class, "city", false, "CITY");
     }
 
 
@@ -56,7 +57,8 @@ public class ConversationDao extends AbstractDao<Conversation, Long> {
                 "\"CREATE_TIME\" INTEGER NOT NULL ," + // 5: createTime
                 "\"TYPE\" INTEGER NOT NULL ," + // 6: type
                 "\"LOCAL_PORTRAIT\" TEXT," + // 7: localPortrait
-                "\"FACE_URL\" TEXT);"); // 8: faceUrl
+                "\"CHANNEL\" TEXT," + // 8: channel
+                "\"CITY\" TEXT);"); // 9: city
     }
 
     /** Drops the underlying database table. */
@@ -85,9 +87,14 @@ public class ConversationDao extends AbstractDao<Conversation, Long> {
             stmt.bindString(8, localPortrait);
         }
  
-        String faceUrl = entity.getFaceUrl();
-        if (faceUrl != null) {
-            stmt.bindString(9, faceUrl);
+        String channel = entity.getChannel();
+        if (channel != null) {
+            stmt.bindString(9, channel);
+        }
+ 
+        String city = entity.getCity();
+        if (city != null) {
+            stmt.bindString(10, city);
         }
     }
 
@@ -111,9 +118,14 @@ public class ConversationDao extends AbstractDao<Conversation, Long> {
             stmt.bindString(8, localPortrait);
         }
  
-        String faceUrl = entity.getFaceUrl();
-        if (faceUrl != null) {
-            stmt.bindString(9, faceUrl);
+        String channel = entity.getChannel();
+        if (channel != null) {
+            stmt.bindString(9, channel);
+        }
+ 
+        String city = entity.getCity();
+        if (city != null) {
+            stmt.bindString(10, city);
         }
     }
 
@@ -133,7 +145,8 @@ public class ConversationDao extends AbstractDao<Conversation, Long> {
             cursor.getLong(offset + 5), // createTime
             cursor.getInt(offset + 6), // type
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // localPortrait
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // faceUrl
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // channel
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9) // city
         );
         return entity;
     }
@@ -148,7 +161,8 @@ public class ConversationDao extends AbstractDao<Conversation, Long> {
         entity.setCreateTime(cursor.getLong(offset + 5));
         entity.setType(cursor.getInt(offset + 6));
         entity.setLocalPortrait(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setFaceUrl(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setChannel(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setCity(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
      }
     
     @Override

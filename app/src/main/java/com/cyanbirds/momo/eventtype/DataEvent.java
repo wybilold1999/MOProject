@@ -6,9 +6,4 @@ package com.cyanbirds.momo.eventtype;
  * 描述：
  */
 public class DataEvent {
-	public String dynamicContent;
-
-	public DataEvent(String dynamicContent) {
-		this.dynamicContent = dynamicContent;
-	}
 }

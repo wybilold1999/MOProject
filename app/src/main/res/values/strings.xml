@@ -417,4 +417,8 @@
     <string name="current_month_geted">当月话费已经领取，该月无法再继续领取！</string>
     <string name="bg_downloading">后台下载中...</string>
 
+    <string name="channel"><Data><![CDATA[渠道：<font color="#ff0000"><b>%1$s</b></font>]]></Data></string>
+    <string name="f_city"><Data><![CDATA[城市：<font color="#ff0000"><b>%1$s</b></font>]]></Data></string>
+    <string name="check_personal_info">查看用户详情</string>
+
 </resources>

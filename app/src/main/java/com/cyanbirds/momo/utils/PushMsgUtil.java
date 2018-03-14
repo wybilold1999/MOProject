@@ -58,14 +58,14 @@ public class PushMsgUtil {
 		final PushMsgModel pushMsgModel = gson.fromJson(pushMsgJson, PushMsgModel.class);
 		if (pushMsgModel != null && !TextUtils.isEmpty(pushMsgModel.sender)) {
 			if (pushMsgModel.msgType == PushMsgModel.MessageType.VOIP) {
-				if (!AppManager.getTopActivity(CSApplication.getInstance()).equals("com.cyanbirds.momo.activity.VoipCallActivity")) {
+				if (!AppManager.getTopActivity(CSApplication.getInstance()).equals("com.cyanbirds.ttjy.activity.VoipCallActivity")) {
 					if (!AppManager.getClientUser().is_vip || AppManager.getClientUser().gold_num < 100) {
 						//当前接收到消息的时间和登录时间相距小于1分钟，就延迟执行
 						if (System.currentTimeMillis() - AppManager.getClientUser().loginTime < 60000) {
 							mHandler.postDelayed(new Runnable() {
 								@Override
 								public void run() {
-									if (!AppManager.getTopActivity(CSApplication.getInstance()).equals("com.cyanbirds.momo.activity.VoipCallActivity")) {
+									if (!AppManager.getTopActivity(CSApplication.getInstance()).equals("com.cyanbirds.ttjy.activity.VoipCallActivity")) {
 										Intent intent = new Intent(CSApplication.getInstance(), VoipCallActivity.class);
 										intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 										intent.putExtra(ValueKey.IMAGE_URL, pushMsgModel.faceUrl);
@@ -134,7 +134,6 @@ public class PushMsgUtil {
 			conversation.talker = pushMsgModel.sender;
 			conversation.talkerName = pushMsgModel.senderName;
 			conversation.createTime = pushMsgModel.serverTime;
-			conversation.faceUrl = pushMsgModel.faceUrl;
 			conversation.unreadCount++;
 			long conversationId = ConversationSqlManager.getInstance(
 					CSApplication.getInstance()).inserConversation(conversation);
