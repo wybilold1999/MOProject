@@ -333,6 +333,11 @@
             android:label="@string/image_preview"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".activity.PublishDynamicActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:label="@string/publish_dynamic"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".activity.RadarActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="@string/find_yuan_fen"

@@ -14,20 +14,11 @@ import android.widget.TextView;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.adapter.PhotoChoserAdapter;
-import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.ImageBean;
-import com.cyanbirds.momo.entity.Picture;
 import com.cyanbirds.momo.listener.ChoseImageListener;
-import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.ImagesLoader;
-import com.cyanbirds.momo.net.request.OSSImagUploadRequest;
-import com.cyanbirds.momo.net.request.UploadPictureInfoRequest;
-import com.cyanbirds.momo.utils.FileAccessorUtils;
-import com.cyanbirds.momo.utils.ImageUtil;
-import com.cyanbirds.momo.utils.ProgressDialogUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
-import com.google.gson.Gson;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -62,9 +53,7 @@ public class PhotoChoserActivity extends BaseActivity implements
 	/**
 	 * oss上面的url
 	 */
-	ArrayList<Picture> ossImgUrls = null;
-	private int count = 0;//OSS上传的时候修改piclist中的url值
-	private Gson gson;
+	List<String> ossUrl = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +84,7 @@ public class PhotoChoserActivity extends BaseActivity implements
 	 * 设置数据
 	 */
 	private void setupData() {
-		gson = new Gson();
+		ossUrl = new ArrayList<>();
 		mImages = new ArrayList<ImageBean>();
 		mAdapter = new PhotoChoserAdapter(this, mImages);
 		mAdapter.setChoseImageListener(this);
@@ -120,54 +109,13 @@ public class PhotoChoserActivity extends BaseActivity implements
 		if (id == R.id.ok) {
 			list = getSelectedImagePaths();
 			if(list != null && list.size() > 0){
-				ossImgUrls = new ArrayList<>();
-				ProgressDialogUtils.getInstance(PhotoChoserActivity.this).show(R.string.dialog_request_uploda);
-				for (String path : list) {
-					ossImgUrls.add(ImageUtil.getPicInfoForPath(path));
-					String imgUrl = ImageUtil.compressImage(path, FileAccessorUtils.IMESSAGE_IMAGE);
-					new OSSUploadImgTask().request(AppManager.getFederationToken().bucketName,
-							AppManager.getOSSFacePath(), imgUrl);
-				}
+				Intent intent = new Intent();
+				intent.putStringArrayListExtra(ValueKey.IMAGE_URL, (ArrayList<String>) list);
+				setResult(RESULT_OK, intent);
+				finish();
 			}
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	class OSSUploadImgTask extends OSSImagUploadRequest {
-		@Override
-		public void onPostExecute(String s) {
-			count++;
-			if (count <= ossImgUrls.size()) {
-				ossImgUrls.get(count - 1).path = AppConstants.OSS_IMG_ENDPOINT + s;
-				if (count == list.size()) {
-					String picUrls = gson.toJson(ossImgUrls);
-					new UploadPictureTask().request(picUrls);
-				}
-			}
-		}
-
-		@Override
-		public void onErrorExecute(String error) {
-			ProgressDialogUtils.getInstance(PhotoChoserActivity.this).dismiss();
-		}
-	}
-
-	class UploadPictureTask extends UploadPictureInfoRequest {
-		@Override
-		public void onPostExecute(ArrayList<String> urls) {
-			ToastUtil.showMessage(R.string.upload_success);
-			ProgressDialogUtils.getInstance(PhotoChoserActivity.this).dismiss();
-			Intent intent = new Intent();
-			intent.putExtra(ValueKey.IMAGE_URL, urls);
-			setResult(RESULT_OK, intent);
-			finish();
-		}
-
-		@Override
-		public void onErrorExecute(String error) {
-			ToastUtil.showMessage(error);
-			ProgressDialogUtils.getInstance(PhotoChoserActivity.this).dismiss();
-		}
 	}
 
 	/**

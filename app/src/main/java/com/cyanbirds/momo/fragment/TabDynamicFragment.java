@@ -19,7 +19,6 @@ import com.cyanbirds.momo.eventtype.PubDycEvent;
 import com.cyanbirds.momo.listener.NestedScrollViewListener;
 import com.cyanbirds.momo.net.request.GetDynamicListRequest;
 import com.cyanbirds.momo.ui.widget.WrapperLinearLayoutManager;
-import com.cyanbirds.momo.utils.ProgressDialogUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonNull;
@@ -47,11 +46,11 @@ import butterknife.ButterKnife;
  */
 public class TabDynamicFragment extends Fragment {
 	@BindView(R.id.recyclerview)
-	RecyclerView mRecyclerview;
+    RecyclerView mRecyclerview;
 	@BindView(R.id.tv_tab_content)
 	TextView mTvTabContent;
 	@BindView(R.id.scrollView)
-	NestedScrollView mScrollView;
+    NestedScrollView mScrollView;
 	private View rootView;
 
 	private List<DynamicContent.DataBean> mAllData;
