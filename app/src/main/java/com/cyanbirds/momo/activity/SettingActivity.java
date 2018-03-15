@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.cyanbirds.momo.db.ExpressionGroupSqlManager;
 import com.cyanbirds.momo.db.ExpressionSqlManager;
+import com.cyanbirds.momo.db.NameListDaoManager;
 import com.umeng.analytics.MobclickAgent;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
@@ -229,6 +230,7 @@ public class SettingActivity extends BaseActivity {
         ContactSqlManager.reset();
         ExpressionGroupSqlManager.reset();
         ExpressionSqlManager.reset();
+        NameListDaoManager.reset();
     }
 
     @Override

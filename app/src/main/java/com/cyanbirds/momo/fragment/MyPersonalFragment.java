@@ -21,9 +21,13 @@ import com.cyanbirds.momo.activity.ExpressionActivity;
 import com.cyanbirds.momo.activity.FeedBackActivity;
 import com.cyanbirds.momo.activity.ModifyUserInfoNewActivity;
 import com.cyanbirds.momo.activity.SettingActivity;
+import com.cyanbirds.momo.db.ContactSqlManager;
 import com.cyanbirds.momo.db.ConversationSqlManager;
+import com.cyanbirds.momo.db.ExpressionGroupSqlManager;
+import com.cyanbirds.momo.db.ExpressionSqlManager;
 import com.cyanbirds.momo.db.IMessageDaoManager;
 import com.cyanbirds.momo.db.MyGoldDaoManager;
+import com.cyanbirds.momo.db.NameListDaoManager;
 import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.eventtype.UserEvent;
 import com.cyanbirds.momo.manager.AppManager;
@@ -241,6 +245,10 @@ public class MyPersonalFragment extends Fragment {
 		IMessageDaoManager.reset();
 		ConversationSqlManager.reset();
 		MyGoldDaoManager.reset();
+		ContactSqlManager.reset();
+		ExpressionGroupSqlManager.reset();
+		ExpressionSqlManager.reset();
+		NameListDaoManager.reset();
 	}
 
 
