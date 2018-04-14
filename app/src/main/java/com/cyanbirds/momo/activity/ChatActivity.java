@@ -72,7 +72,6 @@ import com.cyanbirds.momo.utils.EmoticonUtil;
 import com.cyanbirds.momo.utils.FileAccessorUtils;
 import com.cyanbirds.momo.utils.FileUtils;
 import com.cyanbirds.momo.utils.ImageUtil;
-import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
 
@@ -94,7 +93,7 @@ import java.util.List;
  */
 public class ChatActivity extends BaseActivity implements OnMessageReportCallback, OnClickListener,
 		OnEmojiItemClickListener, OnFileProgressChangedListener,
-		OnRefreshListener, OnMessageStatusReport {
+        OnRefreshListener, OnMessageStatusReport {
 	private RecyclerView mMessageRecyclerView;
 	private ChatMessageAdapter mMessageAdapter;
 	private ImageView openCamera;
@@ -111,7 +110,6 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 	private LinearLayout mEmoticonPageIndicator;
 	private RecyclerView mEmoticonRecyclerview;
 	private SwipeRefreshLayout mSwipeRefresh;
-	private LinearLayout mInputToolWork;
 
 	private String mPhotoPath;
 	private File mPhotoFile;
@@ -217,7 +215,6 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 		mMorePageIndicator = (LinearLayout) findViewById(R.id.more_page_indicator);
 		mEmoticonPager = (ViewPager) findViewById(R.id.emoticon_pager);
 		mEmoticonPageIndicator = (LinearLayout) findViewById(R.id.emoticon_page_indicator);
-		mInputToolWork = (LinearLayout) findViewById(R.id.input_tool_work);
 
 		mEmoticonRecyclerview = (RecyclerView) findViewById(R.id.emoticon_recyclerview);
 		LinearLayoutManager layoutManager = new WrapperLinearLayoutManager(this);
@@ -225,11 +222,18 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 		mEmoticonRecyclerview.setLayoutManager(layoutManager);
 
 		if (!AppManager.getClientUser().isShowVip) {
-			mInputToolWork.setVisibility(View.GONE);
+			openCamera.setVisibility(View.GONE);
+			openAlbums.setVisibility(View.GONE);
+			openLocation.setVisibility(View.GONE);
+			redPacket.setVisibility(View.GONE);
+			openEmotion.setVisibility(View.GONE);
 		} else {
-			mInputToolWork.setVisibility(View.VISIBLE);
+			openCamera.setVisibility(View.VISIBLE);
+			openAlbums.setVisibility(View.VISIBLE);
+			openLocation.setVisibility(View.VISIBLE);
+			redPacket.setVisibility(View.VISIBLE);
+			openEmotion.setVisibility(View.VISIBLE);
 		}
-
 	}
 
 	private void setupEvent() {
@@ -467,30 +471,21 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 			case R.id.tool_view_input_text:
 				if (AppManager.getClientUser().isShowVip) {
 					if (!TextUtils.isEmpty(mContentInput.getText().toString())) {
-						if (null != IMChattingHelper.getInstance().getChatManager()) {
-							int count = PreferencesUtils.getChatLimit(this);
-							if (count < AppConstants.CHAT_LIMIT) {
-								count = count + 1;
-								PreferencesUtils.setChatLimit(this, count);
-								sendTextMsg();
-								if (AppConstants.CHAT_LIMIT - count == 3) {
-									ToastUtil.showMessage(R.string.chat_count_three);
-								}
+						if (AppManager.getClientUser().is_vip) {
+							if (AppManager.getClientUser().isShowGold && AppManager.getClientUser().gold_num  < 101) {
+								showGoldDialog();
 							} else {
-								if (AppManager.getClientUser().is_vip) {
-									if (AppManager.getClientUser().gold_num  < 101) {
-										showGoldDialog();
-									} else {
-										sendTextMsg();
-									}
-								} else {
-									showBeyondChatLimitDialog();
+								if (null != IMChattingHelper.getInstance().getChatManager()) {
+									sendTextMsg();
 								}
 							}
+						} else {
+							showBeyondChatLimitDialog();
 						}
 					}
 				} else {
-					if (!TextUtils.isEmpty(mContentInput.getText().toString())) {
+					if (!TextUtils.isEmpty(mContentInput.getText().toString()) &&
+							null != IMChattingHelper.getInstance().getChatManager()) {
 						sendTextMsg();
 					}
 				}
@@ -563,9 +558,7 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (mClientUser != null) {
-			AppManager.currentChatTalker = mClientUser.userId;
-		}
+		AppManager.currentChatTalker = mClientUser.userId;
 		NotificationManager.getInstance().cancelNotification();
 		MobclickAgent.onPageStart(this.getClass().getName());
 		MobclickAgent.onResume(this);
@@ -662,7 +655,7 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 		} else if (resultCode == RESULT_OK && requestCode == ALBUMS_RESULT) {
 			if (AppManager.getClientUser().isShowVip) {
 				if (AppManager.getClientUser().is_vip) {
-					if (AppManager.getClientUser().gold_num  < 101) {
+					if (AppManager.getClientUser().isShowGold && AppManager.getClientUser().gold_num  < 101) {
 						showGoldDialog();
 					} else {
 						Uri uri = data.getData();

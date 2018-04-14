@@ -25,6 +25,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alipay.sdk.app.PayTask;
+import com.cyanbirds.momo.CSApplication;
+import com.cyanbirds.momo.helper.SDKCoreHelper;
 import com.sunfusheng.marqueeview.MarqueeView;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.umeng.analytics.MobclickAgent;
@@ -52,6 +54,7 @@ import com.cyanbirds.momo.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.momo.utils.DensityUtil;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
+import com.yuntongxun.ecsdk.ECInitParams;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -428,6 +431,7 @@ public class VipCenterActivity extends BaseActivity {
 	class GetPayResultTask extends GetPayResultRequest {
 		@Override
 		public void onPostExecute(UserVipModel userVipModel) {
+			SDKCoreHelper.init(CSApplication.getInstance(), ECInitParams.LoginMode.FORCE_LOGIN);
 			AppManager.getClientUser().is_vip = userVipModel.isVip;
 			AppManager.getClientUser().is_download_vip = userVipModel.isDownloadVip;
 			AppManager.getClientUser().gold_num = userVipModel.goldNum;

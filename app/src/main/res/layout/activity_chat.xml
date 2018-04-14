@@ -84,14 +84,12 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/input_tool_work"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
             android:layout_marginBottom="10dp"
+            android:paddingLeft="13dp"
             android:orientation="horizontal"
-            android:layout_below="@id/input_tool_view"
-            android:visibility="gone">
+            android:layout_below="@id/input_tool_view">
 
             <ImageView
                 android:id="@+id/openCamera"
@@ -99,7 +97,8 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/camera_icon_selector"/>
+                android:src="@drawable/camera_icon_selector"
+                android:visibility="gone"/>
             <ImageView
                 android:id="@+id/openAlbums"
                 android:layout_width="wrap_content"
@@ -107,7 +106,8 @@
                 android:clickable="true"
                 android:layout_marginLeft="20dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/picture_icon_selector"/>
+                android:src="@drawable/picture_icon_selector"
+                android:visibility="gone"/>
             <ImageView
                 android:id="@+id/openEmotion"
                 android:layout_width="wrap_content"
@@ -115,7 +115,8 @@
                 android:clickable="true"
                 android:layout_marginLeft="20dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/emotion_icon_selector"/>
+                android:src="@drawable/emotion_icon_selector"
+                android:visibility="gone"/>
             <ImageView
                 android:id="@+id/openLocation"
                 android:layout_width="wrap_content"
@@ -123,7 +124,8 @@
                 android:clickable="true"
                 android:layout_marginLeft="20dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/location_icon_selector"/>
+                android:src="@drawable/location_icon_selector"
+                android:visibility="gone"/>
             <ImageView
                 android:id="@+id/red_packet"
                 android:layout_width="wrap_content"
@@ -131,7 +133,8 @@
                 android:clickable="true"
                 android:layout_marginLeft="20dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/rpt_icon_selector"/>
+                android:src="@drawable/rpt_icon_selector"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <LinearLayout

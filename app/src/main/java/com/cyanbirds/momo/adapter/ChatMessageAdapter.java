@@ -40,7 +40,6 @@ import com.cyanbirds.momo.eventtype.SnackBarEvent;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.request.DownloadImageRequest;
 import com.cyanbirds.momo.ui.widget.CircularProgress;
-import com.cyanbirds.momo.utils.DateUtil;
 import com.cyanbirds.momo.utils.DensityUtil;
 import com.cyanbirds.momo.utils.EmoticonUtil;
 import com.cyanbirds.momo.utils.FileAccessorUtils;
@@ -671,12 +670,12 @@ public class ChatMessageAdapter extends
      * 设置显示时间
      */
     private void setChatTime(TextView chat_time, long time, boolean showTimer) {
-        chat_time.setVisibility(View.GONE);
+        /*chat_time.setVisibility(View.GONE);
         if (showTimer) {
             chat_time.setVisibility(View.VISIBLE);
             chat_time.setText(DateUtil.getDateString(time,
                     DateUtil.SHOW_TYPE_CALL_LOG).trim());
-        }
+        }*/
     }
 
 

@@ -416,5 +416,6 @@
     <string name="login_count_less">您在最近两个月内累计登陆未超过20天，不满足领取条件，无法领取话费！</string>
     <string name="current_month_geted">当月话费已经领取，该月无法再继续领取！</string>
     <string name="bg_downloading">后台下载中...</string>
+    <string name="no_check_tips">由于国家禁止泄漏用户隐私，所以微信号和QQ号暂时无法查看，敬请谅解；如有疑问可联系QQ客服2350635875咨询，谢谢！</string>
 
 </resources>

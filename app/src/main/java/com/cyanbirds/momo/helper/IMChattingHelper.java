@@ -53,7 +53,7 @@ public class IMChattingHelper implements OnChatReceiveListener {
 	private int mHistoryMsgCount = 0; //离线消息数量
 	/** 是否是同步消息 */
 	private boolean isSyncOffline = false;
-	private List<IMessage> offlineMsg = null;
+	private List<IMessage> offlineMsg = new ArrayList<>();
 	private static final String CITY = "深圳市";
 
 	public static IMChattingHelper getInstance() {
@@ -630,9 +630,6 @@ public class IMChattingHelper implements OnChatReceiveListener {
 
 	@Override
 	public void onOfflineMessageCount(int count) {
-		if (count > 0) {
-			offlineMsg = new ArrayList<>();
-		}
 	}
 
 	@Override
