@@ -28,6 +28,7 @@ import com.facebook.imagepipeline.memory.PoolFactory;
 import com.facebook.imagepipeline.memory.PoolParams;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.util.FileDownloadHelper;
+import com.mob.MobSDK;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
@@ -66,7 +67,8 @@ public class CSApplication extends MultiDexApplication {
 		AppManager.setContext(sApplication);
 		AppManager.setUserInfo();
 		//初始化短信sdk
-		SMSSDK.initSDK(this, AppConstants.SMS_INIT_KEY, AppConstants.SMS_INIT_SECRET);
+//		SMSSDK.initSDK(this, AppConstants.SMS_INIT_KEY, AppConstants.SMS_INIT_SECRET);
+		MobSDK.init(this);
 		initFresco();
 
 		FileDownloader.init(sApplication, new FileDownloadHelper.OkHttpClientCustomMaker() {

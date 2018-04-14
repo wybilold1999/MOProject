@@ -210,7 +210,7 @@ public interface UserService {
      */
     @FormUrlEncoded
     @POST("user/uploadToken")
-    Call<ResponseBody> uploadToken( @Field("gtClientId") String gtClientId, @Header("token") String token);
+    Call<ResponseBody> uploadToken(@FieldMap ArrayMap<String, String> params, @Header("token") String token);
 
     /**
      * 上传城市信息
