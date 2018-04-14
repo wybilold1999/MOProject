@@ -4,6 +4,9 @@
     <color name="colorPrimaryDark">#03b3ca</color>
     <color name="colorAccent">#03b3ca</color>
 
+    <color name="tab_checked">@color/colorPrimary</color>
+    <color name="tab_unchecked">#757575</color>
+
     <!-- 图片选择背景 -->
     <color name="image_selected_color">#7f000000</color>
 

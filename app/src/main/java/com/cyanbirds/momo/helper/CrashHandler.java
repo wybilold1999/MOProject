@@ -1,20 +1,18 @@
 package com.cyanbirds.momo.helper;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Process;
-import android.util.Log;
 
 import com.cyanbirds.momo.CSApplication;
-import com.cyanbirds.momo.activity.LauncherActivity;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.request.UploadCrashRequest;
 import com.cyanbirds.momo.utils.CheckUtil;
 import com.cyanbirds.momo.utils.FileAccessorUtils;
+import com.cyanbirds.momo.utils.NetworkUtils;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 
 import java.io.BufferedReader;
@@ -142,6 +140,10 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 		//CPU架构
 		pw.print("CPU ABI：");
 		pw.println(Build.CPU_ABI);
+
+		//网络环境
+		pw.print("NETWORK：");
+		pw.println(NetworkUtils.getNetType(mContext));
 
 	}
 
