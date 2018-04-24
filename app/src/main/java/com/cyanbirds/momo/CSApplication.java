@@ -29,6 +29,7 @@ import com.facebook.imagepipeline.memory.PoolParams;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.util.FileDownloadHelper;
 import com.mob.MobSDK;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
@@ -37,6 +38,8 @@ import java.util.Set;
 
 import cn.smssdk.SMSSDK;
 import okhttp3.OkHttpClient;
+
+import static com.cyanbirds.momo.config.AppConstants.BUGLY_ID;
 
 /**
  * 
@@ -62,14 +65,23 @@ public class CSApplication extends MultiDexApplication {
 	public void onCreate() {
 		super.onCreate();
 		sApplication = this;
-		RetrofitManager.getInstance();//初始化retrofit
-		initNetInterface();
-		AppManager.setContext(sApplication);
-		AppManager.setUserInfo();
+		AppManager.getExecutorService().execute(new Runnable() {
+			@Override
+			public void run() {
+				RetrofitManager.getInstance();//初始化retrofit
+				initNetInterface();
+				AppManager.setContext(sApplication);
+				AppManager.setUserInfo();
+
+				registerActivityLifecycleCallbacks(AppActivityLifecycleCallbacks.getInstance());
+
+				initFresco();
+
+				registerWeiXin();
+			}
+		});
 		//初始化短信sdk
-//		SMSSDK.initSDK(this, AppConstants.SMS_INIT_KEY, AppConstants.SMS_INIT_SECRET);
 		MobSDK.init(this);
-		initFresco();
 
 		FileDownloader.init(sApplication, new FileDownloadHelper.OkHttpClientCustomMaker() {
 			@Override
@@ -80,15 +92,17 @@ public class CSApplication extends MultiDexApplication {
 
 		CrashHandler.getInstance().init(this);
 
-		registerActivityLifecycleCallbacks(AppActivityLifecycleCallbacks.getInstance());
+		initBugly();
+	}
 
-		registerWeiXin();
-
-		/*Stetho.initialize(Stetho
-				.newInitializerBuilder(this)
-				.enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-				.enableWebKitInspector(
-						Stetho.defaultInspectorModulesProvider(this)).build());*/
+	private void initBugly() {
+		// 获取当前进程名
+		String processName = AppManager.getProcessName(android.os.Process.myPid());
+		// 设置是否为上报进程
+		CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(this);
+		strategy.setUploadProcess(processName == null || processName.equals(AppManager.pkgName));
+		// 初始化Bugly
+		CrashReport.initCrashReport(this, BUGLY_ID, true, strategy);
 	}
 
 	private void registerWeiXin() {

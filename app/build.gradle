@@ -19,6 +19,11 @@ android {
                 XG_ACCESS_KEY : "AA2WT91C4I2T"
         ]
 
+        ndk {
+            // 设置支持的SO库架构
+            abiFilters 'armeabi' , 'x86', 'armeabi-v7a' //, 'x86_64', 'arm64-v8a'
+        }
+
     }
     buildTypes {
         release {
@@ -159,4 +164,6 @@ dependencies {
     compile 'com.tencent.wup:wup:1.0.0.E-release'
     //mid包
     compile 'com.tencent.mid:mid:4.0.6-release'
+    compile 'com.tencent.bugly:crashreport:latest.release'
+    compile 'com.tencent.bugly:nativecrashreport:latest.release'
 }
