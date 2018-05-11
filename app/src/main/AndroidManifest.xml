@@ -731,6 +731,14 @@
             android:taskAffinity="com.igexin.sdk.PushActivityTask"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
+        <activity
+            android:name=".activity.GiveVipActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="@string/free_give_vip"
+            android:screenOrientation="portrait">
+        </activity>
+
         <service
             android:name="com.igexin.download.DownloadService"
             android:process=":pushservice"/>

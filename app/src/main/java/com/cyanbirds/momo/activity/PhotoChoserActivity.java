@@ -40,7 +40,7 @@ public class PhotoChoserActivity extends BaseActivity implements
 	private List<ImageBean> mImages;
 	private int mSelectedCount = 0;
 
-	private static final int MAX_SELECT_NUMBER = 3;
+	private static int MAX_SELECT_NUMBER = 4;
 
 	/**
 	 * 已经选中的url
@@ -84,6 +84,7 @@ public class PhotoChoserActivity extends BaseActivity implements
 	 * 设置数据
 	 */
 	private void setupData() {
+		MAX_SELECT_NUMBER = getIntent().getIntExtra(ValueKey.DATA, 4);
 		ossUrl = new ArrayList<>();
 		mImages = new ArrayList<ImageBean>();
 		mAdapter = new PhotoChoserAdapter(this, mImages);

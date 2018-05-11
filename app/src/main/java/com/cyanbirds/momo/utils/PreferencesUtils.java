@@ -124,6 +124,8 @@ public class PreferencesUtils {
 	public static final String SETTINGS_LOGIN_COUNT = "com.cyanbirds.lljy_login_count";
 	/** 该月是否可以领取话费*/
 	public static final String SETTINGS_IS_CAN_GET_FARE = "com.cyanbirds.lljy_is_can_get_fare";
+	/** 是否上传好评截图*/
+	public static final String SETTINGS_APP_COMMENT = "com.cyanbirds.tanlove_app_comment";
 
 	/**
 	 * 获取RL账号
@@ -1314,6 +1316,20 @@ public class PreferencesUtils {
 		SharedPreferences sp = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		sp.edit().putBoolean(SETTINGS_IS_CAN_GET_FARE, isCanGetFare)
+				.commit();
+	}
+
+	public static boolean getIsUploadCommentImg(final Context context) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return sp.getBoolean(SETTINGS_APP_COMMENT, false);
+	}
+
+	public static void setIsUploadCommentImg(final Context context,
+											 final Boolean isUpload) {
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		sp.edit().putBoolean(SETTINGS_APP_COMMENT, isUpload)
 				.commit();
 	}
 

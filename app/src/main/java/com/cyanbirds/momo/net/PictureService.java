@@ -6,6 +6,7 @@ import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Header;
@@ -28,4 +29,8 @@ public interface PictureService {
     @FormUrlEncoded
     @POST("picture/userPictureList")
     Call<ResponseBody> getUserPictureList(@Header("token") String token, @FieldMap ArrayMap<String, String> params);
+
+    @FormUrlEncoded
+    @POST("picture/uploadCommentImg")
+    Call<ResponseBody> uploadCommentImg(@Header("token") String token, @Field("imgUrl") String imgUrl);
 }

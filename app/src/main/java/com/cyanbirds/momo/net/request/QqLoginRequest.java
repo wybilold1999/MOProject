@@ -111,6 +111,7 @@ public class QqLoginRequest extends ResultPostExecute<ClientUser> {
 			clientUser.isShowTd = jsonObject.get("isShowTd").getAsBoolean();
             clientUser.isShowAppointment = jsonObject.get("isShowAppointment").getAsBoolean();
 			clientUser.isShowNormal = data.get("isShow").getAsBoolean();
+			clientUser.isShowGiveVip = jsonObject.get("isShowGiveVip").getAsBoolean();
 			clientUser.state_marry = data.get("emotionStatus").getAsString();
 			clientUser.face_url = data.get("faceUrl").getAsString();
 			clientUser.age = data.get("age").getAsInt();

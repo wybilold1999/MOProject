@@ -418,4 +418,12 @@
     <string name="bg_downloading">后台下载中...</string>
     <string name="no_check_tips">由于国家禁止泄漏用户隐私，所以微信号和QQ号暂时无法查看，敬请谅解；如有疑问可联系QQ客服2350635875咨询，谢谢！</string>
 
+    <string name="give_vip_tips">应用市场5星好评送会员要求：</string>
+    <string name="give_vip_steps">1.点击跳转应用市场评论按钮\n\n2.按以上示例图片给出5星好评并且内容不少于10个字\n\n3.评论后截图上传将为您免费赠送3个月会员</string>
+
+    <string name="skip_market">跳转应用市场5星好评</string>
+    <string name="upload_market_img">上传好评截图</string>
+    <string name="free_give_vip">免费赠送会员</string>
+    <string name="upload_faiure">上传失败</string>
+
 </resources>

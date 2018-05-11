@@ -128,6 +128,10 @@ public class ClientUser implements Serializable{
      * 0:不显示  1：显示
      */
     public boolean isShowAppointment; //是否显示约会
+    /**
+     * 0:不显示  1：显示
+     */
+    public boolean isShowGiveVip; //是否显示赠送会员
 
     public String latitude = "";
     public String longitude = "";

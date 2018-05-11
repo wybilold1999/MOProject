@@ -115,6 +115,7 @@ public class UserLoginRequest extends ResultPostExecute<ClientUser> {
 			clientUser.isShowTd = jsonObject.get("isShowTd").getAsBoolean();
 			clientUser.isShowAppointment = jsonObject.get("isShowAppointment").getAsBoolean();
 			clientUser.isShowNormal = data.get("isShow").getAsBoolean();
+			clientUser.isShowGiveVip = jsonObject.get("isShowGiveVip").getAsBoolean();
 			clientUser.gold_num = data.get("goldNum").getAsInt();
 			clientUser.state_marry = data.get("emotionStatus").getAsString();
 			clientUser.city = data.get("city").getAsString();

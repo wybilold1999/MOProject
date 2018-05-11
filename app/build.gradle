@@ -10,8 +10,8 @@ android {
         applicationId "com.cyanbirds.momo"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 7
-        versionName "1.1.7"
+        versionCode 8
+        versionName "1.1.8"
         multiDexEnabled true
 
         manifestPlaceholders = [
