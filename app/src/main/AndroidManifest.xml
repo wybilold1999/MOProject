@@ -739,6 +739,14 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity
+            android:name=".activity.BandPhoneActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="@string/bangding_phone"
+            android:screenOrientation="portrait">
+        </activity>
+
         <service
             android:name="com.igexin.download.DownloadService"
             android:process=":pushservice"/>

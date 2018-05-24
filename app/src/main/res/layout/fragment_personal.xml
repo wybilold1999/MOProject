@@ -832,7 +832,8 @@
                         android:layout_height="50dp"
                         android:background="?android:selectableItemBackground"
                         android:clickable="true"
-                        android:descendantFocusability="blocksDescendants">
+                        android:descendantFocusability="blocksDescendants"
+                        android:visibility="gone">
 
                         <ImageView
                             android:id="@+id/give_vip_img"

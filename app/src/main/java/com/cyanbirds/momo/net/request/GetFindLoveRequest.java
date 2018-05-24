@@ -30,6 +30,7 @@ public class GetFindLoveRequest extends ResultPostExecute<List<ClientUser>> {
         ArrayMap<String, String> params = new ArrayMap<>();
         params.put("pageNo", String.valueOf(pageNo));
         params.put("pageSize", String.valueOf(pageSize));
+        params.put("userId", AppManager.getClientUser().userId);
         params.put("gender", gender);
         params.put("user_scope_type", mUserScopeType);
         Call<ResponseBody> call = AppManager.getUserService().getFindLoveInfo(AppManager.getClientUser().sessionId, params);

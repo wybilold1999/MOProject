@@ -558,7 +558,9 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 	@Override
 	protected void onResume() {
 		super.onResume();
-		AppManager.currentChatTalker = mClientUser.userId;
+		if (mClientUser != null) {
+			AppManager.currentChatTalker = mClientUser.userId;
+		}
 		NotificationManager.getInstance().cancelNotification();
 		MobclickAgent.onPageStart(this.getClass().getName());
 		MobclickAgent.onResume(this);

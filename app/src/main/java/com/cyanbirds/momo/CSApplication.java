@@ -65,11 +65,10 @@ public class CSApplication extends MultiDexApplication {
 	public void onCreate() {
 		super.onCreate();
 		sApplication = this;
+		initNetInterface();
 		AppManager.getExecutorService().execute(new Runnable() {
 			@Override
 			public void run() {
-				RetrofitManager.getInstance();//初始化retrofit
-				initNetInterface();
 				AppManager.setContext(sApplication);
 				AppManager.setUserInfo();
 
