@@ -483,7 +483,7 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 								sendTextMsg();
 							}
 						} else {
-							showBeyondChatLimitDialog();
+							showVipDialog();
 						}
 					}
 				} else {
@@ -513,12 +513,23 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 				startActivity(intent);
 			}
 		});
-		builder.setNegativeButton(R.string.until_single, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
+		if (AppManager.getClientUser().isShowGiveVip) {
+			builder.setNegativeButton(R.string.free_give_vip, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+					Intent intent = new Intent(ChatActivity.this, GiveVipActivity.class);
+					startActivity(intent);
+				}
+			});
+		} else {
+			builder.setNegativeButton(R.string.until_single, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+		}
 		builder.show();
 	}
 
@@ -533,12 +544,23 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 				startActivity(intent);
 			}
 		});
-		builder.setNegativeButton(R.string.until_single, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
+		if (AppManager.getClientUser().isShowGiveVip) {
+			builder.setNegativeButton(R.string.free_give_vip, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+					Intent intent = new Intent(ChatActivity.this, GiveVipActivity.class);
+					startActivity(intent);
+				}
+			});
+		} else {
+			builder.setNegativeButton(R.string.until_single, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+		}
 		builder.show();
 	}
 
@@ -989,31 +1011,6 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 		builder.show();
 	}
 
-	private void showBeyondChatLimitDialog() {
-		String message = "";
-		if (AppConstants.CHAT_LIMIT == 0) {
-			message = getResources().getString(R.string.un_send_msg);
-		} else {
-			message = getResources().getString(R.string.chat_count_zero_bak);
-		}
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(message);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-				Intent intent = new Intent(ChatActivity.this, VipCenterActivity.class);
-				startActivity(intent);
-			}
-		});
-		builder.setNegativeButton(R.string.until_single, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
-		builder.show();
-	}
 
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void showSnackBar(SnackBarEvent event) {

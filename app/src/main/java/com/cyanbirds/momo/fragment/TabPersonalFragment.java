@@ -35,6 +35,7 @@ import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.cyanbirds.momo.R;
+import com.cyanbirds.momo.activity.GiveVipActivity;
 import com.cyanbirds.momo.activity.MakeMoneyActivity;
 import com.cyanbirds.momo.activity.MyGoldActivity;
 import com.cyanbirds.momo.activity.VipCenterActivity;
@@ -595,12 +596,23 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 				startActivity(intent);
 			}
 		});
-		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
+		if (AppManager.getClientUser().isShowGiveVip) {
+			builder.setNegativeButton(R.string.free_give_vip, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+					Intent intent = new Intent(getActivity(), GiveVipActivity.class);
+					startActivity(intent);
+				}
+			});
+		} else {
+			builder.setNegativeButton(R.string.until_single, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+		}
 		builder.show();
 	}
 
@@ -615,13 +627,23 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 						startActivity(intent);
 					}
 				});
-		builder.setNegativeButton(getResources().getString(R.string.cancel),
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				});
+		if (AppManager.getClientUser().isShowGiveVip) {
+			builder.setNegativeButton(R.string.free_give_vip, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+					Intent intent = new Intent(getActivity(), GiveVipActivity.class);
+					startActivity(intent);
+				}
+			});
+		} else {
+			builder.setNegativeButton(R.string.until_single, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+		}
 		builder.show();
 	}
 

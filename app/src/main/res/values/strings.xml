@@ -154,7 +154,7 @@
     <string name="modify_user_info">完善资料,让更多人认识您</string>
     <string name="qq">QQ号</string>
     <string name="weixin">微信号</string>
-    <string name="ali_pay">支付宝支付(推荐)</string>
+    <string name="ali_pay">支付宝支付</string>
     <string name="ali_pay_info">使用支付宝支付,额外赠送500金币</string>
     <string name="pay_info_ali">额外赠送%1$s金币</string>
     <string name="pay_info">立减%1$s元</string>

@@ -9,17 +9,17 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.cyanbirds.momo.db.ExpressionGroupSqlManager;
-import com.cyanbirds.momo.db.ExpressionSqlManager;
-import com.cyanbirds.momo.db.NameListDaoManager;
 import com.umeng.analytics.MobclickAgent;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.db.ContactSqlManager;
 import com.cyanbirds.momo.db.ConversationSqlManager;
+import com.cyanbirds.momo.db.ExpressionGroupSqlManager;
+import com.cyanbirds.momo.db.ExpressionSqlManager;
 import com.cyanbirds.momo.db.IMessageDaoManager;
 import com.cyanbirds.momo.db.MyGoldDaoManager;
+import com.cyanbirds.momo.db.NameListDaoManager;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.manager.NotificationManager;
 import com.cyanbirds.momo.net.request.LogoutRequest;
@@ -152,8 +152,11 @@ public class SettingActivity extends BaseActivity {
                 }
                 break;
             case R.id.banding_phone_lay:
-                intent.setClass(this, BandPhoneActivity.class);
+                //0=注册1=找回密码2=验证绑定手机
+                intent.setClass(this, FindPwdActivity.class);
+                intent.putExtra(ValueKey.INPUT_PHONE_TYPE, 2);
                 startActivity(intent);
+                finish();
                 break;
             case R.id.modify_pwd_lay:
                 intent.setClass(this, ModifyPwdActivity.class);

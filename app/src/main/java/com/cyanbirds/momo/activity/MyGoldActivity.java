@@ -223,11 +223,31 @@ public class MyGoldActivity extends BaseActivity {
 			} else {
 				mAliPayInfo.setVisibility(View.GONE);
 			}
+			defaultPayWay();
 		}
 
 		@Override
 		public void onErrorExecute(String error) {
 			ToastUtil.showMessage(error);
+		}
+	}
+
+	private void defaultPayWay() {
+		if (mMemberBuy.isShowAliPay && mMemberBuy.isShowWePay) {
+			mPayLay.setVisibility(View.VISIBLE);
+			mPayType = AppConstants.ALI_PAY_PLATFORM;
+			mSelectAlipay.setChecked(true);
+			mSelectWechatpay.setChecked(false);
+		} else if (mMemberBuy.isShowWePay) {
+			mPayLay.setVisibility(View.GONE);
+			mPayType = AppConstants.WX_PAY_PLATFORM;
+			mSelectWechatpay.setChecked(true);
+			mSelectAlipay.setChecked(false);
+		} else if (mMemberBuy.isShowAliPay) {
+			mPayLay.setVisibility(View.GONE);
+			mPayType = AppConstants.ALI_PAY_PLATFORM;
+			mSelectAlipay.setChecked(true);
+			mSelectWechatpay.setChecked(false);
 		}
 	}
 
