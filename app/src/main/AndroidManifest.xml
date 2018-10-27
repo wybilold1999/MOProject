@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.cyanbirds.momo">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.cyanbirds.momo">
 
     <uses-sdk tools:overrideLibrary="cn.smssdk"/>
 
@@ -96,6 +96,8 @@
     <permission android:name="com.cyanbirds.momo.permission.C2D_MESSAGE"
                 android:protectionLevel="signature"/>
     <uses-permission android:name="com.cyanbirds.momo.permission.C2D_MESSAGE"/>
+
+    <permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" android:protectionLevel="signature"/>
 
 
     <application
@@ -204,17 +206,11 @@
         <activity
             android:name=".activity.LoginActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/login_register"
+            android:label="@string/login"
             android:screenOrientation="portrait"/>
 
         <activity
             android:name=".activity.MainActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/login_register"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".activity.MainNewActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="@string/login_register"
             android:screenOrientation="portrait"/>
@@ -229,6 +225,12 @@
             android:name=".activity.ViewPagerPhotoViewActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="@string/image_scan"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".activity.PersonalInfoActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:label="个人信息"
             android:screenOrientation="portrait"/>
 
         <activity
@@ -306,7 +308,7 @@
             android:label="@string/register_submit"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activity.FindPwdActivity"
+            android:name=".activity.FindPasswordActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="@string/find_pwd"
             android:screenOrientation="portrait"/>
@@ -326,11 +328,6 @@
             android:label="@string/about"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activity.MyGoldActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/my_gold"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name=".activity.ImagePreviewActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="@string/image_preview"
@@ -341,83 +338,15 @@
             android:label="@string/publish_dynamic"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activity.RadarActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/find_yuan_fen"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name=".activity.CardActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="@string/yuan_fen"
             android:screenOrientation="portrait"/>
-        <activity
-            android:name=".activity.SingleVideoActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/video_show"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".activity.VideoShowActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/video_show"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".activity.VideoPlayActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".activity.MakeMoneyActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/download_make_money"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".activity.BetweenLoversActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/lovers_service"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".activity.SuccessCaseActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/success_case"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".activity.NearPartyActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/near_party"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".activity.IdentifyActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/identify"
-            android:screenOrientation="portrait">
-        </activity>
 
         <activity
             android:name=".activity.GiftMarketActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="@string/gift_market"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".activity.PartyDetailActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/party_detail"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".activity.RewardActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/reward"
             android:screenOrientation="portrait">
         </activity>
 
@@ -435,14 +364,6 @@
         </activity>
 
         <activity
-            android:name=".activity.RedPacketActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:label="@string/send_red_packet"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
             android:name=".activity.PopupLoveActivity"
             android:theme="@style/myTransparent"
             android:configChanges="keyboard|keyboardHidden|orientation"
@@ -451,120 +372,34 @@
         </activity>
 
         <activity
-            android:name=".activity.MoneyPacketActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:label="@string/my_money"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".activity.MoneyOutputActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:label="@string/money_output"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".activity.PersonalInfoActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/personal_info"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".activity.PersonalPhotoActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/personal_photos"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".activity.ContactInfoActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:label="@string/personal_info"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
             android:name=".activity.FeedBackActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
-            android:windowSoftInputMode="adjustResize"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:label="@string/feed_back"
             android:screenOrientation="portrait">
         </activity>
 
         <activity
-            android:name=".activity.ModifyUserInfoNewActivity"
+            android:name=".activity.GiveVipActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/modify_info"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".activity.DownloadExpressionActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/sticker_market"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".activity.ExpressionActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/sticker_market"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".activity.PersonalVideoActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/personal_info"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="@string/free_give_vip"
             android:screenOrientation="portrait">
         </activity>
 
         <activity
-            android:name=".activity.VideoListActivity"
+            android:name=".activity.BandPhoneActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:label="@string/video_show"
+            android:label="@string/bangding_phone"
             android:screenOrientation="portrait">
         </activity>
 
         <activity
-            android:name=".activity.AppointmentActivity"
+            android:name=".activity.SelectSexActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:label="@string/appointment_apply_for"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".activity.AppointmentInfoActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:label="@string/appointment_info"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".activity.MyAppointmentActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:label="@string/my_appointment"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".activity.GetTelFareRuleActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:label="@string/get_tel_fare"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".activity.GetTelFareActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:label="@string/get_tel_fare"
+            android:label="@string/select_sex"
             android:screenOrientation="portrait">
         </activity>
 
@@ -613,7 +448,7 @@
         // 声明自定义通知的广播接收器，第三方 APP 集成时，action 中的 com.cyanbirds.momo 请替换为自己的包名
         <receiver
             android:name=".receiver.YuntxNotifyReceiver"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 // 接收push消息
                 // action匹配规则{packageName + ".action" + "功能"}
@@ -731,22 +566,6 @@
             android:taskAffinity="com.igexin.sdk.PushActivityTask"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
-        <activity
-            android:name=".activity.GiveVipActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:label="@string/free_give_vip"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".activity.BandPhoneActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:label="@string/bangding_phone"
-            android:screenOrientation="portrait">
-        </activity>
-
         <service
             android:name="com.igexin.download.DownloadService"
             android:process=":pushservice"/>
@@ -780,7 +599,7 @@
 
         <!-- YOUR_PACKAGE_PATH.CustomPushReceiver需要改为自己的Receiver： -->
         <receiver android:name="com.cyanbirds.momo.receiver.MessageReceiver"
-            android:exported="true" >
+                  android:exported="true" >
             <intent-filter>
                 <!-- 接收消息透传 -->
                 <action android:name="com.tencent.android.tpush.action.PUSH_MESSAGE" />
@@ -791,14 +610,12 @@
 
         //====================信鸽推送结束=================================
 
-        //====================魅族推送开始=================================
-
-        //====================魅族推送结束=================================
-
 
         <receiver android:name=".receiver.NotificationReceiver"/>
+
         //下载主apk的service
         <service android:name=".service.DownloadUpdateService"/>
+
     </application>
 
 </manifest>

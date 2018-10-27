@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">同城有缘交友</string>
-    <string name="app_name_short">同城交友</string>
+    <string name="app_name_short">有缘交友</string>
     <string name="setting">设置</string>
     <string name="about">关于</string>
+    <string name="feed_back">意见反馈</string>
 
     <string name="tab_find_love">主页</string>
     <string name="tab_found">发现</string>
@@ -43,6 +44,7 @@
     <string name="user_info">用户信息</string>
     <string name="personal_setting">个人设置</string>
     <string name="personal_signature">个性签名</string>
+    <string name="personal_info">个人信息</string>
     <string name="select_image">选择图片</string>
     <string name="image_scan">图片浏览</string>
     <string name="lovers_service">红娘尊贵服务</string>
@@ -54,15 +56,12 @@
     <string name="reward">抽奖活动</string>
     <string name="reward_info">抽奖活动说明：\n\n 1、购买套餐达200元，可以进行3次抽奖 \n 2、活动截止日期2017-03-31</string>
     <string name="recommend">推荐用户失败,请重新获取</string>
-    <string name="personal_photos">个人相册</string>
-    <string name="city">城市</string>
-    <string name="college">教育程度</string>
-    <string name="social_id">联系方式</string>
 
     <string name="phone_un_register">该手机号码还未注册过该软件，请先注册</string>
     <string name="regist_params_error">注册参数错误，请检查</string>
     <string name="dynamic_content_hint">表达一下此刻的心情吧...</string>
     <string name="real_name">真实姓名</string>
+    <string name="mobile">联系电话</string>
     <string name="input_real_name">请输入您的真实姓名</string>
     <string name="input_id_card">请输入您的身份证号</string>
     <string name="error_id_card">您输入的身份证号不正确，请重新输入</string>
@@ -161,7 +160,6 @@
     <string name="weixin_pay">微信支付</string>
     <string name="send_telephone_fare">(送%1$d元话费)</string>
     <string name="pay_type">请选择支付方式</string>
-    <string name="see_more">查看更多(8/%1$d)</string>
     <string name="location_symbol">[位置]</string>
     <string name="file_symbol">[文件]</string>
     <string name="image_symbol">[图片]</string>
@@ -176,14 +174,14 @@
     <string name="un_select_distance">您还不是会员,不能选择距离自己的范围,立即开通会员？</string>
     <string name="un_see_attention_and_love">查看更多,立即开通会员？</string>
     <string name="turn_vip">该视频只能是会员才可以观看,请先开通会员</string>
-    <string name="buy_gold">查看该视频需要消耗%1$d枚金币,你的金币数量不足,请先购买</string>
-    <string name="no_gold">你的金币数量不足,请先购买</string>
+    <string name="buy_gold">查看该视频需要消耗%1$d枚金币,你的金币数量不足,购买即可无限查看视频</string>
+    <string name="no_gold">您的金币数量不足,购买金币即可无限赠送礼物</string>
     <string name="un_call">亲,升级VIP即可给所有人打电话,立即开通会员？</string>
     <string name="un_see_video">亲,升级VIP即可观看所有人的视频,立即开通会员？</string>
-    <string name="social_id_need_vip">您还不是会员,不能查看%1$s号,立即开通会员？</string>
-    <string name="social_id_need_gold">查看%1$s号需账户中有金币，您账户中暂时无金币，请先购买</string>
-    <string name="social_id_need_more_gold">查看%1$s号需账户中金币数量大于100，您账户中金币数量暂时不足，请先购买</string>
-    <string name="no_gold_un_send_msg">您账户中金币数量不足，暂时不能发送消息，购买金币即可无限畅聊</string>
+    <string name="social_id_need_vip">您还不是会员,不能查看%1$s号,开通会员即可无限查看</string>
+    <string name="social_id_need_gold">您账户中无金币,无法查看%1$s号,购买金币即可无限查看</string>
+    <string name="social_id_need_more_gold">查看%1$s号需账户中金币数量大于100,您账户中金币数量不足,购买即可无限查看</string>
+    <string name="no_gold_un_send_msg">您账户中金币数量不足,暂时不能发送消息,购买金币即可无限畅聊</string>
     <string name="upload_portrait_tips">上传头像才能让更多人认识您</string>
     <string name="upload">上传</string>
     <string name="upload_success">上传成功</string>
@@ -206,6 +204,7 @@
     <string name="like_faiure">喜欢失败</string>
     <string name="attention_success">关注成功</string>
     <string name="attention_faiure">关注失败</string>
+    <string name="cancel_follow_faiure">取消关注失败</string>
     <string name="cancle_attention">取消关注</string>
     <string name="i_like_you">我喜欢你</string>
     <string name="quite_success">退出成功</string>
@@ -218,7 +217,7 @@
     <string name="search">筛选</string>
     <string name="search_option">筛选条件</string>
     <string name="notification_tips">%1$d个联系人发来%2$d条消息</string>
-    <string name="init_official_message">如今您的气质里，藏着您走过的路，读过的书和爱过的人，在这里遇见您可爱的TA</string>
+    <string name="init_official_message">在匆忙的城市里，每天都有无数人在擦肩而过，却又没有方法彼此相识，这是一种全新的相遇方式，简单、心动、惊喜,相遇本该如此美好。</string>
     <string name="weibosdk_demo_toast_auth_success">授权成功</string>
     <string name="weibosdk_demo_toast_auth_failed">授权失败</string>
     <string name="weibosdk_demo_toast_auth_canceled">取消授权</string>
@@ -243,10 +242,8 @@
     <string name="account_banlance">账户余额:%1$d元</string>
     <string name="today_money">今日已赚:%1$d元</string>
     <string name="get_read_phone_state">禁止后将无法使用聊天功能，是否重新获取？</string>
-    <string name="access_location">获取您的位置后才能更精确的查看附近用户，是否获取？</string>
-    <string name="open_location">获取您的位置后才能才能更精确的查看附近用户,请在权限选项中打开位置权限</string>
-    <string name="open_camera_permission">打开相机权限才能拍照,请在权限选项中打开相机权限</string>
-    <string name="open_write_external">获取存储权限后才能拍照,请在权限选项中打开存储权限</string>
+    <string name="access_location">获取您的位置后才能更精确的查看附近用户，请在设置界面打开位置定位权限</string>
+    <string name="open_camera_write_external_permission">打开相机和存储权限才能拍照和访问相册,请在权限选项中打开相机和存储权限</string>
     <string name="calling">%1$s正在来电中...</string>
     <string name="decline_call">已拒绝来电</string>
     <string name="no_vip_receive_calling">您还不是会员,暂时无法接听,立即开通会员接听来电?</string>
@@ -265,7 +262,6 @@
     <string name="single_red_packet_more">单个红包金额最低%1$s元</string>
     <string name="check_red_packet">查看红包</string>
     <string name="cancel_red_packet">用户已将该红包撤回</string>
-    <string name="cancel_red_packet_tips">撤回红包成功，金额将于3个工作日之后退回至您的账户中</string>
     <string name="un_cancel_red_packet">您还不是会员,不能撤销发出去的红包,立即开通会员撤销红包？</string>
     <string name="un_cancel_red_packet_for_td">您还不是赚钱会员,不能撤销发出去的红包,立即开通赚钱会员撤销红包？</string>
     <string name="no_gold_un_cancel_red_packet">撤销红包需账户中金币数量大于100，您账户中金币数量暂时不足，立即购买金币来撤销红包？</string>
@@ -354,19 +350,14 @@
     <string name="send_msg">发送消息</string>
     <string name="going_find">继续寻觅</string>
 
-    <string name="tab_contacts">通讯录</string>
-    <string name="personal_info">个人信息</string>
-    <string name="feed_back">反馈</string>
-    <string name="submit_success">提交成功</string>
+    <string name="pay_success">支付成功</string>
+    <string name="pay_failure">支付失败,请重试</string>
+
     <string name="input_hint">请输入您宝贵的意见或建议</string>
-    <string name="already_download">已下载</string>
-    <string name="download_failure">下载失败</string>
-    <string name="sticker_market">贴图商店</string>
-    <string name="action_delete_friends">删除好友</string>
-    <string name="action_add_friends">添加好友</string>
-    <string name="action_add_friends_success">添加好友成功</string>
-    <string name="phone_register">手机注册</string>
     <string name="please_input_suggestion">您还未输入意见或建议</string>
+    <string name="submit_success">提交成功</string>
+
+    <string name="tab_video_tips">还未上传过视频哦</string>
 
     <string name="tv_appointment">约会</string>
     <string name="tv_appointment_content">约会内容</string>
@@ -394,12 +385,8 @@
     <string name="official_qq">如有任何疑问，可联系官方客服QQ：2350635875</string>
     <string name="tv_fare">充值送话费！让您尽情谈情，尽情约爱！</string>
     <string name="tv_fare_info">1.限时抢购单次充值满100即有机会获赠话费\n2.绑定手机充值话费将会自动充值到您的手机中</string>
-    <string name="tv_refund">退费说明：\n我司为了更加重视和关注完善用户体验，根据有旧版本的用户的相关反馈，特意提供退费联系人信息。也请新用户继续监督和提供宝贵的意见和建议。谢谢！\n注意，退款需要提供以下信息：\n1.退款方式\n2.退款联系人相关信息\n3.支付宝账户、微信账户、银行卡号 三者选一\n\n客服QQ：2350635875</string>
-
-    <string name="pay_success">支付成功</string>
-    <string name="pay_ali_failure">支付失败,请重试</string>
-    <string name="pay_wechat_failure">支付失败,请使用支付宝支付</string>
-    <string name="tab_video_tips">还未上传过视频哦</string>
+    <!--<string name="tv_refund">退费说明：\n我司为了更加重视和关注完善用户体验，根据有旧版本的用户的相关反馈，特意提供退费联系人信息。也请新用户继续监督和提供宝贵的意见和建议。谢谢！\n注意，退款需要提供以下信息：\n1.退款方式\n2.退款联系人相关信息\n3.支付宝账户、微信账户、银行卡号 三者选一\n\n客服QQ：2350635875</string>-->
+    <string name="tv_refund">我司为了更加重视和关注完善用户体验，特意提供了意见反馈功能和QQ客服功能，请用户继续监督和提供宝贵的意见和建议。谢谢！\n\n客服QQ：2350635875</string>
 
     <string name="geting_tel_fare">充值送话费活动火热进行中!</string>
     <string name="get_tel_fare">领取话费</string>
@@ -425,5 +412,13 @@
     <string name="upload_market_img">上传好评截图</string>
     <string name="free_give_vip">免费赠送会员</string>
     <string name="upload_faiure">上传失败</string>
+
+    <string name="band_phone_for_u">绑定手机号码，让更多人认识您</string>
+    <string name="phone_pwd_error">用户名或者密码错误</string>
+    <string name="register_error">注册失败，请稍后再试</string>
+    <string name="publish_dynamic_fail">发布动态失败，请稍后再试</string>
+    <string name="can_not_use_app">禁止使用该权限将无法使用该软件,请在权限选项中打开该权限</string>
+    <string name="permission_request">权限申请</string>
+    <string name="selected_sex_not_modify">请选择您的性别，选择确定后将无法更改</string>
 
 </resources>

@@ -17,35 +17,29 @@ public class FileAccessorUtils {
 	
 	/** 默认路径 */
 	public static final String DEFAULT_PATH = getExternalStorePath()
-			+ "/youlove";
+			+ "/tanlove";
 	/** 文件存储路径 */
 	public static final String FILE_PATH = getExternalStorePath()
-			+ "/youlove/.file";
+			+ "/tanlove/.file";
 	/** 图像的存储路径 */
 	public static final String IMESSAGE_IMAGE = getExternalStorePath()
-			+ "/youlove/.image";
+			+ "/tanlove/.image";
 	/** 头像存储路径 */
 	public static final String FACE_IMAGE = getExternalStorePath()
-			+ "/youlove/.face";
+			+ "/tanlove/.face";
 	/** 语音存储路径 */
 	public static final String VOICE_PATH = getExternalStorePath()
-			+ "/youlove/.voice";
+			+ "/tanlove/.voice";
 	/** 视频存储路径 */
 	public static final String VIDEO_PATH = getExternalStorePath()
-			+ "/youlove/.video";
-	/** 缓存路径 */
-	public static final String CACHE_PATH = getExternalStorePath()
-			+ "/youlove/.cache";
+			+ "/tanlove/.video";
 	/** crash路径 */
 	public static final String CRASH_PATH = getExternalStorePath()
-			+ "/youlove/.crash";
+			+ "/tanlove/.crash";
 
 	/** APK文件暂时存放的路径 */
 	public static final String APK_PATH = getExternalStorePath()
-			+ "/youlove/.apk";
-	/** 在线表情存储路径 */
-	public static final String EXPRESSION_FILE = getExternalStorePath()
-			+ "/youlove/.expression";
+			+ "/tanlove/.apk";
 
 	/**
 	 * 外置存储卡的路径
@@ -71,24 +65,6 @@ public class FileAccessorUtils {
 		} else {
 			return false;
 		}
-	}
-
-	/**
-	 * 获取在线表情存放目录
-	 * @return
-	 */
-	public static File getExpressionPathName(){
-		if (!isExistExternalStore()) {
-			ToastUtil.showMessage(R.string.media_ejected);
-			return null;
-		}
-
-		File directory = new File(EXPRESSION_FILE);
-		if (!directory.exists() && !directory.mkdirs()) {
-			ToastUtil.showMessage("Path to file could not be created");
-			return null;
-		}
-		return directory;
 	}
 
 
@@ -203,24 +179,6 @@ public class FileAccessorUtils {
 		if (!directory.exists() && !directory.mkdirs()) {
 			ToastUtil.showMessage("Path to file could not be created");
 			return null;
-		}
-		return directory;
-	}
-
-	/**
-	 * 返回缓存目录
-	 *
-	 * @return
-	 */
-	public static File getCachePathName() {
-		if (!isExistExternalStore()) {
-			ToastUtil.showMessage(R.string.media_ejected);
-			return null;
-		}
-
-		File directory = new File(CACHE_PATH);
-		if (!directory.exists() && !directory.mkdirs()) {
-			directory.mkdir();
 		}
 		return directory;
 	}

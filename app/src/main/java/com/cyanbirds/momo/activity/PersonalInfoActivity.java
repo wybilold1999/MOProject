@@ -1,5 +1,6 @@
 package com.cyanbirds.momo.activity;
 
+import android.arch.lifecycle.Lifecycle;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,27 +17,32 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.adapter.TabFragmentAdapter;
+import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.eventtype.UserEvent;
 import com.cyanbirds.momo.fragment.TabDynamicFragment;
 import com.cyanbirds.momo.fragment.TabPersonalFragment;
 import com.cyanbirds.momo.manager.AppManager;
-import com.cyanbirds.momo.net.request.AddFollowRequest;
-import com.cyanbirds.momo.net.request.AddLoveRequest;
-import com.cyanbirds.momo.net.request.GetUserInfoRequest;
-import com.cyanbirds.momo.net.request.SendGreetRequest;
+import com.cyanbirds.momo.net.IUserApi;
+import com.cyanbirds.momo.net.IUserFollowApi;
+import com.cyanbirds.momo.net.IUserLoveApi;
+import com.cyanbirds.momo.net.base.RetrofitFactory;
+import com.cyanbirds.momo.utils.CheckUtil;
+import com.cyanbirds.momo.utils.JsonUtils;
 import com.cyanbirds.momo.utils.ProgressDialogUtils;
+import com.cyanbirds.momo.utils.RxBus;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 import com.umeng.analytics.MobclickAgent;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,6 +51,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author: wangyb
@@ -55,17 +64,17 @@ import butterknife.OnClick;
 public class PersonalInfoActivity extends BaseActivity {
 
 	@BindView(R.id.portrait)
-    SimpleDraweeView mPortrait;
+	SimpleDraweeView mPortrait;
 	@BindView(R.id.toolbar)
-    Toolbar mToolbar;
+	Toolbar mToolbar;
 	@BindView(R.id.collapsingToolbarLayout)
-    CollapsingToolbarLayout mCollapsingToolbarLayout;
+	CollapsingToolbarLayout mCollapsingToolbarLayout;
 	@BindView(R.id.tabs)
-    TabLayout mTabLayout;
+	TabLayout mTabLayout;
 	@BindView(R.id.viewpager)
-    ViewPager mViewpager;
+	ViewPager mViewpager;
 	@BindView(R.id.fab)
-    FloatingActionButton mFab;
+	FloatingActionButton mFab;
 	@BindView(R.id.attention)
 	TextView mAttention;
 	@BindView(R.id.love)
@@ -86,15 +95,16 @@ public class PersonalInfoActivity extends BaseActivity {
 
 	private ClientUser mClientUser; //当前用户
 	private String curUserId; //当前用户id
+	private String channel = "";
+
+	private Observable<UserEvent> observable;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_personal_info);
 		ButterKnife.bind(this);
-		EventBus.getDefault().register(this);
 		setupView();
-		setupEvent();
 		setupData();
 	}
 
@@ -123,13 +133,21 @@ public class PersonalInfoActivity extends BaseActivity {
 			mLove.setText(R.string.like);
 		}
 
+		rxBusSub();
+
 	}
 
 
-	private void setupEvent() {
+	/**
+	 * rx订阅
+	 */
+	private void rxBusSub() {
+		observable = RxBus.getInstance().register(AppConstants.UPDATE_USER_INFO);
+		observable.subscribe(this::updateUserInfo);
 	}
 
 	private void setupData() {
+		channel = CheckUtil.getAppMetaData(this, "UMENG_CHANNEL");
 		curUserId = getIntent().getStringExtra(ValueKey.USER_ID);
 		if (!TextUtils.isEmpty(curUserId)) {
 			if (AppManager.getClientUser().userId.equals(curUserId)) {
@@ -141,7 +159,7 @@ public class PersonalInfoActivity extends BaseActivity {
 				mFab.setVisibility(View.GONE);
 				mBottomLayout.setVisibility(View.VISIBLE);
 				ProgressDialogUtils.getInstance(PersonalInfoActivity.this).show(R.string.dialog_request_data);
-				new GetUserInfoTask().request(curUserId);
+				getUserInfo(curUserId);
 			}
 		}
 	}
@@ -150,7 +168,7 @@ public class PersonalInfoActivity extends BaseActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (AppManager.getClientUser().userId.equals(curUserId)) {
 			getMenuInflater().inflate(R.menu.personal_menu, menu);
-		} else {
+		} else if (!"oppo".equals(channel)){//oppo渠道不显示call
 			if (AppManager.getClientUser().isShowVip) {
 				if (!AppManager.getClientUser().is_vip) {
 					getMenuInflater().inflate(R.menu.call_menu, menu);
@@ -202,9 +220,9 @@ public class PersonalInfoActivity extends BaseActivity {
 			case R.id.attention:
 				if (null != mClientUser) {
 					if (mAttention.getText().toString().equals("关注")) {
-						new AddFollowTask().request(mClientUser.userId);
+						addCancelFollow(mClientUser.userId, true);
 					} else {
-						new CancelFollowTask().request(mClientUser.userId);
+						addCancelFollow(mClientUser.userId, false);
 					}
 				}
 				break;
@@ -216,16 +234,16 @@ public class PersonalInfoActivity extends BaseActivity {
 			case R.id.love:
 				if (AppManager.getClientUser().isShowAppointment && !TextUtils.isEmpty(curUserId)) {
 					if (mClientUser != null) {
-						intent.setClass(this, AppointmentActivity.class);
+						/*intent.setClass(this, AppointmentActivity.class);
 						intent.putExtra(ValueKey.USER_ID, curUserId);
 						intent.putExtra(ValueKey.USER_NAME, mClientUser.user_name);
 						intent.putExtra(ValueKey.IMAGE_URL, mClientUser.face_url);
-						startActivity(intent);
+						startActivity(intent);*/
 					}
 				} else {
 					if (null != mClientUser) {
-						new SenderGreetTask().request(mClientUser.userId);
-						new AddLoveTask().request(mClientUser.userId);
+						sendGreet(mClientUser.userId);
+						addLove(mClientUser.userId);
 					}
 				}
 				break;
@@ -240,85 +258,112 @@ public class PersonalInfoActivity extends BaseActivity {
 	}
 
 	/**
-	 * 关注
+	 * 关注，取消关注
+	 * @param userId
+	 * @param isAdd true:关注 false:取消关注
 	 */
-	class AddFollowTask extends AddFollowRequest {
-		@Override
-		public void onPostExecute(String s) {
-			if (s.equals("已关注")) {
-				mAttention.setText("已关注");
-				mAttention.setTextColor(getResources().getColor(R.color.colorPrimary));
-				ToastUtil.showMessage(R.string.attention_success);
-			} else {
-				ToastUtil.showMessage(R.string.attention_faiure);
-			}
-		}
-
-		@Override
-		public void onErrorExecute(String error) {
-			super.onErrorExecute(error);
-		}
+	private void addCancelFollow(String userId, boolean isAdd) {
+		RetrofitFactory.getRetrofit().create(IUserFollowApi.class)
+				.addFollow(AppManager.getClientUser().sessionId, userId)
+				.subscribeOn(Schedulers.io())
+				.map(responseBody -> {
+					JsonObject obj = new JsonParser().parse(responseBody.string()).getAsJsonObject();
+					int code = obj.get("code").getAsInt();
+					if (code == 0) {//关注成功
+						return obj.get("data").getAsString();
+					} else {
+						return CSApplication.getInstance().getResources()
+								.getString(R.string.attention_faiure);
+					}
+				})
+				.observeOn(AndroidSchedulers.mainThread())
+				.as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+				.subscribe(s -> {
+					if (isAdd) {
+						if (s.equals("已关注")) {
+							mAttention.setText("已关注");
+							mAttention.setTextColor(getResources().getColor(R.color.colorPrimary));
+							ToastUtil.showMessage(R.string.attention_success);
+						} else {
+							ToastUtil.showMessage(R.string.attention_faiure);
+						}
+					} else {
+						mAttention.setText("关注");
+						ToastUtil.showMessage(R.string.cancle_attention);
+					}
+				}, throwable -> {
+					if (isAdd) {
+						ToastUtil.showMessage(R.string.attention_faiure);
+					} else {
+						ToastUtil.showMessage(R.string.cancel_follow_faiure);
+					}
+				});
 	}
 
-	class CancelFollowTask extends AddFollowRequest {
-		@Override
-		public void onPostExecute(String s) {
-			mAttention.setText("关注");
-			ToastUtil.showMessage(R.string.cancle_attention);
-		}
-
-		@Override
-		public void onErrorExecute(String error) {
-		}
+	private void sendGreet(String userId) {
+		RetrofitFactory.getRetrofit().create(IUserLoveApi.class)
+				.sendGreet(AppManager.getClientUser().sessionId, userId)
+				.subscribeOn(Schedulers.io())
+				.map(responseBody -> {
+					JsonObject obj = new JsonParser().parse(responseBody.string()).getAsJsonObject();
+					int code = obj.get("code").getAsInt();
+					if (code == 0) {//喜欢成功
+						return CSApplication.getInstance().getResources()
+								.getString(R.string.like_success);
+					} else {
+						return CSApplication.getInstance().getResources()
+								.getString(R.string.like_faiure);
+					}
+				})
+				.observeOn(AndroidSchedulers.mainThread())
+				.as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+				.subscribe(s -> ToastUtil.showMessage(s), throwable -> ToastUtil.showMessage(R.string.like_faiure));
 	}
 
-	class SenderGreetTask extends SendGreetRequest {
-		@Override
-		public void onPostExecute(String s) {
-			ToastUtil.showMessage(s);
-		}
-
-		@Override
-		public void onErrorExecute(String error) {
-			ToastUtil.showMessage(error);
-		}
+	private void addLove(String userId) {
+		RetrofitFactory.getRetrofit().create(IUserLoveApi.class)
+				.addLove(AppManager.getClientUser().sessionId, userId)
+				.subscribeOn(Schedulers.io())
+				.map(responseBody -> {
+					JsonObject obj = new JsonParser().parse(responseBody.string()).getAsJsonObject();
+					int code = obj.get("code").getAsInt();
+					if (code == 0) {//喜欢成功
+						return obj.get("data").getAsBoolean();
+					} else {
+						return false;
+					}
+				})
+				.observeOn(AndroidSchedulers.mainThread())
+				.as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+				.subscribe(aBoolean -> {
+					if (aBoolean) {
+						mLove.setText("已喜欢");
+					} else {
+						mLove.setText("喜欢");
+					}
+				}, throwable -> {});
 	}
-
-	class AddLoveTask extends AddLoveRequest {
-
-		@Override
-		public void onPostExecute(Boolean s) {
-			if (s) {
-				mLove.setText("已喜欢");
-			} else {
-				mLove.setText("喜欢");
-			}
-		}
-
-		@Override
-		public void onErrorExecute(String error) {
-		}
-	}
-
 
 	/**
 	 * 获取用户信息
 	 */
-	class GetUserInfoTask extends GetUserInfoRequest {
-		@Override
-		public void onPostExecute(ClientUser clientUser) {
-			ProgressDialogUtils.getInstance(PersonalInfoActivity.this).dismiss();
-			mClientUser = clientUser;
-			if (null != mClientUser) {
-				setUserInfoAndValue(clientUser);
-			}
-		}
-
-		@Override
-		public void onErrorExecute(String error) {
-			ToastUtil.showMessage(error);
-			ProgressDialogUtils.getInstance(PersonalInfoActivity.this).dismiss();
-		}
+	private void getUserInfo(String userId) {
+		RetrofitFactory.getRetrofit().create(IUserApi.class)
+				.getUserInfo(AppManager.getClientUser().sessionId, userId)
+				.subscribeOn(Schedulers.io())
+				.map(responseBody -> JsonUtils.parserUserInfo(responseBody.string()))
+				.observeOn(AndroidSchedulers.mainThread())
+				.as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+				.subscribe(clientUser -> {
+					ProgressDialogUtils.getInstance(PersonalInfoActivity.this).dismiss();
+					mClientUser = clientUser;
+					if (null != mClientUser) {
+						setUserInfoAndValue(clientUser);
+					}
+				}, throwable -> {
+					ToastUtil.showMessage(R.string.network_requests_error);
+					ProgressDialogUtils.getInstance(PersonalInfoActivity.this).dismiss();
+				});
 	}
 
 	/**
@@ -388,7 +433,6 @@ public class PersonalInfoActivity extends BaseActivity {
 		});
 	}
 
-	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void updateUserInfo(UserEvent event) {
 		//如果是本人信息，先查找本地有没有头像，有就加载，没有就用face_url;如果是其他用户信息，直接使用face_url
 		ClientUser clientUser = AppManager.getClientUser();
@@ -419,8 +463,8 @@ public class PersonalInfoActivity extends BaseActivity {
 	}
 
 	@Override
-	protected void onDestroy() {
+	public void onDestroy() {
 		super.onDestroy();
-		EventBus.getDefault().unregister(this);
+		RxBus.getInstance().unregister(AppConstants.UPDATE_USER_INFO, observable);
 	}
 }

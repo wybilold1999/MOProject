@@ -6,21 +6,18 @@ import android.os.Bundle;
 
 import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
+import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.eventtype.WeinXinEvent;
 import com.cyanbirds.momo.manager.AppManager;
+import com.cyanbirds.momo.utils.RxBus;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
-import com.tencent.mm.sdk.modelmsg.ShowMessageFromWX;
-import com.tencent.mm.sdk.modelmsg.WXAppExtendObject;
-import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 
-import org.greenrobot.eventbus.EventBus;
-
-public class WXEntryActivity extends Activity implements IWXAPIEventHandler{
+public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 	// IWXAPI 是第三方app和微信通信的openapi接口
 //	private IWXAPI api;
 
@@ -36,7 +33,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler{
 	private void handleIntent(Intent paramIntent) {
 		if (null != AppManager.getIWXAPI()) {
 			AppManager.getIWXAPI().handleIntent(paramIntent, this);
-		} else {
+		} else if(null != CSApplication.api){
 			CSApplication.api.handleIntent(paramIntent, this);
 		}
 	}
@@ -72,7 +69,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler{
 		switch (resp.errCode) {
 			case BaseResp.ErrCode.ERR_OK:
 				result = R.string.errcode_success;
-				EventBus.getDefault().post(new WeinXinEvent(sendResp.code));
+				RxBus.getInstance().post(AppConstants.CITY_WE_CHAT_RESP_CODE, new WeinXinEvent(sendResp.code));
 				break;
 			case BaseResp.ErrCode.ERR_USER_CANCEL:
 				result = R.string.errcode_cancel;

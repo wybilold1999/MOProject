@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.db.base.DBManager;
+import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.entity.Conversation;
 import com.cyanbirds.momo.greendao.ConversationDao;
 import com.cyanbirds.momo.listener.MessageChangedListener;

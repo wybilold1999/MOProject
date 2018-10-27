@@ -84,12 +84,6 @@ public class PushMsgUtil {
 					}
 				}
 			}
-			if (pushMsgModel.msgType == PushMsgModel.MessageType.RPT) {//红包
-				//如果是vip并且金币数量大于100，就忽略红包消息
-				if (AppManager.getClientUser().is_vip && AppManager.getClientUser().gold_num > 100) {
-					return;
-				}
-			}
 			if (System.currentTimeMillis() - AppManager.getClientUser().loginTime < 60000 &&
 					pushMsgModel.msgType == PushMsgModel.MessageType.VOIP) {
 				if (!AppManager.getClientUser().is_vip || AppManager.getClientUser().gold_num < 100) {
@@ -101,7 +95,12 @@ public class PushMsgUtil {
 					}, 60000);
 				}
 			} else {
-				handleConversation(pushMsgModel);
+				mHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						handleConversation(pushMsgModel);
+					}
+				});
 			}
 		}
 	}
@@ -126,10 +125,6 @@ public class PushMsgUtil {
 				conversation.type = ECMessage.Type.CALL.ordinal();
 				conversation.content = CSApplication.getInstance().getResources()
 						.getString(R.string.voip_symbol);
-			} else if (pushMsgModel.msgType == PushMsgModel.MessageType.RPT) {
-				conversation.type = ECMessage.Type.STATE.ordinal();
-				conversation.content = CSApplication.getInstance().getResources()
-						.getString(R.string.rpt_symbol);
 			}
 			conversation.talker = pushMsgModel.sender;
 			conversation.talkerName = pushMsgModel.senderName;
@@ -170,10 +165,6 @@ public class PushMsgUtil {
 						conversation.type = ECMessage.Type.IMAGE.ordinal();
 						conversation.content = CSApplication.getInstance().getResources()
 								.getString(R.string.voip_symbol);
-					} else if (pushMsgModel.msgType == PushMsgModel.MessageType.RPT) {
-						conversation.type = ECMessage.Type.STATE.ordinal();
-						conversation.content = CSApplication.getInstance().getResources()
-								.getString(R.string.rpt_symbol);
 					}
 					conversation.talker = pushMsgModel.sender;
 					conversation.talkerName = pushMsgModel.senderName;
@@ -224,9 +215,6 @@ public class PushMsgUtil {
 		} else if (pushMsgModel.msgType == PushMsgModel.MessageType.VOIP) {
 			message.msgType = IMessage.MessageType.VOIP;
 			message.content = "未接听";
-		}  else if (pushMsgModel.msgType == PushMsgModel.MessageType.RPT) {
-			message.msgType = IMessage.MessageType.RED_PKT;
-			message.content = pushMsgModel.content;
 		}
 
 		IMessageDaoManager.getInstance(CSApplication.getInstance()).insertIMessage(message);

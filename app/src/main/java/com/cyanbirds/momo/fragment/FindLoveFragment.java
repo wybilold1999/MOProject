@@ -1,15 +1,16 @@
 package com.cyanbirds.momo.fragment;
 
+import android.arch.lifecycle.Lifecycle;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.ArrayMap;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,17 +32,23 @@ import com.cyanbirds.momo.adapter.FindLoveAdapter;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.manager.AppManager;
-import com.cyanbirds.momo.net.request.GetFindLoveRequest;
-import com.cyanbirds.momo.net.request.GetRealUserRequest;
+import com.cyanbirds.momo.net.IUserApi;
+import com.cyanbirds.momo.net.base.RetrofitFactory;
 import com.cyanbirds.momo.ui.widget.CircularProgress;
 import com.cyanbirds.momo.ui.widget.DividerItemDecoration;
 import com.cyanbirds.momo.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.momo.utils.DensityUtil;
+import com.cyanbirds.momo.utils.JsonUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author: wangyb
@@ -71,7 +78,7 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
 	/**
      * 0:同城 1：缘分 2：颜值  -1:就是全国
      */
-    private String mUserScopeType = "-1";
+    private String mUserScopeType = "";
 
     private final String SAME_CITY = "0";
     private final String BEAUTIFUL = "2";
@@ -79,7 +86,6 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
 
     private static final String FRAGMENT_INDEX = "fragment_index";
     private int mCurIndex = -1;
-
     private boolean mIsRefreshing = false;
 
     public static FindLoveFragment newInstance(int index) {
@@ -104,9 +110,6 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
         if (parent != null) {
             parent.removeView(rootView);
         }
-        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(
-                R.string.tab_find_love);
         return rootView;
     }
 
@@ -129,13 +132,6 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
                 getActivity(), LinearLayoutManager.VERTICAL, DensityUtil
                 .dip2px(getActivity(), 12), DensityUtil.dip2px(
                 getActivity(), 12)));
-
-    }
-
-    private void setupEvent() {
-        mSwipeRefresh.setOnRefreshListener(this);
-        mRecyclerView.addOnScrollListener(mOnScrollListener);
-        mFab.setOnClickListener(this);
         mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -145,6 +141,13 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
                 return false;
             }
         });
+
+    }
+
+    private void setupEvent() {
+        mSwipeRefresh.setOnRefreshListener(this);
+        mRecyclerView.addOnScrollListener(mOnScrollListener);
+        mFab.setOnClickListener(this);
     }
 
     private void setupData() {
@@ -166,22 +169,16 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
         }
 
         mClientUsers = new ArrayList<>();
-        mAdapter = new FindLoveAdapter(mClientUsers, getActivity());
+        mAdapter = new FindLoveAdapter(mClientUsers, getActivity(), mCurIndex);
         mAdapter.setOnItemClickListener(mOnItemClickListener);
         mRecyclerView.setAdapter(mAdapter);
         mProgress.setVisibility(View.VISIBLE);
-        if("男".equals(AppManager.getClientUser().sex)){
+        if("1".equals(AppManager.getClientUser().sex)){
             GENDER = "FeMale";
         } else {
             GENDER = "Male";
         }
-        if("-1".equals(AppManager.getClientUser().userId) ||
-                "-2".equals(AppManager.getClientUser().userId) ||
-                "-3".equals(AppManager.getClientUser().userId)){ //客服登陆，获取真实用户
-            new GetRealLoveUsersTask().request(pageIndex, pageSize, GENDER);
-        } else {
-            new GetFindLoveTask().request(pageIndex, pageSize, GENDER, mUserScopeType);
-        }
+        getFindLove(pageIndex, pageSize, GENDER, mUserScopeType);
     }
 
     @Override
@@ -214,13 +211,7 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
                     && mAdapter.isShowFooter()) {
                 //加载更多
                 //请求数据
-                if("-1".equals(AppManager.getClientUser().userId) ||
-                        "-2".equals(AppManager.getClientUser().userId) ||
-                        "-3".equals(AppManager.getClientUser().userId)){ //客服登陆，获取真实用户
-                    new GetRealLoveUsersTask().request(++pageIndex, pageSize, GENDER);
-                } else {
-                    new GetFindLoveTask().request(++pageIndex, pageSize, GENDER, mUserScopeType);
-                }
+                getFindLove(++pageIndex, pageSize, GENDER, mUserScopeType);
             }
         }
     };
@@ -244,66 +235,44 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
         startActivity(intent);
     }
 
-    class GetFindLoveTask extends GetFindLoveRequest {
-        @Override
-        public void onPostExecute(List<ClientUser> userList) {
-            freshTime = System.currentTimeMillis();
-            mProgress.setVisibility(View.GONE);
-            mIsRefreshing = false;
-            mSwipeRefresh.setRefreshing(false);
-            if (pageIndex == 1) {//进行筛选的时候，滑动到顶部
-                layoutManager.scrollToPositionWithOffset(0, 0);
-            }
-            if(userList == null || userList.size() == 0){
-                mAdapter.setIsShowFooter(false);
-                mAdapter.notifyDataSetChanged();
-                ToastUtil.showMessage(R.string.no_more_data);
-            } else {
-                mClientUsers.addAll(userList);
-                mAdapter.setIsShowFooter(true);
-                mAdapter.setClientUsers(mClientUsers);
-            }
-        }
-
-        @Override
-        public void onErrorExecute(String error) {
-            ToastUtil.showMessage(error);
-            mProgress.setVisibility(View.GONE);
-            mIsRefreshing = false;
-            mSwipeRefresh.setRefreshing(false);
-            mAdapter.setIsShowFooter(false);
-            mAdapter.notifyDataSetChanged();
-        }
-    }
-
-    /**
-     * 获取真实的用户
-     */
-    class GetRealLoveUsersTask extends GetRealUserRequest {
-        @Override
-        public void onPostExecute(List<ClientUser> clientUsers) {
-            mProgress.setVisibility(View.GONE);
-            mIsRefreshing = false;
-            mSwipeRefresh.setRefreshing(false);
-            if(clientUsers == null || clientUsers.size() == 0){
-                mAdapter.setIsShowFooter(false);
-                mAdapter.notifyDataSetChanged();
-//                ToastUtil.showMessage(R.string.no_more_data);
-            } else {
-                mClientUsers.addAll(clientUsers);
-                mAdapter.setIsShowFooter(true);
-                mAdapter.setClientUsers(mClientUsers);
-            }
-        }
-
-        @Override
-        public void onErrorExecute(String error) {
-            mSwipeRefresh.setRefreshing(false);
-            mProgress.setVisibility(View.GONE);
-            mIsRefreshing = false;
-            mAdapter.setIsShowFooter(false);
-            mAdapter.notifyDataSetChanged();
-        }
+    private void getFindLove(int pageNo, int pageSize, String gender, String mUserScopeType) {
+        ArrayMap<String, String> params = new ArrayMap<>();
+        params.put("pageNo", String.valueOf(pageNo));
+        params.put("pageSize", String.valueOf(pageSize));
+        params.put("userId", AppManager.getClientUser().userId);
+        params.put("gender", gender);
+        params.put("user_scope_type", mUserScopeType);
+        RetrofitFactory.getRetrofit().create(IUserApi.class)
+                .getHomeLoveList(AppManager.getClientUser().sessionId, params)
+                .subscribeOn(Schedulers.io())
+                .map(responseBody -> JsonUtils.parseUsertList(responseBody.string()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+                .subscribe(userList -> {
+                    freshTime = System.currentTimeMillis();
+                    mProgress.setVisibility(View.GONE);
+                    mIsRefreshing = false;
+                    mSwipeRefresh.setRefreshing(false);
+                    if (pageIndex == 1) {//进行筛选的时候，滑动到顶部
+                        layoutManager.scrollToPositionWithOffset(0, 0);
+                    }
+                    if(userList == null || userList.size() == 0){
+                        mAdapter.setIsShowFooter(false);
+                        mAdapter.notifyDataSetChanged();
+                        ToastUtil.showMessage(R.string.no_more_data);
+                    } else {
+                        mClientUsers.addAll(userList);
+                        mAdapter.setIsShowFooter(true);
+                        mAdapter.setClientUsers(mClientUsers);
+                    }
+                }, throwable -> {
+                    ToastUtil.showMessage(R.string.network_requests_error);
+                    mProgress.setVisibility(View.GONE);
+                    mIsRefreshing = false;
+                    mSwipeRefresh.setRefreshing(false);
+                    mAdapter.setIsShowFooter(false);
+                    mAdapter.notifyDataSetChanged();
+                });
     }
 
     /**
@@ -320,13 +289,7 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
                         dialog.dismiss();
                         pageIndex = 1;
                         mClientUsers.clear();
-                        if("-1".equals(AppManager.getClientUser().userId) ||
-                                "-2".equals(AppManager.getClientUser().userId) ||
-                                "-3".equals(AppManager.getClientUser().userId)){ //客服登陆，获取真实用户
-                            new GetRealLoveUsersTask().request(pageIndex, pageSize, GENDER);
-                        } else {
-                            new GetFindLoveTask().request(pageIndex, pageSize, GENDER, mUserScopeType);
-                        }
+                        getFindLove(pageIndex, pageSize, GENDER, mUserScopeType);
                         mProgress.setVisibility(View.VISIBLE);
                         mIsRefreshing = true;
                     }
@@ -377,59 +340,39 @@ public class FindLoveFragment extends Fragment implements OnRefreshListener, Vie
     }
 
     private void getFreshData() {
-        if("-1".equals(AppManager.getClientUser().userId) ||
-                "-2".equals(AppManager.getClientUser().userId) ||
-                "-3".equals(AppManager.getClientUser().userId)){ //客服登陆，获取真实用户
-            new GetRealLoveFreshFindLoveTask().request(++pageIndex, pageSize, GENDER);
-        } else {
-            new GetFreshFindLoveTask().request(++pageIndex, pageSize, GENDER, mUserScopeType);
-        }
+        getFreshFindLove(++pageIndex, pageSize, GENDER, mUserScopeType);
     }
 
-    class GetFreshFindLoveTask extends GetFindLoveRequest {
-        @Override
-        public void onPostExecute(List<ClientUser> userList) {
-            mProgress.setVisibility(View.GONE);
-            mSwipeRefresh.setRefreshing(false);
-            if(userList == null || userList.size() == 0){//没有数据了就又从第一页开始查找
-                pageIndex = 1;
-            } else {
-                freshTime = System.currentTimeMillis();
-                mClientUsers.clear();
-                mClientUsers.addAll(userList);
-                mAdapter.setIsShowFooter(false);
-                mAdapter.setClientUsers(mClientUsers);
-            }
-        }
-
-        @Override
-        public void onErrorExecute(String error) {
-            mProgress.setVisibility(View.GONE);
-            mSwipeRefresh.setRefreshing(false);
-            ToastUtil.showMessage(error);
-        }
-    }
-
-    class GetRealLoveFreshFindLoveTask extends GetRealUserRequest {
-        @Override
-        public void onPostExecute(List<ClientUser> userList) {
-            mProgress.setVisibility(View.GONE);
-            mSwipeRefresh.setRefreshing(false);
-            if(userList == null || userList.size() == 0){//没有数据了就又从第一页开始查找
-                ToastUtil.showMessage(R.string.no_more_data);
-            } else {
-                mClientUsers.clear();
-                mClientUsers.addAll(userList);
-                mAdapter.setIsShowFooter(false);
-                mAdapter.setClientUsers(mClientUsers);
-            }
-        }
-
-        @Override
-        public void onErrorExecute(String error) {
-            mProgress.setVisibility(View.GONE);
-            mSwipeRefresh.setRefreshing(false);
-        }
+    private void getFreshFindLove(int pageNo, int pageSize, String gender, String mUserScopeType) {
+        ArrayMap<String, String> params = new ArrayMap<>();
+        params.put("pageNo", String.valueOf(pageNo));
+        params.put("pageSize", String.valueOf(pageSize));
+        params.put("userId", AppManager.getClientUser().userId);
+        params.put("gender", gender);
+        params.put("user_scope_type", mUserScopeType);
+        RetrofitFactory.getRetrofit().create(IUserApi.class)
+                .getHomeLoveList(AppManager.getClientUser().sessionId, params)
+                .subscribeOn(Schedulers.io())
+                .map(responseBody -> JsonUtils.parseUsertList(responseBody.string()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+                .subscribe(userList -> {
+                    mProgress.setVisibility(View.GONE);
+                    mSwipeRefresh.setRefreshing(false);
+                    if(userList == null || userList.size() == 0){//没有数据了就又从第一页开始查找
+                        pageIndex = 1;
+                    } else {
+                        freshTime = System.currentTimeMillis();
+                        mClientUsers.clear();
+                        mClientUsers.addAll(userList);
+                        mAdapter.setIsShowFooter(false);
+                        mAdapter.setClientUsers(mClientUsers);
+                    }
+                }, throwable -> {
+                    ToastUtil.showMessage(R.string.network_requests_error);
+                    mProgress.setVisibility(View.GONE);
+                    mSwipeRefresh.setRefreshing(false);
+                });
     }
 
     @Override

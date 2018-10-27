@@ -14,7 +14,7 @@ import com.cyanbirds.momo.manager.AppManager;
  * 描述：数据库管理类
  */
 public class DBManager {
-	private final static String dbName = "mo_db";
+	private final static String dbName = "tl_db";
 	private static DaoMaster.OpenHelper openHelper;
 	private Context context;
 	private static SQLiteDatabase sqliteDB;
@@ -77,11 +77,21 @@ public class DBManager {
 	}
 
 	/**
+	 * 关闭数据库
+	 */
+	private static void closeDB() {
+		if (sqliteDB != null) {
+			sqliteDB.close();
+			sqliteDB = null;
+		}
+	}
+
+	/**
 	 * 释放
 	 */
 	protected static void release() {
 		destroy();
-		sqliteDB = null;
+		closeDB();
 		openHelper = null;
 	}
 }

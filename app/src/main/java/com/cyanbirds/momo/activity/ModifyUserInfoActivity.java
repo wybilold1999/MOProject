@@ -1,19 +1,17 @@
 package com.cyanbirds.momo.activity;
 
 import android.Manifest;
+import android.arch.lifecycle.Lifecycle;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.CardView;
@@ -34,21 +32,28 @@ import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.eventtype.UserEvent;
 import com.cyanbirds.momo.listener.ModifyUserInfoListener;
 import com.cyanbirds.momo.manager.AppManager;
+import com.cyanbirds.momo.net.IUserApi;
+import com.cyanbirds.momo.net.base.RetrofitFactory;
 import com.cyanbirds.momo.net.request.DownloadFileRequest;
 import com.cyanbirds.momo.net.request.OSSImagUploadRequest;
-import com.cyanbirds.momo.net.request.UpdateUserInfoRequest;
 import com.cyanbirds.momo.ui.widget.ClearEditText;
+import com.cyanbirds.momo.utils.CheckUtil;
 import com.cyanbirds.momo.utils.FileAccessorUtils;
 import com.cyanbirds.momo.utils.FileUtils;
 import com.cyanbirds.momo.utils.Md5Util;
 import com.cyanbirds.momo.utils.ProgressDialogUtils;
+import com.cyanbirds.momo.utils.RxBus;
 import com.cyanbirds.momo.utils.StringUtil;
 import com.cyanbirds.momo.utils.ToastUtil;
+import com.cyanbirds.momo.utils.Utils;
 import com.dl7.tag.TagLayout;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 import com.umeng.analytics.MobclickAgent;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,6 +65,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+import static com.cyanbirds.momo.config.AppConstants.UPDATE_USER_INFO;
 
 /**
  * @author Cloudsoar(wangyb)
@@ -157,15 +168,12 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	@BindView(R.id.card_friend)
 	CardView mCardFriend;
 
-	private String mPhotoPath;
-	private File mPhotoFile;
 	private Uri mPhotoOnSDCardUri;
 	private Uri mPortraitUri;
 	private File mCutFile;
 
 
 	private ClientUser clientUser;
-	private String currentFaceUrl;//用于判断用户是否只是修改了头像就返回
 	private List<String> mVals = null;
 
 	/**
@@ -181,17 +189,18 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	 */
 	public final static int PHOTO_CUT_RESULT = 106;
 	/**
-	 * 读写文件夹
+	 * 相机和存储权限
 	 */
-	private final int REQUEST_PERMISSION_WRITE = 1000;
-	/**
-	 * 跳转设置界面
-	 */
-	private final int REQUEST_PERMISSION_SETTING = 10001;
-	/**
-	 * 是否拥有读写权限
-	 */
-	private boolean isWritePersimmion = false;
+	public final static int REQUEST_PERMISSION_CAMERA_WRITE_EXTERNAL = 1000;
+
+    private RxPermissions rxPermissions;
+
+	private String AUTHORITY = "com.cyanbirds.momo.fileProvider";
+
+	private boolean isUploadPortrait = false;
+
+	private boolean isOpenCamara = false;//是否打开相机
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -222,13 +231,12 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	private void setUserInfo() {
 		clientUser = AppManager.getClientUser();
 		if (clientUser != null) {
-			currentFaceUrl = clientUser.face_url;
 			if (!TextUtils.isEmpty(clientUser.face_local) && new File(clientUser.face_local).exists()) {
 				mPortraitPhoto.setImageURI(Uri.parse("file://" + clientUser.face_local));
 			} else if (!TextUtils.isEmpty(clientUser.face_url)) {
 				mPortraitPhoto.setImageURI(Uri.parse(clientUser.face_url));
 				new DownloadPortraitTask().request(clientUser.face_url,
-						FileAccessorUtils.getImagePathName().getAbsolutePath(),
+						FileAccessorUtils.FACE_IMAGE,
 						Md5Util.md5(AppManager.getClientUser().face_url) + ".jpg");
 			}
 			if (AppManager.getClientUser().isShowLovers) {
@@ -242,7 +250,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 				mNickName.setText(clientUser.user_name);
 			}
 			if (!TextUtils.isEmpty(clientUser.sex)) {
-				mSex.setText(clientUser.sex);
+				mSex.setText("1".equals(clientUser.sex) ? "男" : "女");
 			}
 			if (!TextUtils.isEmpty(String.valueOf(clientUser.age))) {
 				mAge.setText(String.valueOf(clientUser.age));
@@ -429,11 +437,9 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() ==  R.id.save) {
 			ProgressDialogUtils.getInstance(this).show(R.string.dialog_save_data);
-			AppManager.setClientUser(clientUser);
-			AppManager.saveUserInfo();
-			EventBus.getDefault().post(new UserEvent());
+			RxBus.getInstance().post(UPDATE_USER_INFO, new UserEvent());
 			if (clientUser != null) {
-				new UpdateUserInfoTask().request(clientUser);
+				updateUserInfo(clientUser);
 			}
 		} else {
 			finish();
@@ -442,19 +448,69 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 		return true;
 	}
 
-	class UpdateUserInfoTask extends UpdateUserInfoRequest {
-		@Override
-		public void onPostExecute(String s) {
-			ToastUtil.showMessage(R.string.save_success);
-			ProgressDialogUtils.getInstance(ModifyUserInfoActivity.this).dismiss();
-			finish();
-		}
+	private void updateUserInfo(ClientUser clientUser) {
+		RetrofitFactory.getRetrofit().create(IUserApi.class)
+				.updateUserInfo(AppManager.getClientUser().sessionId, getParam(AppManager.getClientUser()))
+				.subscribeOn(Schedulers.io())
+				.map(responseBody -> {
+					AppManager.setClientUser(clientUser);
+					AppManager.saveUserInfo();
+					JsonObject obj = new JsonParser().parse(responseBody.string()).getAsJsonObject();
+					int code = obj.get("code").getAsInt();
+					return code;
+				})
+				.observeOn(AndroidSchedulers.mainThread())
+				.as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+				.subscribe(integer -> {
+					ProgressDialogUtils.getInstance(ModifyUserInfoActivity.this).dismiss();
+					if (integer == 0) {//保存成功
+						ToastUtil.showMessage(R.string.save_success);
+						if(!isUploadPortrait) {//上传头像，不退出界面
+							finish();
+						}
+					} else {
+						ToastUtil.showMessage(R.string.save_fail);
+					}
+				}, throwable -> {
+					ProgressDialogUtils.getInstance(ModifyUserInfoActivity.this).dismiss();
+					ToastUtil.showMessage(R.string.network_requests_error);
+				});
+	}
 
-		@Override
-		public void onErrorExecute(String error) {
-			ToastUtil.showMessage(R.string.save_fail);
-			ProgressDialogUtils.getInstance(ModifyUserInfoActivity.this).dismiss();
+	private ArrayMap<String, String> getParam(ClientUser clientUser) {
+		ArrayMap<String, String> params = new ArrayMap<>();
+		params.put("sex", clientUser.sex);
+		params.put("nickName", clientUser.user_name);
+		params.put("faceurl", clientUser.face_url);
+		if(!TextUtils.isEmpty(clientUser.personality_tag)){
+			params.put("personalityTag", clientUser.personality_tag);
 		}
+		if(!TextUtils.isEmpty(clientUser.part_tag)){
+			params.put("partTag", clientUser.part_tag);
+		}
+		if(!TextUtils.isEmpty(clientUser.intrest_tag)){
+			params.put("intrestTag", clientUser.intrest_tag);
+		}
+		params.put("age", String.valueOf(clientUser.age));
+		params.put("signature", clientUser.signature == null ? "" : clientUser.signature);
+		params.put("qq", clientUser.qq_no == null ? "" : clientUser.qq_no);
+		params.put("wechat", clientUser.weixin_no == null ? "" : clientUser.weixin_no);
+		params.put("publicSocialNumber", String.valueOf(clientUser.publicSocialNumber));
+		params.put("emotionStatus", clientUser.state_marry == null ? "" : clientUser.state_marry);
+		params.put("tall", clientUser.tall == null ? "" : clientUser.tall);
+		params.put("weight", clientUser.weight == null ? "" : clientUser.weight);
+		params.put("constellation", clientUser.constellation == null ? "" : clientUser.constellation);
+		params.put("occupation", clientUser.occupation == null ? "" : clientUser.occupation);
+		params.put("education", clientUser.education == null ? "" : clientUser.education);
+		params.put("purpose", clientUser.purpose == null ? "" : clientUser.purpose);
+		params.put("loveWhere", clientUser.love_where == null ? "" : clientUser.love_where);
+		params.put("doWhatFirst", clientUser.do_what_first == null ? "" : clientUser.do_what_first);
+		params.put("conception", clientUser.conception == null ? "" : clientUser.conception);
+		params.put("isDownloadVip", String.valueOf(clientUser.is_download_vip));
+		params.put("goldNum", String.valueOf(clientUser.gold_num));
+		params.put("phone", clientUser.mobile);
+		params.put("isCheckPhone", String.valueOf(clientUser.isCheckPhone));
+		return params;
 	}
 
 
@@ -475,15 +531,12 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 					public void onClick(DialogInterface dialog, int which) {
 						switch (which) {
 							case 0:
-								if (AppManager.checkPermission(ModifyUserInfoActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_PERMISSION_WRITE)) {
-									isWritePersimmion = true;
-									if (AppManager.checkPermission(ModifyUserInfoActivity.this, Manifest.permission.CAMERA, CAMERA_RESULT)) {
-										openCamera();
-									}
-								}
+								isOpenCamara = true;
+								checkPOpenCameraAlbums();
 								break;
 							case 1:
-								openAlbums();
+								isOpenCamara = false;
+								checkPOpenCameraAlbums();
 								break;
 						}
 						dialog.dismiss();
@@ -491,6 +544,55 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 				});
 		builder.show();
 	}
+
+	private void checkPOpenCameraAlbums() {
+		if (!CheckUtil.isGetPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+				!CheckUtil.isGetPermission(this, Manifest.permission.CAMERA) ||
+				!CheckUtil.isGetPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+			if (rxPermissions == null) {
+				rxPermissions = new RxPermissions(this);
+			}
+			rxPermissions.requestEachCombined(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+					Manifest.permission.CAMERA,
+					Manifest.permission.READ_EXTERNAL_STORAGE)
+					.subscribe(permission -> {// will emit 1 Permission object
+						if (permission.granted) {
+							// All permissions are granted !
+							if (isOpenCamara) {
+								openCamera();
+							} else {
+								openAlbums();
+							}
+						} else if (permission.shouldShowRequestPermissionRationale) {
+							// At least one denied permission without ask never again
+							showPermissionDialog(R.string.open_camera_write_external_permission, REQUEST_PERMISSION_CAMERA_WRITE_EXTERNAL);
+						} else {
+							// At least one denied permission with ask never again
+							// Need to go to the settings
+							showPermissionDialog(R.string.open_camera_write_external_permission, REQUEST_PERMISSION_CAMERA_WRITE_EXTERNAL);
+						}
+					}, throwable -> {
+
+					});
+		} else {
+			if (isOpenCamara) {
+				openCamera();
+			} else {
+				openAlbums();
+			}
+		}
+	}
+
+    private void showPermissionDialog(int textResId, int requestCode) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.permission_request);
+        builder.setMessage(textResId);
+        builder.setPositiveButton(R.string.ok, (dialog, i) -> {
+            dialog.dismiss();
+            Utils.goToSetting(this, requestCode);
+        });
+        builder.show();
+    }
 
 	/**
 	 * 年龄
@@ -631,7 +733,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	 */
 	private void showLableDialog() {
 		mVals.clear();
-		if ("男".equals(AppManager.getClientUser().sex)) {
+		if ("1".equals(AppManager.getClientUser().sex)) {
 			commonDialog(R.string.lable,
 					getResources().getStringArray(R.array.male_lable), null, mLableFlowlayout, mLableText);
 		} else {
@@ -645,7 +747,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	 */
 	private void showPartDialog() {
 		mVals.clear();
-		if ("男".equals(AppManager.getClientUser().sex)) {
+		if ("1".equals(AppManager.getClientUser().sex)) {
 			commonDialog(R.string.satisfacies_part,
 					getResources().getStringArray(R.array.male_sex_part), null, mPartFlowlayout, mPartText);
 		} else {
@@ -721,7 +823,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 				String lableTag = ";" + clientUser.personality_tag;
 				if (!TextUtils.isEmpty(lableTag)) {
 					String[] lableArray = null;
-					if ("男".equals(AppManager.getClientUser().sex)) {
+					if ("1".equals(AppManager.getClientUser().sex)) {
 						lableArray = getResources().getStringArray(R.array.male_lable);
 					} else {
 						lableArray = getResources().getStringArray(R.array.female_lable);
@@ -742,7 +844,7 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 				String partTag = ";" + clientUser.part_tag;
 				if (!TextUtils.isEmpty(partTag)) {
 					String[] partArray = null;
-					if ("男".equals(AppManager.getClientUser().sex)) {
+					if ("1".equals(AppManager.getClientUser().sex)) {
 						partArray = getResources().getStringArray(R.array.male_sex_part);
 					} else {
 						partArray = getResources().getStringArray(R.array.female_sex_part);
@@ -926,35 +1028,33 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	 * 打开相机
 	 */
 	private void openCamera() {
-		hideSoftKeyboard();
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		if (intent.resolveActivity(getPackageManager())!=null){
-			String mPhotoDirPath = Environment
-					.getExternalStoragePublicDirectory(
-							Environment.DIRECTORY_DCIM).getPath();
+
+			String mPhotoDirPath = Environment.getExternalStorageDirectory()+"/Android/data/com.cyanbirds.momo/files/";
 			File mPhotoDirFile = new File(mPhotoDirPath);
 			if (!mPhotoDirFile.exists()) {
-				mPhotoDirFile.mkdir();
+				mPhotoDirFile.mkdirs();
 			}
-			mPhotoPath = mPhotoDirPath + File.separator + getPhotoFileName();
-			mPhotoFile = new File(mPhotoPath);
-			if (!mPhotoFile.exists()) {
+			mCutFile = new File(mPhotoDirPath, getPhotoFileName());//照相机的File对象
+			if (mPhotoDirFile.exists() && !mCutFile.exists()) {
 				try {
-					mPhotoFile.createNewFile();
+					mCutFile.createNewFile();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
-			if (mPhotoFile != null) {
-				//FileProvider 是一个特殊的 ContentProvider 的子类，
-				//它使用 content:// Uri 代替了 file:/// Uri. ，更便利而且安全的为另一个app分享文件
-				mPhotoOnSDCardUri = FileProvider.getUriForFile(this,
-						"com.cyanbirds.momo.fileProvider",
-						mPhotoFile);
-				intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
-				intent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoOnSDCardUri);
-				startActivityForResult(intent, CAMERA_RESULT);
+			Intent intentFromCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {//7.0及以上
+				mPhotoOnSDCardUri = FileProvider.getUriForFile(this, AUTHORITY, mCutFile);
+				intentFromCapture.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoOnSDCardUri);
+				intentFromCapture.addFlags(FLAG_GRANT_READ_URI_PERMISSION);
+				intentFromCapture.addFlags(FLAG_GRANT_WRITE_URI_PERMISSION);
+			} else {
+				mPhotoOnSDCardUri = Uri.fromFile(mCutFile);
+				intentFromCapture.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoOnSDCardUri);
 			}
+			startActivityForResult(intentFromCapture, CAMERA_RESULT);
 		}
 	}
 
@@ -974,40 +1074,67 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	 * 打开相册
 	 */
 	private void openAlbums() {
-		Intent openAlbumIntent = new Intent(Intent.ACTION_GET_CONTENT);
-		openAlbumIntent.setType("image/*");
-		startActivityForResult(openAlbumIntent, ALBUMS_RESULT);
+		String mPhotoDirPath = Environment.getExternalStorageDirectory()+"/Android/data/com.cyanbirds.momo/files/";
+		File mPhotoDirFile = new File(mPhotoDirPath);
+		if (!mPhotoDirFile.exists()) {
+			mPhotoDirFile.mkdirs();
+		}
+		mCutFile = new File(mPhotoDirPath, "cutphoto.png");
+		if (!mCutFile.exists()) {
+			try {
+				mCutFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+		intent.addCategory(Intent.CATEGORY_OPENABLE);
+		intent.setType("image/*");
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {//如果大于等于7.0使用FileProvider
+			Uri uriForFile = FileProvider.getUriForFile
+					(this, AUTHORITY, mCutFile);
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, uriForFile);
+			intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+			intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+			startActivityForResult(intent, ALBUMS_RESULT);
+		} else {
+			startActivityForResult(intent, ALBUMS_RESULT);
+		}
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_OK && requestCode == CAMERA_RESULT) {
-			Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-					mPhotoOnSDCardUri);
+			Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, mPhotoOnSDCardUri);
 			sendBroadcast(intent);
-			if (mPhotoOnSDCardUri != null) {
-				File file = new File(mPhotoPath);
-				if (file.exists()) {
-					cutPhoto(file);
-				}
+			if (mPhotoOnSDCardUri != null && null != mCutFile && mCutFile.exists()) {
+				Utils.cutPhoto(this, mPhotoOnSDCardUri, mCutFile, PHOTO_CUT_RESULT);
 			}
 		} else if (resultCode == RESULT_OK && requestCode == ALBUMS_RESULT) {
-			Uri originalUri = data.getData();
-			if (!TextUtils.isEmpty(FileUtils.getPath(this, originalUri))) {
-				cutPhoto(new File(FileUtils.getPath(this, originalUri)));
+			if (mCutFile != null) {
+				Uri originalUri = data.getData();
+				File originalFile = new File(FileUtils.getPath(this, originalUri));
+				Uri dataUri;
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+					dataUri = FileProvider.getUriForFile(this, AUTHORITY, originalFile);
+				} else {
+					dataUri = originalUri;
+				}
+				Utils.cutPhoto(this, dataUri, mCutFile, PHOTO_CUT_RESULT);
 			}
 		} else if (resultCode == RESULT_OK && requestCode == PHOTO_CUT_RESULT) {
 			mPortraitUri = data.getData();
 			if (mPortraitUri == null && mCutFile != null) {
-				mPortraitUri = Uri.parse(mCutFile.getPath());
+				mPortraitUri = FileProvider.getUriForFile(this, AUTHORITY, mCutFile);
 			}
-			if (mPortraitUri != null
-					&& new File(mPortraitUri.getPath()).exists()) {
+			if (mPortraitUri != null && null != mCutFile && mCutFile.exists()) {
 				ProgressDialogUtils.getInstance(this).show(R.string.dialog_request_uploda);
 				new OSSImgUploadTask().request(AppManager.getFederationToken().bucketName,
-						AppManager.getOSSFacePath(), mPortraitUri.getPath());
+						AppManager.getOSSFacePath(), mCutFile.getAbsolutePath());
 			}
+		} else if (requestCode == REQUEST_PERMISSION_CAMERA_WRITE_EXTERNAL) {
+			checkPOpenCameraAlbums();
 		}
 	}
 
@@ -1017,66 +1144,21 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 	class OSSImgUploadTask extends OSSImagUploadRequest {
 		@Override
 		public void onPostExecute(String s) {
-			ProgressDialogUtils.getInstance(ModifyUserInfoActivity.this).dismiss();
+			if (null != ModifyUserInfoActivity.this && !ModifyUserInfoActivity.this.isFinishing()) {
+				ProgressDialogUtils.getInstance(ModifyUserInfoActivity.this).dismiss();
+			}
 			clientUser.face_url = AppConstants.OSS_IMG_ENDPOINT + s;
 			clientUser.face_local = mPortraitUri.getPath();
 			mPortraitPhoto.setImageURI(clientUser.face_url);
-			AppManager.setClientUser(clientUser);
-			AppManager.saveUserInfo();
-			EventBus.getDefault().post(new UserEvent());
-			new UpdateUserTask().request(clientUser);
+            RxBus.getInstance().post(UPDATE_USER_INFO, new UserEvent());
+            updateUserInfo(clientUser);
+            isUploadPortrait = true;
 		}
 
 		@Override
 		public void onErrorExecute(String error) {
 			ToastUtil.showMessage(error);
 		}
-	}
-
-	class UpdateUserTask extends UpdateUserInfoRequest {
-		@Override
-		public void onPostExecute(String s) {
-			ToastUtil.showMessage(R.string.save_success);
-			ProgressDialogUtils.getInstance(ModifyUserInfoActivity.this).dismiss();
-		}
-
-		@Override
-		public void onErrorExecute(String error) {
-			ToastUtil.showMessage(R.string.save_fail);
-			ProgressDialogUtils.getInstance(ModifyUserInfoActivity.this).dismiss();
-		}
-	}
-
-	/**
-	 * 剪切图片
-	 * @param file
-	 */
-	private void cutPhoto(File file) {
-		mCutFile = new File(FileAccessorUtils.getImagePathName(),
-				"cutphoto.png");
-		if (!mCutFile.exists()) {
-			try {
-				mCutFile.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-//		Uri imageUri=FileProvider.getUriForFile(this, "com.cyanbirds.momo.fileProvider", file);//通过FileProvider创建一个content类型的Uri
-		Uri imageUri = Uri.fromFile(file);
-		Intent intent = new Intent("com.android.camera.action.CROP");
-		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-		intent.setDataAndType(imageUri, "image/*");
-		intent.putExtra("crop", "true");
-		intent.putExtra("outputX", 500);
-		intent.putExtra("outputY", 500);
-		intent.putExtra("aspectX", 1);
-		intent.putExtra("aspectY", 1);
-		intent.putExtra("scale", true);
-		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCutFile));
-		intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-		intent.putExtra("noFaceDetection", true); // no face detection
-		startActivityForResult(intent, PHOTO_CUT_RESULT);
 	}
 
 	@Override
@@ -1096,67 +1178,5 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 		super.onPause();
 		MobclickAgent.onPageEnd(this.getClass().getName());
 		MobclickAgent.onPause(this);
-	}
-
-	@Override
-	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-		if (requestCode == CAMERA_RESULT) {
-			// 拒绝授权
-			if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-				// 勾选了不再提示
-				if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
-					showOpenCameraDialog();
-				} else {
-				}
-			} else if (isWritePersimmion) {
-				openCamera();
-			}
-		} else if (requestCode == REQUEST_PERMISSION_WRITE) {//读写文件夹权限
-			// 拒绝授权
-			if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-				// 勾选了不再提示
-				if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
-					showWriteDialog();
-				}
-			} else {
-				isWritePersimmion = true;
-				AppManager.checkPermission(this, Manifest.permission.CAMERA, CAMERA_RESULT);
-			}
-		}
-		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-	}
-
-	private void showOpenCameraDialog(){
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(R.string.open_camera_permission);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-				Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-				Uri uri = Uri.fromParts("package", getPackageName(), null);
-				intent.setData(uri);
-				startActivityForResult(intent, REQUEST_PERMISSION_SETTING);
-
-			}
-		});
-		builder.show();
-	}
-
-	private void showWriteDialog(){
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(R.string.open_write_external);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-				Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-				Uri uri = Uri.fromParts("package", getPackageName(), null);
-				intent.setData(uri);
-				startActivityForResult(intent, REQUEST_PERMISSION_SETTING);
-
-			}
-		});
-		builder.show();
 	}
 }

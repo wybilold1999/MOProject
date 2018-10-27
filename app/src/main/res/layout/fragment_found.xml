@@ -11,7 +11,7 @@
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:scrollbarStyle="outsideOverlay"
-        android:scrollbars="none"/>
+        android:scrollbars="vertical" />
 
     <com.cyanbirds.momo.ui.widget.CircularProgress
         android:id="@+id/progress_bar"

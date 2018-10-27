@@ -124,10 +124,12 @@ public class ClientUser implements Serializable{
      * 0:不显示  1：显示
      */
     public boolean isShowTd; //跳转到vip还是downloadvip
+
     /**
      * 0:不显示  1：显示
      */
     public boolean isShowAppointment; //是否显示约会
+
     /**
      * 0:不显示  1：显示
      */
@@ -141,10 +143,5 @@ public class ClientUser implements Serializable{
     public long loginTime;//登录时间
     
     public boolean isLocalMsg;//是否是本地创建的消息(礼物、关注、喜欢)
-
-    /**
-     * 0:不显示  1：显示
-     */
-    public boolean isShowNormal; //主界面布局
 
 }

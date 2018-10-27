@@ -75,11 +75,11 @@ public class DownloadUpdateService extends Service implements FileProgressListen
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		apkUrl = intent.getStringExtra(ValueKey.APK_URL);
-		File apkFile = new File(FileAccessorUtils.APK_PATH, "youlove.apk");
+		File apkFile = new File(FileAccessorUtils.APK_PATH, "tanlove.apk");
 		if (apkFile.exists()) {
 			apkFile.delete();
 		}
-		new DownloadApkFileTask().request(apkUrl, FileAccessorUtils.APK_PATH, "youlove.apk");
+		new DownloadApkFileTask().request(apkUrl, FileAccessorUtils.APK_PATH, "tanlove.apk");
 		return super.onStartCommand(intent, flags, startId);
 	}
 

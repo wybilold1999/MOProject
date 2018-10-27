@@ -1,35 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/background_floating_material_dark"
+              android:orientation="vertical">
 
-    <FrameLayout
+    <me.relex.photodraweeview.PhotoDraweeView
+        android:id="@+id/photo_drawee_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="9"
-        android:background="@color/background_floating_material_dark">
-
-        <me.relex.photodraweeview.PhotoDraweeView
-            android:id="@+id/photo_drawee_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            app:failureImage="@mipmap/default_pic"
-            app:failureImageScaleType="fitCenter"
-            app:placeholderImage="@mipmap/default_pic"
-            app:placeholderImageScaleType="fitCenter"/>
-
-
-        <com.cyanbirds.momo.ui.widget.CircularProgress
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminate="true"
-            android:visibility="gone" />
-    </FrameLayout>
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        app:failureImage="@mipmap/default_pic"
+        app:failureImageScaleType="fitCenter"
+        app:placeholderImage="@mipmap/default_pic"
+        app:placeholderImageScaleType="fitCenter"/>
 
 
 </LinearLayout>

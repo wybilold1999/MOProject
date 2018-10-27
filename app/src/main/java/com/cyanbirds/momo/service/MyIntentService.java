@@ -38,13 +38,11 @@ public class MyIntentService extends GTIntentService {
 
 	@Override
 	public void onReceiveServicePid(Context context, int pid) {
-		Log.d(TAG, "onReceiveServicePid -> " + pid);
 	}
 
 	@Override
 	public void onReceiveMessageData(Context context, GTTransmitMessage msg) {
 		byte[] payload = msg.getPayload();
-
 		if (payload != null) {
 			final String data = new String(payload);
 			if (AppManager.getClientUser().isShowVip) {
@@ -56,8 +54,6 @@ public class MyIntentService extends GTIntentService {
 				});
 			}
 		}
-
-		Log.d(TAG, "----------------------------------------------------------------------------------------------");
 	}
 
 	@Override
@@ -85,12 +81,10 @@ public class MyIntentService extends GTIntentService {
 
 	@Override
 	public void onNotificationMessageArrived(Context context, GTNotificationMessage gtNotificationMessage) {
-
 	}
 
 	@Override
 	public void onNotificationMessageClicked(Context context, GTNotificationMessage gtNotificationMessage) {
-
 	}
 
 	private void setTagResult(SetTagCmdMessage setTagCmdMsg) {
@@ -142,8 +136,6 @@ public class MyIntentService extends GTIntentService {
 			default:
 				break;
 		}
-
-		Log.d(TAG, "settag result sn = " + sn + ", code = " + code + ", text = " + text);
 	}
 
 }

@@ -84,8 +84,7 @@
 				android:paddingLeft="20dp"
 				android:paddingTop="8dp"
 				android:text="交友资料"
-				android:textColor="@color/gray_text"
-				android:visibility="gone"/>
+				android:textColor="@color/gray_text"/>
 
 			<android.support.v7.widget.CardView
 				android:id="@+id/card_friend"
@@ -95,8 +94,7 @@
 				app:cardBackgroundColor="#fff"
 				app:cardCornerRadius="0dp"
 				app:cardElevation="1dp"
-				app:cardPreventCornerOverlap="true"
-				android:visibility="gone">
+				app:cardPreventCornerOverlap="true">
 
 				<LinearLayout
 					android:layout_width="match_parent"

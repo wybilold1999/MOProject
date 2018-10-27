@@ -54,15 +54,21 @@ public class GiftMarketAdapter extends
 		Gift gift =  mGifts.get(position);
 		holder.mGiftName.setText(gift.name);
 		holder.mImgUrl.setImageURI(Uri.parse(gift.dynamic_image_url));
-		if (AppManager.getClientUser().isShowVip) {
-			holder.mVipLay.setVisibility(View.VISIBLE);
+		if (AppManager.getClientUser().isShowGold) {
+			holder.mPriceLay.setVisibility(View.VISIBLE);
+			holder.mLine.setVisibility(View.VISIBLE);
+			holder.mVipAmount.setVisibility(View.VISIBLE);
+			holder.mVip.setVisibility(View.VISIBLE);
 			if (gift.vip_amount == 0) {
 				holder.mVipAmount.setText("免费");
 			} else {
 				holder.mVipAmount.setText(gift.vip_amount + "金币");
 			}
 		} else {
-			holder.mVipLay.setVisibility(View.GONE);
+			holder.mPriceLay.setVisibility(View.GONE);
+			holder.mVipAmount.setVisibility(View.GONE);
+			holder.mLine.setVisibility(View.GONE);
+			holder.mVip.setVisibility(View.GONE);
 		}
 		holder.mAmount.setText(String.format(mContext.getResources().getString(R.string.org_price), gift.amount));
 	}
@@ -83,14 +89,18 @@ public class GiftMarketAdapter extends
 		SimpleDraweeView mImgUrl;
 		TextView mVipAmount;
 		TextView mAmount;
-		LinearLayout mVipLay;
+		TextView mLine;
+		ImageView mVip;
+		LinearLayout mPriceLay;
 		public ViewHolder(View itemView) {
 			super(itemView);
 			mGiftName = (TextView) itemView.findViewById(R.id.gift_name);
 			mImgUrl = (SimpleDraweeView) itemView.findViewById(R.id.img_url);
 			mVipAmount = (TextView) itemView.findViewById(R.id.vip_amount);
 			mAmount = (TextView) itemView.findViewById(R.id.amount);
-			mVipLay = (LinearLayout) itemView.findViewById(R.id.vip_lay);
+			mLine = (TextView) itemView.findViewById(R.id.line);
+			mVip = (ImageView) itemView.findViewById(R.id.iv_vip);
+			mPriceLay = (LinearLayout) itemView.findViewById(R.id.price_lay);
 			mImgUrl.setOnClickListener(this);
 		}
 

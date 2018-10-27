@@ -12,21 +12,21 @@ import java.io.Serializable;
 public class PictureModel implements Serializable{
 
 	/** 图片id */
-	public int id;
+	public Integer id;
 	/** 用户id */
-	public int usersId;
+	public Integer usersId;
 	/** 性别 */
-	public int sex;
+	public Integer sex;
 	/** 用户生日 */
 	public String birthday;
 	/** 创建时间 */
 	public String createTime;
 	/** 图片大小 */
-	public int size;
+	public Integer size;
 	/** 图片宽 */
-	public int width;
+	public Integer width;
 	/** 图片高 */
-	public int height;
+	public Integer height;
 	/** 图片地址 */
 	public String path;
 	/** 图片格式 */
@@ -38,14 +38,10 @@ public class PictureModel implements Serializable{
 	/** 用户所在距离 */
 	public Double distance;
 	/** 用户类型 */
-	public int UType;
+	public Integer UType;
 	/** 是否会员 */
 	public boolean isVip;
 	/** 用户所在城市 */
 	public String city;
-	/** 年龄 */
-	public String age;
-	/** 星座 */
-	public String constellation;
 
 }

@@ -1,6 +1,7 @@
 package com.cyanbirds.momo.net.request;
 
 
+import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.listener.FileProgressListener;
 import com.cyanbirds.momo.listener.NetFileDownloadListener;
 import com.cyanbirds.momo.net.base.ResultPostExecute;
@@ -16,40 +17,6 @@ import java.io.File;
  * @Description:下载文件请求
  * @Date:2015年6月9日下午9:00:21
  */
-@SuppressWarnings("deprecation")
-/*public class DownloadApkFileRequest extends ResultPostExecute<String> {
-
-    *//**
-     * 下载请求
-     *
-     * @param url          请求地址
-     * @param savePath     保存地址
-     * @param fileName     保存文件名
-     *//*
-    public void request(String url, final String savePath, String fileName) {
-        File file = new File(savePath, fileName);
-        CSRestClient.client.get(url, new FileAsyncHttpResponseHandler(file) {
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, File file) {
-                onPostExecute(file.getPath());
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers,
-                                  Throwable throwable, File file) {
-                onErrorExecute("下载失败");
-            }
-
-            @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                int progress = (int) ((totalSize > 0) ? (bytesWritten * 1.0 / totalSize) * 100
-                        : -1);
-                FileProgressListener.getInstance().notifyFileProgressChanged(null, progress);
-            }
-        });
-    }
-}*/
 
 public class DownloadApkFileRequest extends ResultPostExecute<String> {
 
@@ -62,6 +29,7 @@ public class DownloadApkFileRequest extends ResultPostExecute<String> {
      */
     public void request(String url, final String savePath, String fileName) {
         final File file = new File(savePath, fileName);
+        FileDownloader.setup(CSApplication.getInstance());
         FileDownloader.getImpl().create(url)
                 .setPath(file.getAbsolutePath())
                 .setListener(new NetFileDownloadListener(){

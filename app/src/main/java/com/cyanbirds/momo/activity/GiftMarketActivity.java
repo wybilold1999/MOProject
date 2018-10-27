@@ -1,7 +1,6 @@
 package com.cyanbirds.momo.activity;
 
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.arch.lifecycle.Lifecycle;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -9,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,16 +22,19 @@ import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.entity.Gift;
 import com.cyanbirds.momo.manager.AppManager;
-import com.cyanbirds.momo.net.request.GetGiftListRequest;
-import com.cyanbirds.momo.net.request.SendGiftRequest;
+import com.cyanbirds.momo.net.IUserApi;
+import com.cyanbirds.momo.net.base.RetrofitFactory;
+import com.cyanbirds.momo.utils.JsonUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 import com.umeng.analytics.MobclickAgent;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * 作者：wangyb
@@ -71,7 +74,7 @@ public class GiftMarketActivity extends BaseActivity implements View.OnClickList
 			toolbar.setNavigationIcon(R.mipmap.ic_up);
 		}
 		initView();
-		new GetGiftListTask().request();
+		getGiftList();
 	}
 
 	private void initView() {
@@ -81,18 +84,18 @@ public class GiftMarketActivity extends BaseActivity implements View.OnClickList
 		giftUser = (ClientUser) getIntent().getSerializableExtra(ValueKey.USER);
 	}
 
-	class GetGiftListTask extends GetGiftListRequest {
-		@Override
-		public void onPostExecute(List<Gift> gifts) {
-			mAdapter = new GiftMarketAdapter(GiftMarketActivity.this, gifts);
-			mAdapter.setOnItemClickListener(mOnItemClickListener);
-			mRecyclerview.setAdapter(mAdapter);
-		}
-
-		@Override
-		public void onErrorExecute(String error) {
-			ToastUtil.showMessage(error);
-		}
+	private void getGiftList() {
+		RetrofitFactory.getRetrofit().create(IUserApi.class)
+				.getGift(AppManager.getClientUser().sessionId)
+				.subscribeOn(Schedulers.io())
+				.map(responseBody -> JsonUtils.parseGiftList(responseBody.string()))
+				.observeOn(AndroidSchedulers.mainThread())
+				.as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+				.subscribe(gifts -> {
+					mAdapter = new GiftMarketAdapter(GiftMarketActivity.this, gifts);
+					mAdapter.setOnItemClickListener(mOnItemClickListener);
+					mRecyclerview.setAdapter(mAdapter);
+				}, throwable -> ToastUtil.showMessage(R.string.network_requests_error));
 	}
 
 	private GiftMarketAdapter.OnItemClickListener mOnItemClickListener = new GiftMarketAdapter.OnItemClickListener() {
@@ -112,7 +115,9 @@ public class GiftMarketActivity extends BaseActivity implements View.OnClickList
 				mVipAmount.setText(gift.vip_amount + "金币");
 			}
 			mAmount.setText(String.format(getResources().getString(R.string.org_price), gift.amount));
-			mMyPortrait.setImageURI(Uri.parse(AppManager.getClientUser().face_url));
+			if (!TextUtils.isEmpty(AppManager.getClientUser().face_url)) {
+				mMyPortrait.setImageURI(Uri.parse(AppManager.getClientUser().face_url));
+			}
 			if (giftUser != null) {
 				mOtherPortrait.setImageURI(Uri.parse(giftUser.face_url));
 			}
@@ -131,71 +136,21 @@ public class GiftMarketActivity extends BaseActivity implements View.OnClickList
 		mOtherPortrait = (SimpleDraweeView) mGiftDialogView.findViewById(R.id.other_portrait);
 		mSendGift = (TextView) mGiftDialogView.findViewById(R.id.send_gift);
 		mSendGift.setOnClickListener(this);
-		if (AppManager.getClientUser().isShowVip) {
+		if (AppManager.getClientUser().isShowGold) {
 			mVipLay.setVisibility(View.VISIBLE);
+			mAmount.setVisibility(View.VISIBLE);
 		} else {
 			mVipLay.setVisibility(View.GONE);
+			mAmount.setVisibility(View.GONE);
 		}
 	}
 
 	@Override
 	public void onClick(View v) {
 		mGiftDialog.dismiss();
-		if (AppManager.getClientUser().isShowVip) {
-			if (AppManager.getClientUser().gold_num == 0) {
-				showBuyGoldDialog();
-			} else {
-				String gold = "";
-				if (AppManager.getClientUser().is_vip) {
-					gold = String.valueOf(gift.vip_amount);
-				} else {
-					gold = String.valueOf(gift.amount);
-				}
-				if (AppManager.getClientUser().gold_num < Integer.parseInt(gold)) {
-					showBuyGoldDialog();
-				} else {
-					AppManager.getClientUser().gold_num -= Integer.parseInt(gold);
-					new SendGiftTask().request(giftUser.userId, gift.dynamic_image_url, gold);
-				}
-			}
-		} else {
-			new SendGiftTask().request(giftUser.userId, gift.dynamic_image_url, "0");
-		}
-	}
-
-	class SendGiftTask extends SendGiftRequest {
-		@Override
-		public void onPostExecute(String s) {
-			Snackbar.make(findViewById(R.id.recyclerview),
-					getResources().getString(R.string.send_gift_success),
-					Snackbar.LENGTH_LONG).show();
-		}
-
-		@Override
-		public void onErrorExecute(String error) {
-			ToastUtil.showMessage(error);
-		}
-	}
-
-	private void showBuyGoldDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(R.string.no_gold);
-		builder.setPositiveButton(getResources().getString(R.string.ok),
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.dismiss();
-						Intent intent = new Intent(GiftMarketActivity.this, MyGoldActivity.class);
-						startActivity(intent);
-					}
-				});
-		builder.setNegativeButton(getResources().getString(R.string.cancel),
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				});
-		builder.show();
+		Snackbar.make(findViewById(R.id.recyclerview),
+				getResources().getString(R.string.send_gift_success),
+				Snackbar.LENGTH_LONG).show();
 	}
 
 	@Override

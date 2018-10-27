@@ -38,26 +38,26 @@
                 android:scaleType="fitCenter"
                 android:clickable="true"/>
         </LinearLayout>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginTop="20dp">
 
-                <EditText
-                    android:id="@+id/phone_num"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/phone"
-                    android:inputType="number"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorPrimary"
-                    android:contentDescription="@null"/>
-
-            </android.support.design.widget.TextInputLayout>
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/phone_num"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="20dp"
+            android:inputType="phone"
+            android:singleLine="true"
+            android:textSize="16sp"
+            android:hint="@string/phone"
+            android:maxLength="11"
+            fancy:met_baseColor="@color/colorPrimary"
+            fancy:met_primaryColor="@color/colorPrimary"
+            fancy:met_floatingLabelText="@string/phone"
+            fancy:met_floatingLabel="highlight"
+            fancy:met_floatingLabelTextColor="@color/colorPrimary"
+            fancy:met_textColorHint="@color/gray_text"
+            fancy:met_underlineColor="@android:color/black"/>
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/next"

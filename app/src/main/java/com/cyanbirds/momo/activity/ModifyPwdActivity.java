@@ -1,5 +1,6 @@
 package com.cyanbirds.momo.activity;
 
+import android.arch.lifecycle.Lifecycle;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -11,12 +12,19 @@ import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.manager.AppManager;
-import com.cyanbirds.momo.net.request.ModifyPwdRequest;
+import com.cyanbirds.momo.net.IUserApi;
+import com.cyanbirds.momo.net.base.RetrofitFactory;
 import com.cyanbirds.momo.utils.AESEncryptorUtil;
 import com.cyanbirds.momo.utils.ProgressDialogUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 import com.umeng.analytics.MobclickAgent;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
@@ -44,9 +52,9 @@ public class ModifyPwdActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void setupView(){
-        mSure = (FancyButton) findViewById(R.id.btn_sure);
-        mPassword = (EditText) findViewById(R.id.new_pwd);
-        mPwdAgain = (EditText) findViewById(R.id.new_pwd_again);
+        mSure = findViewById(R.id.btn_sure);
+        mPassword = findViewById(R.id.new_pwd);
+        mPwdAgain = findViewById(R.id.new_pwd_again);
     }
 
     private void setupEvent(){
@@ -61,32 +69,41 @@ public class ModifyPwdActivity extends BaseActivity implements View.OnClickListe
                     String cryptPwd = AESEncryptorUtil.crypt(
                             mPassword.getText().toString().trim(), AppConstants.SECURITY_KEY);
                     ProgressDialogUtils.getInstance(this).show(R.string.dialog_modifying);
-                    new ModifyPwdTask().request(cryptPwd);
+                    modifyPwd(cryptPwd);
                 }
                 break;
         }
     }
 
-    class ModifyPwdTask extends ModifyPwdRequest {
-        @Override
-        public void onPostExecute(String s) {
-            ProgressDialogUtils.getInstance(ModifyPwdActivity.this).dismiss();
-            ToastUtil.showMessage(s);
-            ClientUser clientUser = AppManager.getClientUser();
-            clientUser.userPwd = AESEncryptorUtil.crypt(mPwdAgain.getText().toString().trim(), AppConstants.SECURITY_KEY);
-            AppManager.setClientUser(clientUser);
-            AppManager.saveUserInfo();
-            finish();
+    private void modifyPwd(String newPwd) {
+        RetrofitFactory.getRetrofit().create(IUserApi.class)
+                .modifyPwd(AppManager.getClientUser().sessionId, newPwd)
+                .subscribeOn(Schedulers.io())
+                .map(responseBody -> {
+                    ClientUser clientUser = AppManager.getClientUser();
+                    clientUser.userPwd = AESEncryptorUtil.crypt(mPwdAgain.getText().toString().trim(), AppConstants.SECURITY_KEY);
+                    AppManager.setClientUser(clientUser);
+                    AppManager.saveUserInfo();
+                    JsonObject obj = new JsonParser().parse(responseBody.string()).getAsJsonObject();
+                    int code = obj.get("code").getAsInt();
+                    return code;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+                .subscribe(integer -> {
+                    ProgressDialogUtils.getInstance(ModifyPwdActivity.this).dismiss();
+                    if (integer == 0) {
+                        ToastUtil.showMessage(R.string.modify_success);
+                    } else {
+                        ToastUtil.showMessage(R.string.modify_faiure);
+                    }
+                    finish();
+                }, throwable -> {
+                    ProgressDialogUtils.getInstance(ModifyPwdActivity.this).dismiss();
+                    ToastUtil.showMessage(R.string.network_requests_error);
+                });
 
-        }
-
-        @Override
-        public void onErrorExecute(String error) {
-            ProgressDialogUtils.getInstance(ModifyPwdActivity.this).dismiss();
-            ToastUtil.showMessage(error);
-        }
     }
-
 
     /**
      * 输入验证

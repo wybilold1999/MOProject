@@ -1,6 +1,5 @@
 package com.cyanbirds.momo.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -14,12 +13,14 @@ import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.db.ConversationSqlManager;
 import com.cyanbirds.momo.db.IMessageDaoManager;
 import com.cyanbirds.momo.db.MyGoldDaoManager;
+import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.manager.NotificationManager;
-import com.cyanbirds.momo.net.request.LogoutRequest;
+import com.cyanbirds.momo.presenter.UserLoginPresenterImpl;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.ProgressDialogUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
+import com.cyanbirds.momo.view.IUserLoginLogOut;
 import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
@@ -33,7 +34,7 @@ import butterknife.OnClick;
  * @email: 395044952@qq.com
  * @description:
  */
-public class SettingActivity extends BaseActivity {
+public class SettingActivity extends BaseActivity<IUserLoginLogOut.Presenter> implements IUserLoginLogOut.View {
 
     @BindView(R.id.switch_msg)
     SwitchCompat mSwitchMsg;
@@ -49,8 +50,6 @@ public class SettingActivity extends BaseActivity {
     RelativeLayout mBandingPhoneLay;
     @BindView(R.id.modify_pwd_lay)
     RelativeLayout mModifyPwdLay;
-    @BindView(R.id.get_fare_info_lay)
-    RelativeLayout mGetFareInfoLay;
     @BindView(R.id.quit)
     RelativeLayout mQuit;
 
@@ -98,15 +97,10 @@ public class SettingActivity extends BaseActivity {
         } else {
             mSwitchVibrate.setChecked(false);
         }
-        if (PreferencesUtils.getIsHasGetFareActivity(this)) {
-            mGetFareInfoLay.setVisibility(View.VISIBLE);
-        } else {
-            mGetFareInfoLay.setVisibility(View.GONE);
-        }
     }
 
     @OnClick({R.id.switch_msg, R.id.switch_msg_content, R.id.switch_voice, R.id.switch_vibrate,
-            R.id.banding_phone_lay, R.id.modify_pwd_lay, R.id.get_fare_info_lay, R.id.quit})
+            R.id.banding_phone_lay, R.id.modify_pwd_lay, R.id.quit})
     public void onViewClicked(View view) {
         Intent intent = new Intent();
         switch (view.getId()) {
@@ -154,20 +148,18 @@ public class SettingActivity extends BaseActivity {
                 intent.setClass(this, ModifyPwdActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.get_fare_info_lay:
-                intent.setClass(this, GetTelFareRuleActivity.class);
-                startActivity(intent);
-                break;
             case R.id.quit:
                 showQuitDialog();
                 break;
         }
     }
 
-    class LogoutTask extends LogoutRequest {
-        @Override
-        public void onPostExecute(String s) {
-            ProgressDialogUtils.getInstance(SettingActivity.this).dismiss();
+    @Override
+    public void loginLogOutSuccess(ClientUser clientUser) {
+        ProgressDialogUtils.getInstance(SettingActivity.this).dismiss();
+        if (clientUser.age == 1) {//用age代表是否退出登录成功的返回码.1表示不成功
+            ToastUtil.showMessage(R.string.quite_faiure);
+        } else {
             MobclickAgent.onProfileSignOff();
             release();
             NotificationManager.getInstance().cancelNotification();
@@ -179,11 +171,12 @@ public class SettingActivity extends BaseActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
+    }
 
-        @Override
-        public void onErrorExecute(String error) {
-            ProgressDialogUtils.getInstance(SettingActivity.this).dismiss();
-            ToastUtil.showMessage(error);
+    @Override
+    public void setPresenter(IUserLoginLogOut.Presenter presenter) {
+        if (presenter == null) {
+            this.presenter = new UserLoginPresenterImpl(this);
         }
     }
 
@@ -192,23 +185,17 @@ public class SettingActivity extends BaseActivity {
      */
     private void showQuitDialog() {
         new AlertDialog.Builder(this)
-                .setItems(R.array.quit_items,
-                        new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                switch (which) {
-                                    case 0:
-                                        ProgressDialogUtils.getInstance(SettingActivity.this).show(R.string.dialog_logout_tips);
-                                        new LogoutTask().request();
-                                        break;
-                                    case 1:
-                                        exitApp();
-                                        break;
-                                }
-                            }
-                        }).setTitle(R.string.quit).show();
+                .setItems(R.array.quit_items, (dialog, which) -> {
+                    switch (which) {
+                        case 0:
+                            ProgressDialogUtils.getInstance(SettingActivity.this).show(R.string.dialog_logout_tips);
+                            presenter.onLogOut();
+                            break;
+                        case 1:
+                            exitApp();
+                            break;
+                    }
+                }).setTitle(R.string.quit).show();
     }
 
 

@@ -14,11 +14,10 @@ import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.ClientUser;
-import com.cyanbirds.momo.manager.AppManager;
-import com.cyanbirds.momo.net.request.CheckSmsCodeRequest;
-import com.cyanbirds.momo.net.request.UpdateUserInfoRequest;
+import com.cyanbirds.momo.presenter.SmsCodePresenterImpl;
 import com.cyanbirds.momo.utils.ProgressDialogUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
+import com.cyanbirds.momo.view.IUserLoginLogOut;
 import com.umeng.analytics.MobclickAgent;
 
 import cn.smssdk.SMSSDK;
@@ -32,8 +31,8 @@ import mehdi.sakout.fancybuttons.FancyButton;
  * @Date:2015年5月11日下午4:14:15
  *
  */
-public class RegisterCaptchaActivity extends BaseActivity implements
-		OnClickListener {
+public class RegisterCaptchaActivity extends BaseActivity<IUserLoginLogOut.CheckSmsCodePresenter> implements
+		OnClickListener, IUserLoginLogOut.CheckSmsCodeView{
 
 	private EditText mSmsCode;
 	private FancyButton mNext;
@@ -117,7 +116,7 @@ public class RegisterCaptchaActivity extends BaseActivity implements
 			if (checkInput()) {
 				//验证 验证码
 				ProgressDialogUtils.getInstance(this).show(R.string.dialog_request_sms_check);
-				new CheckSmsCodeTask().request(mSmsCode.getText().toString().trim(), mPhone, mPhoneType);
+				presenter.checkSmsCode(mSmsCode.getText().toString().trim(), mPhone, mPhoneType);
 			}
 			break;
 		case R.id.count_timer:
@@ -131,10 +130,17 @@ public class RegisterCaptchaActivity extends BaseActivity implements
 		}
 	}
 
-	class CheckSmsCodeTask extends CheckSmsCodeRequest {
-		@Override
-		public void onPostExecute(String s) {
-			ProgressDialogUtils.getInstance(RegisterCaptchaActivity.this).dismiss();
+	@Override
+	public void setPresenter(IUserLoginLogOut.CheckSmsCodePresenter presenter) {
+		if (presenter == null) {
+			this.presenter = new SmsCodePresenterImpl(this);
+		}
+	}
+
+	@Override
+	public void checkSmsCode(int checkCode) {
+		ProgressDialogUtils.getInstance(RegisterCaptchaActivity.this).dismiss();
+		if (checkCode == 200) {
 			Intent intent = new Intent();
 			if(mPhoneType == 0){//注册
 				intent.setClass(RegisterCaptchaActivity.this, RegisterSubmitActivity.class);
@@ -146,35 +152,9 @@ public class RegisterCaptchaActivity extends BaseActivity implements
 				intent.putExtra(ValueKey.PHONE_NUMBER, mPhone);
 				intent.putExtra(ValueKey.LOCATION, mCurrrentCity);
 				startActivity(intent);
-			} else {
-				AppManager.getClientUser().isCheckPhone = true;
-				AppManager.getClientUser().mobile = mPhone;
-				AppManager.setClientUser(AppManager.getClientUser());
-				AppManager.saveUserInfo();
-				new UpdateUserInfoTask().request(AppManager.getClientUser());
 			}
-		}
-
-		@Override
-		public void onErrorExecute(String error) {
-			ProgressDialogUtils.getInstance(RegisterCaptchaActivity.this).dismiss();
-			ToastUtil.showMessage(error);
-		}
-	}
-
-	class UpdateUserInfoTask extends UpdateUserInfoRequest {
-		@Override
-		public void onPostExecute(String s) {
-			ToastUtil.showMessage(R.string.bangding_success);
-			ProgressDialogUtils.getInstance(RegisterCaptchaActivity.this).dismiss();
-			finish();
-		}
-
-		@Override
-		public void onErrorExecute(String error) {
-			ToastUtil.showMessage(R.string.bangding_faile);
-			ProgressDialogUtils.getInstance(RegisterCaptchaActivity.this).dismiss();
-			finish();
+		} else {
+			ToastUtil.showMessage("验证失败");
 		}
 	}
 

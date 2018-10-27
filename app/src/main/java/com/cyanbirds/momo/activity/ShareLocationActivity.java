@@ -1,6 +1,5 @@
 package com.cyanbirds.momo.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -31,7 +30,6 @@ import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
-import com.umeng.analytics.MobclickAgent;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.adapter.PlaceListAdapter;
@@ -42,6 +40,7 @@ import com.cyanbirds.momo.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.momo.utils.FileAccessorUtils;
 import com.cyanbirds.momo.utils.Md5Util;
 import com.cyanbirds.momo.utils.ToastUtil;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -60,7 +59,7 @@ import java.util.List;
  *
  */
 public class ShareLocationActivity extends BaseActivity implements
-        AMapLocationListener, GeocodeSearch.OnGeocodeSearchListener,
+		AMapLocationListener, GeocodeSearch.OnGeocodeSearchListener,
 		AMap.OnMapTouchListener, OnClickListener, AMap.OnMapScreenShotListener {
 
 	private MapView mapView;
@@ -115,10 +114,12 @@ public class ShareLocationActivity extends BaseActivity implements
 				PoiItem poiItem = mPoiLists.get(position);
 				mAddress = poiItem.getTitle()  + poiItem.getSnippet();
 				LatLonPoint latLonPoint = poiItem.getLatLonPoint();
-				LatLng latLng = new LatLng(latLonPoint.getLatitude(),
-						latLonPoint.getLongitude());
-				mSelLoactionLatLng = latLng;
-				aMap.animateCamera(CameraUpdateFactory.changeLatLng(latLng));
+				if (latLonPoint != null) {
+					LatLng latLng = new LatLng(latLonPoint.getLatitude(),
+							latLonPoint.getLongitude());
+					mSelLoactionLatLng = latLng;
+					aMap.animateCamera(CameraUpdateFactory.changeLatLng(latLng));
+				}
 			}
 		};
 		mRecyclerView.setAdapter(mAdapter);
@@ -308,11 +309,7 @@ public class ShareLocationActivity extends BaseActivity implements
 		if (id == R.id.send) {
 			if (AppManager.getClientUser().isShowVip) {
 				if (AppManager.getClientUser().is_vip) {
-					if (AppManager.getClientUser().isShowGold && AppManager.getClientUser().gold_num  < 101) {
-						showGoldDialog();
-					} else {
-						sendLocation();
-					}
+					sendLocation();
 				} else {
 					showTurnOnVipDialog();
 				}
@@ -343,40 +340,20 @@ public class ShareLocationActivity extends BaseActivity implements
 	private void showTurnOnVipDialog(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(R.string.un_send_msg);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
+		builder.setPositiveButton(R.string.ok, ((dialog, i) -> {
+			dialog.dismiss();
+			Intent intent = new Intent(ShareLocationActivity.this, VipCenterActivity.class);
+			startActivity(intent);
+		}));
+		if (AppManager.getClientUser().isShowGiveVip) {
+			builder.setNegativeButton(R.string.free_give_vip, ((dialog, i) -> {
 				dialog.dismiss();
-				Intent intent = new Intent(ShareLocationActivity.this, VipCenterActivity.class);
+				Intent intent = new Intent(ShareLocationActivity.this, GiveVipActivity.class);
 				startActivity(intent);
-			}
-		});
-		builder.setNegativeButton(R.string.until_single, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
-		builder.show();
-	}
-
-	private void showGoldDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(R.string.no_gold_un_send_msg);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-				Intent intent = new Intent(ShareLocationActivity.this, MyGoldActivity.class);
-				startActivity(intent);
-			}
-		});
-		builder.setNegativeButton(R.string.until_single, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
+			}));
+		} else {
+			builder.setNegativeButton(R.string.until_single, ((dialog, i) -> dialog.dismiss()));
+		}
 		builder.show();
 	}
 

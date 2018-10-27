@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.entity.MemberBuy;
+import com.cyanbirds.momo.utils.CheckUtil;
 
 import java.util.List;
 
@@ -30,10 +31,12 @@ public class MemberBuyAdapter extends
 	private List<MemberBuy> mMemberBuyList;
 	private OnItemClickListener mOnItemClickListener;
 	private Context mContext;
+	private String channel;
 
 	public MemberBuyAdapter(Context context, List<MemberBuy> memberBuys) {
 		this.mContext = context;
 		this.mMemberBuyList = memberBuys;
+		channel = CheckUtil.getAppMetaData(context, "UMENG_CHANNEL");
 	}
 
 
@@ -56,6 +59,9 @@ public class MemberBuyAdapter extends
 		if (!TextUtils.isEmpty(memberBuy.preferential.trim())) {//不是99元的，显示赠送话费的优惠
 			holder.mPreferential.setText(String.format(mContext.getResources().getString(R.string.send_telephone_fare),
 					Integer.parseInt(memberBuy.preferential)));
+			if ("oppo".equals(channel)) {
+				holder.mPreferential.setVisibility(View.GONE);
+			}
 		}
 		holder.mDesciption.setText(memberBuy.descreption);
 	}

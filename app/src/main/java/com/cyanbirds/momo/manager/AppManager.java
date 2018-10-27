@@ -1,36 +1,25 @@
 package com.cyanbirds.momo.manager;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.KeyguardManager;
-import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 import com.alibaba.sdk.android.oss.OSS;
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.entity.FederationToken;
 import com.cyanbirds.momo.entity.IMessage;
-import com.cyanbirds.momo.net.DynamicService;
-import com.cyanbirds.momo.net.FollowService;
-import com.cyanbirds.momo.net.LoveService;
-import com.cyanbirds.momo.net.PictureService;
-import com.cyanbirds.momo.net.UserService;
-import com.cyanbirds.momo.net.VideoService;
 import com.cyanbirds.momo.utils.PreferencesUtils;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mmkv.MMKV;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -41,6 +30,16 @@ import java.io.LineNumberReader;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_CURRENT_CITY;
+import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_RL_ACCOUNT;
+import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_RL_FACE_LOCAL;
+import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_RL_IS_LOGIN;
+import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_RL_PASSWORD;
+import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_RL_SESSIONID;
+import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_RL_USER_MOBILE;
+import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_RL_USER_USER_NAME;
+import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_SEX;
 
 /**
  * 
@@ -73,17 +72,11 @@ public class AppManager {
 	 * 进入聊天界面当前聊天联系人id
 	 */
 	public static String currentChatTalker = null;
-	private static final int REQUEST_LOCATION_PERMISSION = 1000;
-
-	private static UserService mUserService;
-	private static PictureService mPictureService;
-	private static FollowService mFollowService;
-	private static LoveService mLoveService;
-	private static VideoService mVideoService;
-	private static DynamicService mDynamicService;
 
 	private static IWXAPI sIWX_PAY_API;
 	private static IWXAPI sIWXAPI;
+
+	private static MMKV sMMKV;
 
 	private static ExecutorService mExecutorService;
 
@@ -390,17 +383,6 @@ public class AppManager {
 		return false;
 	}
 
-	/**
-	 * 获取手机IMEI
-	 * 
-	 * @return
-	 */
-	public static String getImei() {
-		String imei = ((TelephonyManager) mContext
-				.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-		return imei;
-	}
-
 	public static void installApk(File file) {
 		Intent intent = new Intent(Intent.ACTION_VIEW);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -425,71 +407,18 @@ public class AppManager {
 	 * @return
 	 */
 	public static boolean isLogin() {
-		if (getClientUser() == null || TextUtils.isEmpty(getClientUser().userId) // &&Integer.parseInt(getClientUser().userId) <= 0)
+		/*if (getClientUser() == null || TextUtils.isEmpty(getClientUser().userId)
 				|| !PreferencesUtils.getIsLogin(mContext)) {
 			return false;
 		}
 
+		return true;*/
+		if (getClientUser() == null || TextUtils.isEmpty(getClientUser().userId)
+				|| !sMMKV.decodeBool(SETTINGS_RL_IS_LOGIN, false)) {
+			return false;
+		}
+
 		return true;
-	}
-
-	public static void goToMarket(Context context, String channel) {
-		/**
-		 * 根据渠道跳转到不同的应用市场更新APP
-		 */
-		if ("sanxing".equals(channel)) {
-			Uri uri = Uri.parse("http://www.samsungapps.com/appquery/appDetail.as?appId=" + pkgName);
-			Intent goToMarket = new Intent();
-			goToMarket.setClassName("com.sec.android.app.samsungapps", "com.sec.android.app.samsungapps.Main");
-			goToMarket.setData(uri);
-			try {
-				context.startActivity(goToMarket);
-			} catch (ActivityNotFoundException e) {
-				e.printStackTrace();
-			}
-		} else if ("leshi".equals(channel)) {
-			Intent intent = new Intent();
-			intent.setClassName("com.letv.app.appstore", "com.letv.app.appstore.appmodule.details.DetailsActivity");
-			intent.setAction("com.letv.app.appstore.appdetailactivity");
-			intent.putExtra("packageName", pkgName);
-			context.startActivity(intent);
-		} else {
-			Uri uri = Uri.parse("market://details?id=" + pkgName);
-			Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-			try {
-				context.startActivity(goToMarket);
-			} catch (ActivityNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public static void requestLocationPermission(Activity activity) {
-		PackageManager pkgManager = CSApplication.getInstance().getPackageManager();
-		boolean ACCESS_COARSE_LOCATION =
-				pkgManager.checkPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION, getPackageName()) == PackageManager.PERMISSION_GRANTED;
-		boolean ACCESS_FINE_LOCATION =
-				pkgManager.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, getPackageName()) == PackageManager.PERMISSION_GRANTED;
-		if (Build.VERSION.SDK_INT >= 23 && !ACCESS_COARSE_LOCATION || !ACCESS_FINE_LOCATION) {
-			//请求权限
-			ActivityCompat.requestPermissions(activity, new String[] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
-					REQUEST_LOCATION_PERMISSION);
-		}
-	}
-
-	public static boolean checkPermission(Activity activity, String permission, int flag) {
-		boolean isHasPermission = false;
-		if (Build.VERSION.SDK_INT >= 23) {
-			PackageManager pkgManager = CSApplication.getInstance().getPackageManager();
-			isHasPermission = pkgManager.checkPermission(permission, getPackageName()) == PackageManager.PERMISSION_GRANTED;
-			if (!isHasPermission) {
-				//请求权限
-				ActivityCompat.requestPermissions(activity, new String[] {permission}, flag);
-			}
-		} else {
-			isHasPermission = true;
-		}
-		return isHasPermission;
 	}
 
 	/**
@@ -519,6 +448,14 @@ public class AppManager {
 		sIWX_PAY_API = IWX_PAY_API;
 	}
 
+	public static MMKV getMMKV() {
+		return sMMKV;
+	}
+
+	public static void setMMKV(MMKV MMKV) {
+		sMMKV = MMKV;
+	}
+
 	public static String getProcessName(int pid) {
 		BufferedReader reader = null;
 		try {
@@ -542,58 +479,41 @@ public class AppManager {
 		return null;
 	}
 
-
-
 	/**
 	 * 设置用户信息
 	 */
 	public static void setUserInfo() {
 		try {
-			String userId = PreferencesUtils.getAccount(mContext);
+			/*String userId = PreferencesUtils.getAccount(mContext);
 			String mobile = PreferencesUtils.getUserMobile(mContext);
 			String pwd = PreferencesUtils.getPassword(mContext);
-			String sex = PreferencesUtils.getUserSex(mContext);
 			String userName = PreferencesUtils.getUserName(mContext);
-			String face_url = PreferencesUtils.getFaceUrl(mContext);
 			String face_local = PreferencesUtils.getFaceLocal(mContext);
-			String signature = PreferencesUtils.getSignature(mContext);
-			String qq_no = PreferencesUtils.getQq(mContext);
-			String weixin_no = PreferencesUtils.getWeiXin(mContext);
-			String weight = PreferencesUtils.getWeight(mContext);
-			String tall = PreferencesUtils.getTall(mContext);
-			String distance = PreferencesUtils.getDistance(mContext);
-			String constellation = PreferencesUtils.getConstellation(mContext);
-			String state_marry = PreferencesUtils.getEmotionStatus(mContext);
 			String sessionId = PreferencesUtils.getSessionid(mContext);
-			boolean isCheckPhone = PreferencesUtils.getIsCheckPhone(mContext);
-			boolean publicSocialNumber = PreferencesUtils.getPublicSocialnumber(mContext);
-			boolean is_vip = PreferencesUtils.getIsVip(mContext);
 			ClientUser clientUser = new ClientUser();
 			clientUser.userId = userId;
 			clientUser.mobile = mobile;
 			clientUser.userPwd = pwd;
-			clientUser.sex = sex;
 			clientUser.user_name = userName;
-			clientUser.face_url = face_url;
 			clientUser.face_local = face_local;
-			clientUser.signature = signature;
-			clientUser.qq_no = qq_no;
-			clientUser.weixin_no = weixin_no;
-			clientUser.weight = weight;
-			clientUser.tall = tall;
-			clientUser.distance = distance;
-			clientUser.constellation = constellation;
-			clientUser.isCheckPhone = isCheckPhone;
-			clientUser.state_marry = state_marry;
-			clientUser.publicSocialNumber = publicSocialNumber;
-			clientUser.is_vip = is_vip;
 			clientUser.sessionId = sessionId;
-			clientUser.isShowVip = PreferencesUtils.getIsShow(mContext);
-			clientUser.isShowDownloadVip = clientUser.isShowVip;
-			clientUser.isShowGold = clientUser.isShowVip;
-			clientUser.isShowLovers = clientUser.isShowVip;
-			clientUser.isShowVideo  = clientUser.isShowVip;
 			clientUser.currentCity = PreferencesUtils.getCurrentCity(mContext);
+			clientUser.sex = PreferencesUtils.getSettingsSex(mContext);*/
+			String userId = sMMKV.decodeString(SETTINGS_RL_ACCOUNT, "");
+			String mobile = sMMKV.decodeString(SETTINGS_RL_USER_MOBILE, "");
+			String pwd = sMMKV.decodeString(SETTINGS_RL_PASSWORD, "");
+			String userName = sMMKV.decodeString(SETTINGS_RL_USER_USER_NAME, "");
+			String face_local = sMMKV.decodeString(SETTINGS_RL_FACE_LOCAL, "");
+			String sessionId = sMMKV.decodeString(SETTINGS_RL_SESSIONID, "");
+			ClientUser clientUser = new ClientUser();
+			clientUser.userId = userId;
+			clientUser.mobile = mobile;
+			clientUser.userPwd = pwd;
+			clientUser.user_name = userName;
+			clientUser.face_local = face_local;
+			clientUser.sessionId = sessionId;
+			clientUser.currentCity = sMMKV.decodeString(SETTINGS_CURRENT_CITY, "");
+			clientUser.sex = sMMKV.decodeString(SETTINGS_SEX, "");
 			setClientUser(clientUser);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -605,36 +525,24 @@ public class AppManager {
 	 */
 	public static void saveUserInfo() {
 		try {
-			PreferencesUtils.setAccount(mContext, getClientUser().userId);
+			sMMKV.encode(SETTINGS_RL_ACCOUNT, getClientUser().userId);
+			sMMKV.encode(SETTINGS_RL_PASSWORD, getClientUser().userPwd);
+			sMMKV.encode(SETTINGS_RL_FACE_LOCAL, getClientUser().face_local);
+			sMMKV.encode(SETTINGS_RL_USER_MOBILE, getClientUser().mobile);
+			sMMKV.encode(SETTINGS_RL_USER_USER_NAME, getClientUser().user_name);
+			sMMKV.encode(SETTINGS_RL_SESSIONID, getClientUser().sessionId);
+			sMMKV.encode(SETTINGS_RL_IS_LOGIN, true);
+			sMMKV.encode(SETTINGS_CURRENT_CITY, getClientUser().currentCity);
+			sMMKV.encode(SETTINGS_SEX, getClientUser().sex);
+			/*PreferencesUtils.setAccount(mContext, getClientUser().userId);
 			PreferencesUtils.setPassword(mContext, getClientUser().userPwd);
 			PreferencesUtils.setFaceLocal(mContext, getClientUser().face_local);
-			PreferencesUtils.setFaceUrl(mContext, getClientUser().face_url);
 			PreferencesUtils.setUserMobile(mContext, getClientUser().mobile);
 			PreferencesUtils.setUserName(mContext, getClientUser().user_name);
-			PreferencesUtils.setOccupation(mContext, getClientUser().occupation);
-			PreferencesUtils.setEducation(mContext, getClientUser().education);
-			PreferencesUtils.setUserSex(mContext, getClientUser().sex);
-			PreferencesUtils.setAge(mContext, getClientUser().age);
-			PreferencesUtils.setSignature(mContext, getClientUser().signature);
-			PreferencesUtils.setCity(mContext, getClientUser().city);
-			PreferencesUtils.setPurpose(mContext, getClientUser().purpose);
-			PreferencesUtils.setDoWhatFirst(mContext, getClientUser().do_what_first);
-			PreferencesUtils.setLoveWhere(mContext, getClientUser().love_where);
-			PreferencesUtils.setConception(mContext, getClientUser().conception);
-			PreferencesUtils.setQq(mContext, getClientUser().qq_no);
-			PreferencesUtils.setWeiXin(mContext, getClientUser().weixin_no);
-			PreferencesUtils.setWeight(mContext, getClientUser().weight);
-			PreferencesUtils.setTall(mContext, getClientUser().tall);
-			PreferencesUtils.setDistance(mContext, getClientUser().distance);
-			PreferencesUtils.setConstellation(mContext, getClientUser().constellation);
-			PreferencesUtils.setIsCheckPhone(mContext, getClientUser().isCheckPhone);
-			PreferencesUtils.setEmotionStatus(mContext, getClientUser().state_marry);
-			PreferencesUtils.setPublicSocialnumber(mContext, getClientUser().publicSocialNumber);
-			PreferencesUtils.setIsVip(mContext, getClientUser().is_vip);
 			PreferencesUtils.setSessionId(mContext, getClientUser().sessionId);
-			PreferencesUtils.setIsShow(mContext, getClientUser().isShowVip);
 			PreferencesUtils.setIsLogin(mContext, true);
 			PreferencesUtils.setCurrentCity(mContext, getClientUser().currentCity);
+			PreferencesUtils.setSettingsSex(mContext, getClientUser().sex);*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -646,57 +554,4 @@ public class AppManager {
 	public static void release() {
 	}
 
-	/************设置和获取网络用户接口**********************/
-	public static void setUserService(UserService userService){
-		mUserService = userService;
-	}
-
-	public static UserService getUserService(){
-		return mUserService;
-	}
-
-	/************设置和获取网络图片接口**********************/
-	public static void setPictureService(PictureService pictureService){
-		mPictureService = pictureService;
-	}
-
-	public static PictureService getPictureService(){
-		return mPictureService;
-	}
-
-	/************设置和获取网络关注操作接口**********************/
-	public static void setFollowService(FollowService followService){
-		mFollowService = followService;
-	}
-
-	public static FollowService getFollowService(){
-		return mFollowService;
-	}
-
-	/************设置和获取网络喜欢操作接口**********************/
-	public static void setLoveService(LoveService loveService){
-		mLoveService = loveService;
-	}
-
-	public static LoveService getLoveService(){
-		return mLoveService;
-	}
-
-	/************设置和获取网络视频操作接口**********************/
-	public static void setVideoService(VideoService videoService){
-		mVideoService = videoService;
-	}
-
-	public static VideoService getVideoService(){
-		return mVideoService;
-	}
-
-	/************设置和获取动态操作接口**********************/
-	public static DynamicService getDynamicService() {
-		return mDynamicService;
-	}
-
-	public static void setDynamicService(DynamicService mDynamicService) {
-		AppManager.mDynamicService = mDynamicService;
-	}
 }

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 
@@ -81,19 +82,9 @@ public class StringUtil {
 		return new ArrayList<String>();
 	}
 
-	/**
-	 * 验证第一个字符是否为字母
-	 *
-	 * @param s
-	 * @return
-	 */
-	public static boolean checkLetter(String s) {
-		char c = s.charAt(0);
-		int i = (int) c;
-		if ((i >= 65 && i <= 90) || (i >= 97 && i <= 122)) {
-			return true;
-		} else {
-			return false;
-		}
+	public static int generateRandomValue() {
+		Random rand = new Random();
+		int randNum = rand.nextInt(30) + 20;
+		return randNum;
 	}
 }

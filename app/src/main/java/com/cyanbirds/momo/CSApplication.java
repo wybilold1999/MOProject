@@ -1,19 +1,15 @@
 package com.cyanbirds.momo;
 
 import android.graphics.Bitmap;
+import android.preference.PreferenceManager;
 import android.support.multidex.MultiDexApplication;
+import android.text.TextUtils;
 import android.util.SparseIntArray;
 
 import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.helper.AppActivityLifecycleCallbacks;
 import com.cyanbirds.momo.helper.CrashHandler;
 import com.cyanbirds.momo.manager.AppManager;
-import com.cyanbirds.momo.net.DynamicService;
-import com.cyanbirds.momo.net.FollowService;
-import com.cyanbirds.momo.net.LoveService;
-import com.cyanbirds.momo.net.PictureService;
-import com.cyanbirds.momo.net.UserService;
-import com.cyanbirds.momo.net.VideoService;
 import com.cyanbirds.momo.net.base.RetrofitManager;
 import com.cyanbirds.momo.utils.FileAccessorUtils;
 import com.facebook.cache.disk.DiskCacheConfig;
@@ -26,20 +22,17 @@ import com.facebook.imagepipeline.listener.RequestLoggingListener;
 import com.facebook.imagepipeline.memory.PoolConfig;
 import com.facebook.imagepipeline.memory.PoolFactory;
 import com.facebook.imagepipeline.memory.PoolParams;
-import com.liulishuo.filedownloader.FileDownloader;
-import com.liulishuo.filedownloader.util.FileDownloadHelper;
 import com.mob.MobSDK;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.tencent.mmkv.MMKV;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import cn.smssdk.SMSSDK;
-import okhttp3.OkHttpClient;
-
 import static com.cyanbirds.momo.config.AppConstants.BUGLY_ID;
+import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_RL_ACCOUNT;
 
 /**
  * 
@@ -65,31 +58,27 @@ public class CSApplication extends MultiDexApplication {
 	public void onCreate() {
 		super.onCreate();
 		sApplication = this;
-		initNetInterface();
-		AppManager.getExecutorService().execute(new Runnable() {
-			@Override
-			public void run() {
-				AppManager.setContext(sApplication);
-				AppManager.setUserInfo();
-
-				registerActivityLifecycleCallbacks(AppActivityLifecycleCallbacks.getInstance());
-
-				initFresco();
-
-				registerWeiXin();
+		AppManager.getExecutorService().execute(() -> {
+			MMKV.initialize(sApplication);
+			AppManager.setMMKV(MMKV.defaultMMKV());
+			AppManager.setContext(sApplication);
+			if (TextUtils.isEmpty(AppManager.getMMKV().decodeString(SETTINGS_RL_ACCOUNT))) {
+				AppManager.getMMKV().importFromSharedPreferences(PreferenceManager.getDefaultSharedPreferences(sApplication));
 			}
+
+			AppManager.setUserInfo();
+
+			registerActivityLifecycleCallbacks(AppActivityLifecycleCallbacks.getInstance());
+
+			initFresco();
+
+			registerWeiXin();
 		});
+
 		//初始化短信sdk
 		MobSDK.init(this);
 
-		FileDownloader.init(sApplication, new FileDownloadHelper.OkHttpClientCustomMaker() {
-			@Override
-			public OkHttpClient customMake() {
-				return RetrofitManager.getInstance().getOkHttpClient();
-			}
-		});
-
-		CrashHandler.getInstance().init(this);
+		CrashHandler.getInstance().init(sApplication);
 
 		initBugly();
 	}
@@ -101,19 +90,22 @@ public class CSApplication extends MultiDexApplication {
 		CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(this);
 		strategy.setUploadProcess(processName == null || processName.equals(AppManager.pkgName));
 		// 初始化Bugly
-		CrashReport.initCrashReport(this, BUGLY_ID, true, strategy);
+		CrashReport.initCrashReport(this, BUGLY_ID, false, strategy);
 	}
 
 	private void registerWeiXin() {
 		// 通过WXAPIFactory工厂，获取IWXAPI的实例
 		api = WXAPIFactory.createWXAPI(this, AppConstants.WEIXIN_ID, true);
 		api.registerApp(AppConstants.WEIXIN_ID);
+
+		AppManager.setIWX_PAY_API(WXAPIFactory.createWXAPI(this, AppConstants.WEIXIN_PAY_ID, true));
+		AppManager.getIWX_PAY_API().registerApp(AppConstants.WEIXIN_PAY_ID);
 	}
 
 	private void initFresco() {
 		DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(this)
-				.setBaseDirectoryPath(FileAccessorUtils.getCachePathName())
-				.setBaseDirectoryName("you_love")
+				.setBaseDirectoryPath(getCacheDir())
+				.setBaseDirectoryName("tan_love")
 				.setMaxCacheSize(500*1024*1024)//500MB
 				.setMaxCacheSizeOnLowDiskSpace(10 * 1024 * 1024)
 				.setMaxCacheSizeOnVeryLowDiskSpace(5 * 1024 * 1024)
@@ -142,41 +134,5 @@ public class CSApplication extends MultiDexApplication {
 				.setMainDiskCacheConfig(diskCacheConfig)
 				.setRequestListeners(listeners).build();
 		Fresco.initialize(this, config);
-	}
-
-	/**
-	 * 初始化网络接口
-	 */
-	private void initNetInterface(){
-		/**
-		 * 用户
-		 */
-		UserService userService = RetrofitManager.getInstance().getRetrofitInstance().create(UserService.class);
-		AppManager.setUserService(userService);
-		/**
-		 * 图片
-		 */
-		PictureService pictureService = RetrofitManager.getInstance().getRetrofitInstance().create(PictureService.class);
-		AppManager.setPictureService(pictureService);
-		/**
-		 * 关注
-		 */
-		FollowService followService = RetrofitManager.getInstance().getRetrofitInstance().create(FollowService.class);
-		AppManager.setFollowService(followService);
-		/**
-		 * 喜欢
-		 */
-		LoveService loveService = RetrofitManager.getInstance().getRetrofitInstance().create(LoveService.class);
-		AppManager.setLoveService(loveService);
-		/**
-		 * 视频
-		 */
-		VideoService videoService = RetrofitManager.getInstance().getRetrofitInstance().create(VideoService.class);
-		AppManager.setVideoService(videoService);
-		/**
-		 * 动态
-		 */
-		DynamicService dynamicService = RetrofitManager.getInstance().getRetrofitInstance().create(DynamicService.class);
-		AppManager.setDynamicService(dynamicService);
 	}
 }

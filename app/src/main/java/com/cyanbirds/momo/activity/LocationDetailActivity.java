@@ -24,10 +24,10 @@ import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.MyLocationStyle;
-import com.umeng.analytics.MobclickAgent;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.config.ValueKey;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * 
@@ -36,8 +36,8 @@ import com.cyanbirds.momo.config.ValueKey;
  * @Date:2015年7月13日下午3:01:46
  */
 public class LocationDetailActivity extends BaseActivity implements
-        AMapLocationListener, LocationSource,
-        OnInfoWindowClickListener, InfoWindowAdapter {
+		AMapLocationListener, LocationSource,
+		OnInfoWindowClickListener, InfoWindowAdapter {
 
 	private MapView mMapView;
 	private AMap aMap;

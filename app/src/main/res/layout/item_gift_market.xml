@@ -30,7 +30,7 @@
 		android:textSize="12sp"/>
 
 	<LinearLayout
-		android:id="@+id/vip_lay"
+		android:id="@+id/price_lay"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginBottom="6dp"

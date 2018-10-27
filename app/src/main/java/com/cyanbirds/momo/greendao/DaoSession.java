@@ -8,18 +8,12 @@ import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.identityscope.IdentityScopeType;
 import org.greenrobot.greendao.internal.DaoConfig;
 
-import com.cyanbirds.momo.entity.ExpressionGroup;
-import com.cyanbirds.momo.entity.Contact;
-import com.cyanbirds.momo.entity.Expression;
 import com.cyanbirds.momo.entity.Dynamic;
 import com.cyanbirds.momo.entity.Conversation;
 import com.cyanbirds.momo.entity.NameList;
 import com.cyanbirds.momo.entity.IMessage;
 import com.cyanbirds.momo.entity.Gold;
 
-import com.cyanbirds.momo.greendao.ExpressionGroupDao;
-import com.cyanbirds.momo.greendao.ContactDao;
-import com.cyanbirds.momo.greendao.ExpressionDao;
 import com.cyanbirds.momo.greendao.DynamicDao;
 import com.cyanbirds.momo.greendao.ConversationDao;
 import com.cyanbirds.momo.greendao.NameListDao;
@@ -35,18 +29,12 @@ import com.cyanbirds.momo.greendao.GoldDao;
  */
 public class DaoSession extends AbstractDaoSession {
 
-    private final DaoConfig expressionGroupDaoConfig;
-    private final DaoConfig contactDaoConfig;
-    private final DaoConfig expressionDaoConfig;
     private final DaoConfig dynamicDaoConfig;
     private final DaoConfig conversationDaoConfig;
     private final DaoConfig nameListDaoConfig;
     private final DaoConfig iMessageDaoConfig;
     private final DaoConfig goldDaoConfig;
 
-    private final ExpressionGroupDao expressionGroupDao;
-    private final ContactDao contactDao;
-    private final ExpressionDao expressionDao;
     private final DynamicDao dynamicDao;
     private final ConversationDao conversationDao;
     private final NameListDao nameListDao;
@@ -56,15 +44,6 @@ public class DaoSession extends AbstractDaoSession {
     public DaoSession(Database db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
         super(db);
-
-        expressionGroupDaoConfig = daoConfigMap.get(ExpressionGroupDao.class).clone();
-        expressionGroupDaoConfig.initIdentityScope(type);
-
-        contactDaoConfig = daoConfigMap.get(ContactDao.class).clone();
-        contactDaoConfig.initIdentityScope(type);
-
-        expressionDaoConfig = daoConfigMap.get(ExpressionDao.class).clone();
-        expressionDaoConfig.initIdentityScope(type);
 
         dynamicDaoConfig = daoConfigMap.get(DynamicDao.class).clone();
         dynamicDaoConfig.initIdentityScope(type);
@@ -81,18 +60,12 @@ public class DaoSession extends AbstractDaoSession {
         goldDaoConfig = daoConfigMap.get(GoldDao.class).clone();
         goldDaoConfig.initIdentityScope(type);
 
-        expressionGroupDao = new ExpressionGroupDao(expressionGroupDaoConfig, this);
-        contactDao = new ContactDao(contactDaoConfig, this);
-        expressionDao = new ExpressionDao(expressionDaoConfig, this);
         dynamicDao = new DynamicDao(dynamicDaoConfig, this);
         conversationDao = new ConversationDao(conversationDaoConfig, this);
         nameListDao = new NameListDao(nameListDaoConfig, this);
         iMessageDao = new IMessageDao(iMessageDaoConfig, this);
         goldDao = new GoldDao(goldDaoConfig, this);
 
-        registerDao(ExpressionGroup.class, expressionGroupDao);
-        registerDao(Contact.class, contactDao);
-        registerDao(Expression.class, expressionDao);
         registerDao(Dynamic.class, dynamicDao);
         registerDao(Conversation.class, conversationDao);
         registerDao(NameList.class, nameListDao);
@@ -101,26 +74,11 @@ public class DaoSession extends AbstractDaoSession {
     }
     
     public void clear() {
-        expressionGroupDaoConfig.clearIdentityScope();
-        contactDaoConfig.clearIdentityScope();
-        expressionDaoConfig.clearIdentityScope();
         dynamicDaoConfig.clearIdentityScope();
         conversationDaoConfig.clearIdentityScope();
         nameListDaoConfig.clearIdentityScope();
         iMessageDaoConfig.clearIdentityScope();
         goldDaoConfig.clearIdentityScope();
-    }
-
-    public ExpressionGroupDao getExpressionGroupDao() {
-        return expressionGroupDao;
-    }
-
-    public ContactDao getContactDao() {
-        return contactDao;
-    }
-
-    public ExpressionDao getExpressionDao() {
-        return expressionDao;
     }
 
     public DynamicDao getDynamicDao() {

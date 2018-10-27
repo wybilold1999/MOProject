@@ -43,8 +43,8 @@
 
             <ImageView
                 android:id="@+id/is_vip"
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:src="@mipmap/vip"
@@ -62,7 +62,7 @@
                 android:layout_width="38dp"
                 android:layout_height="16dp"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/user_age_bg"
+                android:background="@drawable/user_age_attr_radius_background"
                 android:orientation="horizontal">
 
                 <ImageView

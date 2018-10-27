@@ -1,5 +1,6 @@
 package com.cyanbirds.momo.net.request;
 
+import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.entity.IMessage;
 import com.cyanbirds.momo.listener.FileProgressListener;
 import com.cyanbirds.momo.listener.NetFileDownloadListener;
@@ -15,56 +16,6 @@ import java.io.File;
  * @author wangyb
  * @Date:2015年7月10日下午5:06:04
  */
-@SuppressWarnings("deprecation")
-/*public class DownloadImageRequest extends ResultPostExecute<File> {
-
-	*//**
-	 * 下载请求
-	 * 
-	 * @param url
-	 *            请求地址
-	 * @param savePath
-	 *            保存地址
-	 * @param fileName 保存文件名
-	 * @param message
-	 *            当不是消息的时候可以为空
-	 *//*
-	public void request(String url, String savePath,
-			String fileName,final IMessage message) {
-		File file = new File(savePath, fileName);
-		CSRestClient.client.get(url, new FileAsyncHttpResponseHandler(file) {
-
-			@Override
-			public void onSuccess(int statusCode, Header[] headers, File file) {
-				onPostExecute(file);
-				if (message != null) {
-					message.localPath = file.getPath();
-					FileProgressListener.getInstance()
-							.notifyFileProgressChanged(message, 100);
-				}
-			}
-
-			@Override
-			public void onFailure(int statusCode, Header[] headers,
-					Throwable throwable, File file) {
-				onErrorExecute("");
-			}
-
-			@Override
-			public void onProgress(long bytesWritten, long totalSize) {
-				int progress = (int) ((totalSize > 0) ? (bytesWritten * 1.0 / totalSize) * 100
-						: -1);
-				if (progress >= 100) {
-					if (message != null)
-						message.status = IMessage.MessageStatus.RECEIVED;
-				}
-				if (message != null)
-					FileProgressListener.getInstance()
-							.notifyFileProgressChanged(message, progress);
-			}
-		});
-	}
-}*/
 
 public class DownloadImageRequest extends ResultPostExecute<File> {
 
@@ -82,6 +33,7 @@ public class DownloadImageRequest extends ResultPostExecute<File> {
 	public void request(String url, String savePath,
 						String fileName,final IMessage message) {
 		final File file = new File(savePath, fileName);
+		FileDownloader.setup(CSApplication.getInstance());
 		FileDownloader.getImpl().create(url)
 				.setPath(file.getAbsolutePath())
 				.setListener(new NetFileDownloadListener(){

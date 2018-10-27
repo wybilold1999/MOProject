@@ -33,9 +33,7 @@ public class ImageUtil {
 	public static String compressImage(String filePath, String savePath) {
 		Bitmap bm = getSmallBitmap(filePath);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		if (bm != null) {
-			bm.compress(Bitmap.CompressFormat.JPEG, 70, baos);
-		}
+		bm.compress(Bitmap.CompressFormat.JPEG, 70, baos);
 		byte[] b = baos.toByteArray();
 		Log.d("d", "压缩后的大小=" + b.length);//1.5M的压缩后在100Kb以内，测试得值,压缩后的大小=94486,压缩后的大小=74473
 		Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
@@ -78,7 +76,7 @@ public class ImageUtil {
 			} finally {
 				try {
 					fileOutputStream.close();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}

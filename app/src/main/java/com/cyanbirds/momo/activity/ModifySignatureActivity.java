@@ -24,7 +24,7 @@ public class ModifySignatureActivity extends BaseActivity implements TextWatcher
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.acitivity_edit_signature);
+        setContentView(R.layout.activity_edit_signature);
         Toolbar toolbar = getActionBarToolbar();
         if (toolbar != null) {
             toolbar.setNavigationIcon(R.mipmap.ic_up);
@@ -35,7 +35,7 @@ public class ModifySignatureActivity extends BaseActivity implements TextWatcher
     }
 
     private void setupView(){
-        mText = (EditText) findViewById(R.id.signature);
+        mText = findViewById(R.id.signature);
     }
 
     private void setupEvent(){

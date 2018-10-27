@@ -3,9 +3,7 @@ package com.cyanbirds.momo.fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -36,23 +34,18 @@ import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.GiveVipActivity;
-import com.cyanbirds.momo.activity.MakeMoneyActivity;
-import com.cyanbirds.momo.activity.MyGoldActivity;
 import com.cyanbirds.momo.activity.VipCenterActivity;
 import com.cyanbirds.momo.adapter.TabPersonalPhotosAdapter;
+import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.eventtype.UserEvent;
 import com.cyanbirds.momo.manager.AppManager;
-import com.cyanbirds.momo.net.request.UpdateGoldRequest;
 import com.cyanbirds.momo.ui.widget.WrapperLinearLayoutManager;
+import com.cyanbirds.momo.utils.RxBus;
 import com.cyanbirds.momo.utils.StringUtil;
 import com.dl7.tag.TagLayout;
 import com.umeng.analytics.MobclickAgent;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -61,6 +54,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observable;
 
 /**
  * @author: wangyb
@@ -85,11 +79,11 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	@BindView(R.id.signature)
 	TextView mSignature;
 	@BindView(R.id.plable_flowlayout)
-    TagLayout mPlableFlowlayout;
+	TagLayout mPlableFlowlayout;
 	@BindView(R.id.part_flowlayout)
-    TagLayout mPartFlowlayout;
+	TagLayout mPartFlowlayout;
 	@BindView(R.id.intrest_flowlayout)
-    TagLayout mIntrestFlowlayout;
+	TagLayout mIntrestFlowlayout;
 	@BindView(R.id.purpose)
 	TextView mPurpose;
 	@BindView(R.id.loveWhere)
@@ -125,13 +119,13 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	@BindView(R.id.signature_lay)
 	RelativeLayout mSignatureLay;
 	@BindView(R.id.my_info)
-    CardView mMyInfo;
+	CardView mMyInfo;
 	@BindView(R.id.qq_id)
 	TextView mQqId;
 	@BindView(R.id.social_text)
 	TextView mSocialText;
 	@BindView(R.id.social_card)
-    CardView mSocialCard;
+	CardView mSocialCard;
 	@BindView(R.id.plable_icon)
 	ImageView mPlableIcon;
 	@BindView(R.id.plable_lay)
@@ -145,15 +139,15 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	@BindView(R.id.intrest_lay)
 	RelativeLayout mIntrestLay;
 	@BindView(R.id.recyclerview)
-    RecyclerView mRecyclerview;
+	RecyclerView mRecyclerview;
 	@BindView(R.id.photo_card)
-    CardView mPhotoCard;
+	CardView mPhotoCard;
 	@BindView(R.id.gift_text)
 	TextView mGiftText;
 	@BindView(R.id.gift_recyclerview)
-    RecyclerView mGiftRecyclerview;
+	RecyclerView mGiftRecyclerview;
 	@BindView(R.id.gift_card)
-    CardView mGiftCard;
+	CardView mGiftCard;
 	@BindView(R.id.wechat_id)
 	TextView mWechatId;
 	@BindView(R.id.check_view_wechat)
@@ -161,11 +155,11 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	@BindView(R.id.check_view_qq)
 	Button mCheckViewQq;
 	@BindView(R.id.map)
-    MapView mapView;
+	MapView mapView;
 	@BindView(R.id.address)
 	TextView mAdress;
 	@BindView(R.id.map_card)
-    CardView mMapCard;
+	CardView mMapCard;
 	@BindView(R.id.my_location)
 	TextView mMyLocation;
 	@BindView(R.id.nickname)
@@ -181,7 +175,7 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	@BindView(R.id.tv_friend)
 	TextView mTvFriend;
 	@BindView(R.id.card_friend)
-    CardView mCardFriend;
+	CardView mCardFriend;
 	@BindView(R.id.city_lay)
 	RelativeLayout mCityLay;
 
@@ -207,16 +201,17 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	private DPoint mStartPoint;
 	private DPoint mEndPoint;
 
+	private Observable<UserEvent> observable;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		if (rootView == null) {
 			rootView = inflater.inflate(R.layout.tab_item_personal, null);
 			ButterKnife.bind(this, rootView);
-			EventBus.getDefault().register(this);
 			initMap();
 			setupViews();
-			setupEvent();
+			rxBusSub();
 			setupData();
 			setHasOptionsMenu(true);
 			mapView.onCreate(savedInstanceState);// 此方法必须重写
@@ -248,7 +243,12 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 
 	}
 
-	private void setupEvent() {
+	/**
+	 * rx订阅
+	 */
+	private void rxBusSub() {
+		observable = RxBus.getInstance().register(AppConstants.UPDATE_USER_INFO);
+		observable.subscribe(userEvent -> setUserInfo(AppManager.getClientUser()));
 	}
 
 	private void setupViews() {
@@ -495,60 +495,19 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 		}
 	}
 
-	@Subscribe(threadMode = ThreadMode.MAIN)
-	public void updateUserInfo(UserEvent event) {
-		setUserInfo(AppManager.getClientUser());
-	}
-
 	@OnClick({R.id.check_view_wechat, R.id.check_view_qq})
 	public void onClick(View view) {
 		switch (view.getId()) {
 			case R.id.check_view_wechat:
 				if (AppManager.getClientUser().is_vip) {
-					if (AppManager.getClientUser().isShowGold && AppManager.getClientUser().gold_num < 1) {
-						String tips = String.format(getResources().getString(R.string.social_id_need_gold), "微信");
-						showBuyGoldDialog(tips);
-					} else if (AppManager.getClientUser().isShowGold && AppManager.getClientUser().gold_num < 101){
-						String tips = String.format(getResources().getString(R.string.social_id_need_more_gold), "微信");
-						showBuyGoldDialog(tips);
-					} else {
-//						mWechatId.setText(clientUser.weixin_no);
-						showNoCheckDialog();
-						if (AppManager.getClientUser().isShowDownloadVip) {
-							if (!AppManager.getClientUser().is_download_vip) {
-								if (AppManager.getClientUser().isShowGold) {
-									//更新服务器上的金币数量
-									AppManager.getClientUser().gold_num -= 101;
-									new UpdateGoldTask().request(AppManager.getClientUser().gold_num, "");
-								}
-							}
-						}
-					}
+					showNoCheckDialog();
 				} else {
 					showTurnOnVipDialog("微信");
 				}
 				break;
 			case R.id.check_view_qq:
 				if (AppManager.getClientUser().is_vip) {
-					if (AppManager.getClientUser().isShowGold && AppManager.getClientUser().gold_num < 1) {
-						String tips = String.format(getResources().getString(R.string.social_id_need_gold), "QQ");
-						showBuyGoldDialog(tips);
-					} else if (AppManager.getClientUser().isShowGold && AppManager.getClientUser().gold_num < 101){
-						String tips = String.format(getResources().getString(R.string.social_id_need_more_gold), "QQ");
-						showBuyGoldDialog(tips);
-					} else {
-//						mQqId.setText(clientUser.qq_no);
-						showNoCheckDialog();
-						if (AppManager.getClientUser().isShowDownloadVip) {
-							if (!AppManager.getClientUser().is_download_vip) {
-								if (AppManager.getClientUser().isShowGold) {
-									//更新服务器上的金币数量
-									AppManager.getClientUser().gold_num -= 101;
-									new UpdateGoldTask().request(AppManager.getClientUser().gold_num, "");
-								}
-							}
-						}
-					}
+					showNoCheckDialog();
 				} else {
 					showTurnOnVipDialog("QQ");
 				}
@@ -556,93 +515,23 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 		}
 	}
 
-	/**
-	 * 不是下载赚钱会员，查看微信、QQ号时，减少金币数量
-	 */
-	class UpdateGoldTask extends UpdateGoldRequest {
-		@Override
-		public void onPostExecute(final Integer integer) {
-			if (AppManager.getClientUser().isShowDownloadVip) {
-				Snackbar.make(getActivity().findViewById(R.id.content),
-						"您还不是赚钱会员，查看该号码已消耗101枚金币", Snackbar.LENGTH_SHORT)
-						.setActionTextColor(Color.RED)
-						.setAction("开通赚钱会员", new View.OnClickListener() {
-							@Override
-							public void onClick(View v) {
-								Intent intent = new Intent(getActivity(), MakeMoneyActivity.class);
-								intent.putExtra(ValueKey.FROM_ACTIVITY, getActivity().getClass().getSimpleName());
-								startActivity(intent);
-							}
-						}).show();
-			} else {
-				Snackbar.make(getActivity().findViewById(R.id.content), "查看该号码已消耗101枚金币",
-						Snackbar.LENGTH_SHORT).show();
-			}
-		}
-
-		@Override
-		public void onErrorExecute(String error) {
-		}
-	}
 
 	private void showTurnOnVipDialog(String socialTpe) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		builder.setMessage(String.format(getResources().getString(R.string.social_id_need_vip), socialTpe));
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
+		builder.setPositiveButton(R.string.ok, ((dialog, i) -> {
+			dialog.dismiss();
+			Intent intent = new Intent(getActivity(), VipCenterActivity.class);
+			startActivity(intent);
+		}));
+		if (AppManager.getClientUser().isShowGiveVip) {
+			builder.setNegativeButton(R.string.free_give_vip, ((dialog, i) -> {
 				dialog.dismiss();
-				Intent intent = new Intent(getActivity(), VipCenterActivity.class);
+				Intent intent = new Intent(getActivity(), GiveVipActivity.class);
 				startActivity(intent);
-			}
-		});
-		if (AppManager.getClientUser().isShowGiveVip) {
-			builder.setNegativeButton(R.string.free_give_vip, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-					Intent intent = new Intent(getActivity(), GiveVipActivity.class);
-					startActivity(intent);
-				}
-			});
+			}));
 		} else {
-			builder.setNegativeButton(R.string.until_single, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-				}
-			});
-		}
-		builder.show();
-	}
-
-	private void showBuyGoldDialog(String tips) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setMessage(tips);
-		builder.setPositiveButton(getResources().getString(R.string.ok),
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.dismiss();
-						Intent intent = new Intent(getActivity(), MyGoldActivity.class);
-						startActivity(intent);
-					}
-				});
-		if (AppManager.getClientUser().isShowGiveVip) {
-			builder.setNegativeButton(R.string.free_give_vip, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-					Intent intent = new Intent(getActivity(), GiveVipActivity.class);
-					startActivity(intent);
-				}
-			});
-		} else {
-			builder.setNegativeButton(R.string.until_single, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-				}
-			});
+			builder.setNegativeButton(R.string.until_single, ((dialog, i) -> dialog.dismiss()));
 		}
 		builder.show();
 	}
@@ -669,7 +558,7 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 		if (mapView != null) {
 			mapView.onDestroy();
 		}
-		EventBus.getDefault().unregister(this);
+		RxBus.getInstance().unregister(AppConstants.UPDATE_USER_INFO, observable);
 	}
 
 	@Override

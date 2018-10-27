@@ -63,6 +63,8 @@ public class MessageAdapter extends
             } else {
                 holder.mPortrait.setImageURI(Uri.parse("file://" + conversation.localPortrait));
             }
+        } else {
+            holder.mPortrait.setImageURI(Uri.parse(conversation.faceUrl));
         }
         holder.mTitle.setText(conversation.talkerName);
         holder.mContent.setText(Html.fromHtml(

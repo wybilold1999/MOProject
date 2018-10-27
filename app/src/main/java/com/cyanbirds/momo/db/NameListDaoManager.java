@@ -82,9 +82,4 @@ public class NameListDaoManager extends DBManager {
 		}
 		return null;
 	}
-
-	public static void reset() {
-		release();
-		mInstance = null;
-	}
 }

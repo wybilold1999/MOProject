@@ -2,8 +2,9 @@ package com.cyanbirds.momo.net.request;
 
 import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
-import com.cyanbirds.momo.manager.AppManager;
+import com.cyanbirds.momo.net.IUserApi;
 import com.cyanbirds.momo.net.base.ResultPostExecute;
+import com.cyanbirds.momo.net.base.RetrofitFactory;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -16,7 +17,8 @@ import retrofit2.Callback;
  */
 public class UploadCrashRequest extends ResultPostExecute<String> {
     public void request(String crashInfo){
-        Call<ResponseBody> call = AppManager.getUserService().uploadCrash(crashInfo);
+
+        Call<ResponseBody> call = RetrofitFactory.getRetrofit().create(IUserApi.class).uploadCrash(crashInfo);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {

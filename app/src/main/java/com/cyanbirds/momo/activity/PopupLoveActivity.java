@@ -76,6 +76,7 @@ public class PopupLoveActivity extends BaseActivity {
                     clientUser.face_local = mLoveModel.faceUrl;
                     clientUser.user_name = mLoveModel.nickname;
                     clientUser.userId = String.valueOf(mLoveModel.userId);
+                    clientUser.face_url = mLoveModel.faceUrl;
                     intent.putExtra(ValueKey.USER, clientUser);
                     startActivity(intent);
                 }

@@ -1,8 +1,11 @@
 package com.cyanbirds.momo.utils;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import java.util.regex.Matcher;
@@ -96,5 +99,14 @@ public class CheckUtil {
 		}
 
 		return resultData;
+	}
+
+	public static boolean isGetPermission(Context context, String permissionName) {
+		if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+			if (ContextCompat.checkSelfPermission(context, permissionName) != PackageManager.PERMISSION_GRANTED) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

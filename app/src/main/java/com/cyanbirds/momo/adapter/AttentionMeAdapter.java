@@ -1,7 +1,6 @@
 package com.cyanbirds.momo.adapter;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
@@ -14,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cyanbirds.momo.R;
+import com.cyanbirds.momo.activity.GiveVipActivity;
 import com.cyanbirds.momo.activity.PhotoViewActivity;
 import com.cyanbirds.momo.activity.VipCenterActivity;
 import com.cyanbirds.momo.config.ValueKey;
@@ -193,20 +193,20 @@ public class AttentionMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private void showVipDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setMessage(R.string.see_more_data);
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+        builder.setPositiveButton(R.string.ok, ((dialog, i) -> {
+            dialog.dismiss();
+            Intent intent = new Intent(mContext, VipCenterActivity.class);
+            mContext.startActivity(intent);
+        }));
+        if (AppManager.getClientUser().isShowGiveVip) {
+            builder.setNegativeButton(R.string.free_give_vip, ((dialog, i) -> {
                 dialog.dismiss();
-                Intent intent = new Intent(mContext, VipCenterActivity.class);
+                Intent intent = new Intent(mContext, GiveVipActivity.class);
                 mContext.startActivity(intent);
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+            }));
+        } else {
+            builder.setNegativeButton(R.string.until_single, ((dialog, i) -> dialog.dismiss()));
+        }
         builder.show();
     }
 

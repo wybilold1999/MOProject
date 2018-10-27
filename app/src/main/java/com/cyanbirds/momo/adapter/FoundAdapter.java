@@ -17,6 +17,7 @@ import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.PersonalInfoActivity;
 import com.cyanbirds.momo.activity.PhotoViewActivity;
 import com.cyanbirds.momo.config.ValueKey;
+import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.entity.PictureModel;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 
@@ -44,7 +45,7 @@ public class FoundAdapter extends
         this.pictureModels = pics;
         mContext = context;
         mFormat = new DecimalFormat("#.00");
-        mCurCity = PreferencesUtils.getCity(context);
+        mCurCity = PreferencesUtils.getCurrentCity(context);
     }
 
     @Override
@@ -79,14 +80,14 @@ public class FoundAdapter extends
             }
             viewHolder.portrait.setImageURI(Uri.parse(model.faceUrl));
             viewHolder.mUserName.setText(model.nickname);
-            if (null == model.distance || model.distance == 0.00) {
-                viewHolder.mFromCity.setVisibility(View.VISIBLE);
-                viewHolder.mDistanceLayout.setVisibility(View.GONE);
-                viewHolder.mFromCity.setText("来自" + model.city);
-            } else if (!TextUtils.isEmpty(mCurCity)) {
+            if (!TextUtils.isEmpty(mCurCity) && null != model.distance && model.distance != 0.00) {
                 viewHolder.mFromCity.setVisibility(View.VISIBLE);
                 viewHolder.mDistanceLayout.setVisibility(View.GONE);
                 viewHolder.mFromCity.setText("来自" + mCurCity);
+            } else if (null == model.distance || model.distance == 0.00) {
+                viewHolder.mFromCity.setVisibility(View.VISIBLE);
+                viewHolder.mDistanceLayout.setVisibility(View.GONE);
+                viewHolder.mFromCity.setText("来自" + model.city);
             } else {
                 viewHolder.mDistanceLayout.setVisibility(View.VISIBLE);
                 viewHolder.mFromCity.setVisibility(View.GONE);

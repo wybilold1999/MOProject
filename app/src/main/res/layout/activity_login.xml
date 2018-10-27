@@ -15,47 +15,43 @@
         android:orientation="vertical"
         android:gravity="top">
 
-        <android.support.design.widget.TextInputLayout
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/login_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:inputType="number"
+            android:singleLine="true"
+            android:textSize="16sp"
+            android:hint="@string/phone"
+            android:maxLength="11"
+            fancy:met_baseColor="@color/colorPrimary"
+            fancy:met_primaryColor="@color/colorPrimary"
+            fancy:met_floatingLabelText="@string/phone"
+            fancy:met_floatingLabel="highlight"
+            fancy:met_floatingLabelTextColor="@color/colorPrimary"
+            fancy:met_textColorHint="@color/gray_text"
+            fancy:met_underlineColor="@android:color/black"/>
 
-            <EditText
-                android:id="@+id/login_account"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/phone"
-                android:inputType="number"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textSize="16sp"
-                android:textColor="@color/colorPrimary"
-                android:contentDescription="@null"/>
-
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/login_pwd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:background="@null">
-
-            <EditText
-                android:id="@+id/login_pwd"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="密码"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textSize="16sp"
-                android:textColor="@color/colorPrimary"
-                android:contentDescription="@null"/>
-
-        </android.support.design.widget.TextInputLayout>
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:textSize="16sp"
+            android:hint="@string/password"
+            fancy:met_baseColor="@color/colorPrimary"
+            fancy:met_primaryColor="@color/colorPrimary"
+            fancy:met_floatingLabelText="@string/password"
+            fancy:met_floatingLabel="highlight"
+            fancy:met_floatingLabelTextColor="@color/colorPrimary"
+            fancy:met_textColorHint="@color/gray_text"
+            fancy:met_underlineColor="@android:color/black"/>
 
         <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/btn_login"
@@ -74,21 +70,10 @@
             android:id="@+id/forget_pwd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="30dp"
             android:layout_gravity="right"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="30dp"
             android:text="@string/forget_password"
-            android:textSize="12sp"
-            android:textColor="@color/colorPrimary"
-            android:clickable="true"/>
-
-        <TextView
-            android:id="@+id/phone_register"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:text="@string/phone_register"
             android:textSize="12sp"
             android:textColor="@color/colorPrimary"
             android:clickable="true"/>

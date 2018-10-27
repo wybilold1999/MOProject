@@ -1,5 +1,6 @@
 package com.cyanbirds.momo.activity.base;
 
+import android.arch.lifecycle.Lifecycle;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -10,6 +11,10 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.cyanbirds.momo.R;
+import com.cyanbirds.momo.utils.ToastUtil;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.AutoDisposeConverter;
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 
 
 /**
@@ -20,7 +25,9 @@ import com.cyanbirds.momo.R;
  * @Date:2015年5月4日下午5:17:01
  *
  */
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity<T extends IBasePresenter> extends AppCompatActivity implements IBaseView<T> {
+
+	protected T presenter;
 
 	private Toolbar mActionBarToolbar;
 
@@ -33,6 +40,7 @@ public class BaseActivity extends AppCompatActivity {
 		if (ab != null) {
 			ab.setDisplayHomeAsUpEnabled(true);
 		}
+		setPresenter(presenter);
 	}
 
 	@Override
@@ -88,6 +96,10 @@ public class BaseActivity extends AppCompatActivity {
 	protected void onDestroy() {
 		super.onDestroy();
 		ActivityStackManager.getScreenManager().popActivity(this);
+		if (presenter != null) {
+			presenter.detachView();
+			presenter = null;
+		}
 	}
 
 	/**
@@ -103,5 +115,32 @@ public class BaseActivity extends AppCompatActivity {
 	public static void exitApp() {
 		finishAll();
 //		System.exit(0);
+	}
+
+	@Override
+	public void onShowLoading() {
+
+	}
+
+	@Override
+	public void onHideLoading() {
+
+	}
+
+	@Override
+	public void onShowNetError() {
+		onHideLoading();
+		ToastUtil.showMessage(R.string.network_requests_error);
+	}
+
+	@Override
+	public void setPresenter(T presenter) {
+
+	}
+
+	@Override
+	public <X> AutoDisposeConverter<X> bindAutoDispose() {
+		return AutoDispose.autoDisposable(AndroidLifecycleScopeProvider
+				.from(this, Lifecycle.Event.ON_DESTROY));
 	}
 }

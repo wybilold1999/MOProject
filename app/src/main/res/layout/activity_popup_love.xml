@@ -77,8 +77,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        app:fb_defaultColor="@color/gray_text"
-        app:fb_focusColor="@color/gray_background"
+        app:fb_defaultColor="#55acee"
+        app:fb_focusColor="#8cc9f8"
         app:fb_radius="5dp"
         app:fb_text="@string/going_find"
         app:fb_textColor="#ffffffff"/>

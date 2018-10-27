@@ -1,9 +1,11 @@
 package com.cyanbirds.momo.activity;
 
+import android.arch.lifecycle.Lifecycle;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.adapter.CardAdapter;
@@ -23,12 +26,17 @@ import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.CardModel;
 import com.cyanbirds.momo.entity.YuanFenModel;
 import com.cyanbirds.momo.manager.AppManager;
-import com.cyanbirds.momo.net.request.AddLoveRequest;
-import com.cyanbirds.momo.net.request.GetYuanFenUserRequest;
-import com.cyanbirds.momo.net.request.SendGreetRequest;
+import com.cyanbirds.momo.net.IUserApi;
+import com.cyanbirds.momo.net.IUserLoveApi;
+import com.cyanbirds.momo.net.base.RetrofitFactory;
+import com.cyanbirds.momo.utils.JsonUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -37,7 +45,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * 作者：wangyb
@@ -110,12 +119,7 @@ public class CardActivity extends BaseActivity implements SwipeFlingAdapterView.
 		}
 
 		startcircularAnima();
-		mHandler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				new GetYuanFenUserTask().request(pageNo, pageSize);
-			}
-		}, 3500);
+		mHandler.postDelayed(() -> getUsers(), 3500);
 	}
 
 	@OnClick({R.id.left, R.id.info, R.id.right})
@@ -164,8 +168,8 @@ public class CardActivity extends BaseActivity implements SwipeFlingAdapterView.
 	@Override
 	public void onRightCardExit(Object dataObject) {
 		CardModel cardModel = (CardModel) dataObject;
-		new SenderGreetTask().request(String.valueOf(cardModel.userId));
-		new AddLoveRequest().request(String.valueOf(cardModel.userId));
+		addLove(String.valueOf(cardModel.userId));
+		sendGreet(String.valueOf(cardModel.userId));
 	}
 
 	@Override
@@ -173,12 +177,7 @@ public class CardActivity extends BaseActivity implements SwipeFlingAdapterView.
 		if (itemsInAdapter == 0) {
 			mLoadingLay.setVisibility(View.VISIBLE);
 			mDataLay.setVisibility(View.GONE);
-			mHandler.postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					new GetYuanFenUserTask().request(pageNo, pageSize);
-				}
-			}, 3500);
+			mHandler.postDelayed(() -> getUsers(), 3500);
 		}
 	}
 
@@ -187,46 +186,67 @@ public class CardActivity extends BaseActivity implements SwipeFlingAdapterView.
 
 	}
 
-	class GetYuanFenUserTask extends GetYuanFenUserRequest {
-		@Override
-		public void onPostExecute(List<YuanFenModel> yuanFenModels) {
-			mLoadingLay.setVisibility(View.GONE);
-			mDataLay.setVisibility(View.VISIBLE);
-			if (yuanFenModels != null && yuanFenModels.size() > 0) {
-				dataList.clear();
-				for (YuanFenModel model : yuanFenModels) {
-					CardModel dataItem = new CardModel();
-					dataItem.userId = model.uid;
-					dataItem.userName = model.nickname;
-					dataItem.imagePath = model.faceUrl;
-					dataItem.city = model.city;
-					dataItem.age = model.age;
-					dataItem.constellation = model.constellation;
-					dataItem.distance = model.distance == null ? 0.00 : model.distance;
-					dataItem.signature = model.signature;
-					dataItem.pictures = model.pictures;
-					dataList.add(dataItem);
-				}
-				curModel = dataList.get(0);
-				mAdapter.notifyDataSetChanged();
-			}
-		}
-
-		@Override
-		public void onErrorExecute(String error) {
-			ToastUtil.showMessage(error);
-		}
+	private void getUsers() {
+		ArrayMap<String, Integer> map = new ArrayMap<>(2);
+		map.put("pageNo", pageNo);
+		map.put("pageSize", pageSize);
+		RetrofitFactory.getRetrofit().create(IUserApi.class)
+				.getYuanFenUser(AppManager.getClientUser().sessionId, map)
+				.subscribeOn(Schedulers.io())
+				.map(responseBody -> JsonUtils.parseYuanFenUsers(responseBody.string()))
+				.observeOn(AndroidSchedulers.mainThread())
+				.as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+				.subscribe(yuanFenModels -> {
+					mLoadingLay.setVisibility(View.GONE);
+					mDataLay.setVisibility(View.VISIBLE);
+					if (yuanFenModels != null && yuanFenModels.size() > 0) {
+						dataList.clear();
+						for (YuanFenModel model : yuanFenModels) {
+							CardModel dataItem = new CardModel();
+							dataItem.userId = model.uid;
+							dataItem.userName = model.nickname;
+							dataItem.imagePath = model.faceUrl;
+							dataItem.city = model.city;
+							dataItem.age = model.age;
+							dataItem.constellation = model.constellation;
+							dataItem.distance = model.distance == null ? 0.00 : model.distance;
+							dataItem.signature = model.signature;
+							dataItem.pictures = model.pictures;
+							dataList.add(dataItem);
+						}
+						curModel = dataList.get(0);
+						mAdapter.notifyDataSetChanged();
+					}
+				}, throwable -> ToastUtil.showMessage(R.string.network_requests_error));
 	}
 
-	class SenderGreetTask extends SendGreetRequest {
-		@Override
-		public void onPostExecute(String s) {
-			ToastUtil.showMessage(s);
-		}
+	private void sendGreet(String userId) {
+		RetrofitFactory.getRetrofit().create(IUserLoveApi.class)
+				.sendGreet(AppManager.getClientUser().sessionId, userId)
+				.subscribeOn(Schedulers.io())
+				.map(responseBody -> {
+					JsonObject obj = new JsonParser().parse(responseBody.string()).getAsJsonObject();
+					int code = obj.get("code").getAsInt();
+					if (code == 0) {//喜欢成功
+						return CSApplication.getInstance().getResources()
+								.getString(R.string.like_success);
+					} else {
+						return CSApplication.getInstance().getResources()
+								.getString(R.string.like_faiure);
+					}
+				})
+				.observeOn(AndroidSchedulers.mainThread())
+				.as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+				.subscribe(s -> ToastUtil.showMessage(s), throwable -> ToastUtil.showMessage(R.string.like_faiure));
+	}
 
-		@Override
-		public void onErrorExecute(String error) {
-		}
+	private void addLove(String userId) {
+		RetrofitFactory.getRetrofit().create(IUserLoveApi.class)
+				.addLove(AppManager.getClientUser().sessionId, userId)
+				.subscribeOn(Schedulers.io())
+				.observeOn(AndroidSchedulers.mainThread())
+				.as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+				.subscribe(responseBody -> {}, throwable -> {});
 	}
 
 	@Override

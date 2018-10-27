@@ -59,12 +59,7 @@ public class MiMessageReceiver extends PushMessageReceiver {
     @Override
     public void onReceivePassThroughMessage(Context context, final MiPushMessage message) {
         if (AppManager.getClientUser().isShowVip) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    PushMsgUtil.getInstance().handlePushMsg(true, message.getContent());
-                }
-            });
+            mHandler.post(()-> PushMsgUtil.getInstance().handlePushMsg(true, message.getContent()));
         }
     }
 
@@ -73,7 +68,6 @@ public class MiMessageReceiver extends PushMessageReceiver {
         //当前app未运行则启动，否则直接进入主界面
         //打开自定义的Activity
         if (AppManager.isAppAlive(context, AppManager.pkgName)) {
-//            if (!AppActivityLifecycleCallbacks.getInstance().getIsForeground()) {
             if (AppManager.isAppIsInBackground(context)) {
                 if (PreferencesUtils.getIsLogin(context)) {
                     Intent mainIntent = new Intent(context, MainActivity.class);
@@ -87,35 +81,6 @@ public class MiMessageReceiver extends PushMessageReceiver {
                 } else {
                     ToastUtil.showMessage(R.string.login_tips);
                 }
-
-                /*final String userId = message.getExtra().get("userId");
-				*//**
-				 * 点击通知栏，直接进入聊天界面，同时未读消息数量也要变化
-                 *//*
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!TextUtils.isEmpty(userId)) {
-                            Conversation conversation = ConversationSqlManager.getInstance(context)
-                                    .queryConversationForByTalkerId(userId);
-                            if (conversation != null) {
-                                conversation.unreadCount = 0;
-                                ConversationSqlManager.getInstance(context).updateConversation(conversation);
-                                MessageUnReadListener.getInstance().notifyDataSetChanged(0);
-                                MessageChangedListener.getInstance().notifyMessageChanged("");
-                            }
-                        }
-                    }
-                });
-                ClientUser clientUser = new ClientUser();
-                clientUser.userId = userId;
-                clientUser.user_name = message.getTitle();
-                Intent chatIntent = new Intent(context, ChatActivity.class);
-                chatIntent.putExtra(ValueKey.USER, clientUser);
-                chatIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        | Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(chatIntent);*/
-//            }
             } else {
                 if (!PreferencesUtils.getIsLogin(context)) {
                     ToastUtil.showMessage(R.string.login_tips);
@@ -135,12 +100,7 @@ public class MiMessageReceiver extends PushMessageReceiver {
 
     @Override
     public void onNotificationMessageArrived(Context context, final MiPushMessage message) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                PushMsgUtil.getInstance().handlePushMsg(false, message.getContent());
-            }
-        });
+        mHandler.post(()-> PushMsgUtil.getInstance().handlePushMsg(false, message.getContent()));
     }
 
     @Override
@@ -192,7 +152,7 @@ public class MiMessageReceiver extends PushMessageReceiver {
             if (message.getResultCode() == ErrorCode.SUCCESS) {//注册成功
                 if (!"-1".equals(AppManager.getClientUser().userId)) {
                     MiPushClient.setAlias(context, AppManager.getClientUser().userId, null);
-                    if ("男".equals(AppManager.getClientUser().sex)) {
+                    if ("1".equals(AppManager.getClientUser().sex)) {
                         MiPushClient.subscribe(context, "female", null);
                     } else {
                         MiPushClient.subscribe(context, "male", null);

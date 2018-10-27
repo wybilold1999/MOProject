@@ -1,7 +1,9 @@
 package com.cyanbirds.momo.activity;
 
+import android.arch.lifecycle.Lifecycle;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,15 +16,21 @@ import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.adapter.MyAttentionAdapter;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.FollowModel;
-import com.cyanbirds.momo.net.request.FollowListRequest;
+import com.cyanbirds.momo.manager.AppManager;
+import com.cyanbirds.momo.net.IUserFollowApi;
+import com.cyanbirds.momo.net.base.RetrofitFactory;
 import com.cyanbirds.momo.ui.widget.CircularProgress;
 import com.cyanbirds.momo.ui.widget.DividerItemDecoration;
 import com.cyanbirds.momo.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.momo.utils.DensityUtil;
+import com.cyanbirds.momo.utils.JsonUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 import com.umeng.analytics.MobclickAgent;
 
-import java.util.List;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author Cloudsoar(wangyb)
@@ -72,7 +80,7 @@ public class MyAttentionActivity extends BaseActivity {
         mAdapter.setOnItemClickListener(mOnItemClickListener);
         mRecyclerView.setAdapter(mAdapter);
         mCircularProgress.setVisibility(View.VISIBLE);
-        new FollowListTask().request("followList", pageNo, pageSize);
+        requestFollowList("followList", pageNo, pageSize);
     }
 
     private MyAttentionAdapter.OnItemClickListener mOnItemClickListener = new MyAttentionAdapter.OnItemClickListener() {
@@ -85,23 +93,29 @@ public class MyAttentionActivity extends BaseActivity {
         }
     };
 
-    class FollowListTask extends FollowListRequest {
-        @Override
-        public void onPostExecute(List<FollowModel> followModels) {
-            mCircularProgress.setVisibility(View.GONE);
-            if(null != followModels && followModels.size() > 0){
-                mNoUserInfo.setVisibility(View.GONE);
-                mAdapter.setFollowModels(followModels);
-            } else {
-                mNoUserInfo.setVisibility(View.VISIBLE);
-            }
-        }
-
-        @Override
-        public void onErrorExecute(String error) {
-            ToastUtil.showMessage(error);
-            mCircularProgress.setVisibility(View.GONE);
-        }
+    private void requestFollowList(String url, int pageNo, int pageSize) {
+        ArrayMap<String, String> params = new ArrayMap<>();
+        params.put("uid", AppManager.getClientUser().userId);
+        params.put("pageNo", String.valueOf(pageNo));
+        params.put("pageSize", String.valueOf(pageSize));
+        RetrofitFactory.getRetrofit().create(IUserFollowApi.class)
+                .getFollowList(url, AppManager.getClientUser().sessionId, params)
+                .subscribeOn(Schedulers.io())
+                .map(responseBody -> JsonUtils.parseJsonFollows(responseBody.string()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+                .subscribe(followModels -> {
+                    mCircularProgress.setVisibility(View.GONE);
+                    if(null != followModels && followModels.size() > 0){
+                        mNoUserInfo.setVisibility(View.GONE);
+                        mAdapter.setFollowModels(followModels);
+                    } else {
+                        mNoUserInfo.setVisibility(View.VISIBLE);
+                    }
+                }, throwable -> {
+                    mCircularProgress.setVisibility(View.GONE);
+                    ToastUtil.showMessage(R.string.network_requests_error);
+                });
     }
 
     @Override

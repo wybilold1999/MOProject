@@ -1,31 +1,44 @@
 package com.cyanbirds.momo.activity;
 
-import android.app.Activity;
+import android.Manifest;
+import android.arch.lifecycle.Lifecycle;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.util.ArrayMap;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.cyanbirds.momo.CSApplication;
+import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.config.ValueKey;
-import com.cyanbirds.momo.entity.AllKeys;
 import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.helper.IMChattingHelper;
 import com.cyanbirds.momo.manager.AppManager;
+import com.cyanbirds.momo.net.IUserApi;
+import com.cyanbirds.momo.net.base.RetrofitFactory;
 import com.cyanbirds.momo.net.request.DownloadFileRequest;
-import com.cyanbirds.momo.net.request.GetIDKeyRequest;
-import com.cyanbirds.momo.net.request.UploadCityInfoRequest;
-import com.cyanbirds.momo.net.request.UserLoginRequest;
+import com.cyanbirds.momo.utils.CheckUtil;
 import com.cyanbirds.momo.utils.FileAccessorUtils;
+import com.cyanbirds.momo.utils.JsonUtils;
 import com.cyanbirds.momo.utils.Md5Util;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.PushMsgUtil;
 import com.cyanbirds.momo.utils.ToastUtil;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.AutoDisposeConverter;
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @ClassName:LauncherActivity
@@ -33,12 +46,17 @@ import java.io.File;
  * @Author:wangyb
  * @Date:2015年5月4日下午5:18:59
  */
-public class LauncherActivity extends Activity {
+public class LauncherActivity extends AppCompatActivity {
 
     private long mStartTime;// 开始时间
     private final int SHOW_TIME_MIN = 1500;// 最小显示时间
     private final int LONG_SCUESS = 0;
     private final int LONG_FAIURE = 1;
+    private RxPermissions rxPermissions;
+    /**
+     * 手机权限
+     */
+    public final static int REQUEST_PERMISSION_READ_PHONE_STATE = 1000;
 
     private Handler mHandler = new Handler() {
         public void handleMessage(android.os.Message msg) {
@@ -46,19 +64,10 @@ public class LauncherActivity extends Activity {
                 case LONG_SCUESS:
                     long loadingTime = System.currentTimeMillis() - mStartTime;// 计算一下总共花费的时间
                     if (loadingTime < SHOW_TIME_MIN) {// 如果比最小显示时间还短，就延时进入MainActivity，否则直接进入
-                        if (AppManager.getClientUser().isShowNormal) {
-                            mHandler.postDelayed(mainActivity, SHOW_TIME_MIN
-                                    - loadingTime);
-                        } else {
-                            mHandler.postDelayed(mainNewActivity, SHOW_TIME_MIN
-                                    - loadingTime);
-                        }
+                        mHandler.postDelayed(mainActivity, SHOW_TIME_MIN
+                                - loadingTime);
                     } else {
-                        if (AppManager.getClientUser().isShowNormal) {
-                            mHandler.postDelayed(mainActivity, 0);
-                        } else {
-                            mHandler.postDelayed(mainNewActivity, 0);
-                        }
+                        mHandler.postDelayed(mainActivity, 0);
                     }
                     break;
                 case LONG_FAIURE:
@@ -72,73 +81,92 @@ public class LauncherActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mStartTime = System.currentTimeMillis();// 记录开始时间
-        init();
-        loadData();
+        getKeys();
+        requestPermission();
     }
 
-    Runnable mainNewActivity = new Runnable() {
+    private void requestPermission() {
+        if (!CheckUtil.isGetPermission(this, Manifest.permission.READ_PHONE_STATE) ||
+                !CheckUtil.isGetPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            if (rxPermissions == null) {
+                rxPermissions = new RxPermissions(this);
+            }
+            rxPermissions.requestEachCombined(Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .subscribe(permission -> {// will emit 1 Permission object
+                        if (permission.granted) {
+                            // All permissions are granted !
+                            init();
+                            loadData();
+                        } else if (permission.shouldShowRequestPermissionRationale) {
+                            // At least one denied permission without ask never again
+                            init();
+                            loadData();
+                        } else {
+                            // At least one denied permission with ask never again
+                            // Need to go to the settings
+                            init();
+                            loadData();
+                        }
+                    }, throwable -> {
 
-        @Override
-        public void run() {
-            Intent intent = new Intent(LauncherActivity.this,
-                    MainNewActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+                    });
+        } else {
+            init();
+            loadData();
         }
-    };
+    }
 
-    Runnable mainActivity = new Runnable() {
-
-        @Override
-        public void run() {
-            Intent intent = new Intent(LauncherActivity.this,
-                    MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
-        }
+    Runnable mainActivity = () -> {
+        Intent intent = new Intent(LauncherActivity.this,
+                MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     };
 
     private void init() {
-        new GetIdKeysTask().request();
         if (AppManager.isLogin()) {//是否已经登录
             login();
         } else {
             if (AppManager.getClientUser() != null
 					&& !TextUtils.isEmpty(AppManager.getClientUser().userId)){// && Integer.parseInt(AppManager.getClientUser().userId) > 0) {
-				mHandler.postDelayed(noLogin, SHOW_TIME_MIN);
+				mHandler.postDelayed(firstLauncher, SHOW_TIME_MIN);
 			} else {
-				mHandler.postDelayed(noLogin, SHOW_TIME_MIN);
+				mHandler.postDelayed(firstLauncher, SHOW_TIME_MIN);
 			}
 
         }
     }
 
-    class GetIdKeysTask extends GetIDKeyRequest {
-        @Override
-        public void onPostExecute(AllKeys allKeys) {
-            AppConstants.WEIXIN_ID = allKeys.weChatId;
-            AppConstants.WEIXIN_PAY_ID = allKeys.weChatPayId;
-            AppConstants.YUNTONGXUN_ID = allKeys.ytxId;
-            AppConstants.YUNTONGXUN_TOKEN = allKeys.ytxKey;
-            AppConstants.MI_PUSH_APP_ID = allKeys.xmId;
-            AppConstants.MI_PUSH_APP_KEY = allKeys.xmKey;
-            AppConstants.mAppid = allKeys.qqId;
-            AppConstants.CHAT_LIMIT = allKeys.chatLimit;
-            registerWeiXin();
-        }
+    private void getKeys() {
+        RetrofitFactory.getRetrofit().create(IUserApi.class)
+                .getIdKeys()
+                .subscribeOn(Schedulers.io())
+                .map(responseBody -> JsonUtils.parseJsonIdKeys(responseBody.string()))
+                .doOnNext(allKeys -> {
+                    AppConstants.WEIXIN_ID = allKeys.weChatId;
+                    AppConstants.WEIXIN_PAY_ID = allKeys.weChatPayId;
+                    AppConstants.YUNTONGXUN_ID = allKeys.ytxId;
+                    AppConstants.YUNTONGXUN_TOKEN = allKeys.ytxKey;
+                    AppConstants.CHAT_LIMIT = allKeys.chatLimit;
+                    registerWeiXin();
+                })
+                .doOnError(throwable -> registerWeiXin())
+                .observeOn(AndroidSchedulers.mainThread())
+                .as(this.bindAutoDispose())
+                .subscribe(allKeys -> {
 
-        @Override
-        public void onErrorExecute(String error) {
-            registerWeiXin();
-        }
+                }, throwable -> {});
     }
 
     private void registerWeiXin() {
         // 通过WXAPIFactory工厂，获取IWXAPI的实例
         AppManager.setIWXAPI(WXAPIFactory.createWXAPI(this, AppConstants.WEIXIN_ID, true));
         AppManager.getIWXAPI().registerApp(AppConstants.WEIXIN_ID);
+
+        AppManager.setIWX_PAY_API(WXAPIFactory.createWXAPI(this, AppConstants.WEIXIN_PAY_ID, true));
+        AppManager.getIWX_PAY_API().registerApp(AppConstants.WEIXIN_PAY_ID);
     }
 
 	/**
@@ -154,31 +182,23 @@ public class LauncherActivity extends Activity {
     /**
      * 没有登录
      */
-    Runnable noLogin = new Runnable() {
-
-        @Override
-        public void run() {
-            Intent intent = new Intent(LauncherActivity.this,
-                    LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
-        }
+    Runnable noLogin = () -> {
+        Intent intent = new Intent(LauncherActivity.this,
+                LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     };
 
     /**
      * 第一次进入
      */
-    Runnable firstLauncher = new Runnable() {
-
-        @Override
-        public void run() {
-            Intent intent = new Intent(LauncherActivity.this,
-                    EntranceActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
-        }
+    Runnable firstLauncher = () -> {
+        Intent intent = new Intent(LauncherActivity.this,
+                EntranceActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     };
 
     /**
@@ -189,38 +209,63 @@ public class LauncherActivity extends Activity {
             String userId = AppManager.getClientUser().userId;
             String userPwd = AppManager.getClientUser().userPwd;
             if(!TextUtils.isEmpty(userId) && !TextUtils.isEmpty(userPwd)){
-                new UserLoginTask().request(
-                        userId, userPwd, AppManager.getClientUser().currentCity);
+                ArrayMap<String, String> params = new ArrayMap<>();
+                params.put("account", userId);
+                params.put("pwd", userPwd);
+                params.put("deviceName", AppManager.getDeviceName());
+                params.put("appVersion", String.valueOf(AppManager.getVersionCode()));
+                params.put("systemVersion", AppManager.getDeviceSystemVersion());
+                params.put("deviceId", AppManager.getDeviceId());
+                params.put("channel", CheckUtil.getAppMetaData(CSApplication.getInstance(), "UMENG_CHANNEL"));
+                if (!TextUtils.isEmpty(AppManager.getClientUser().currentCity)) {
+                    params.put("currentCity", AppManager.getClientUser().currentCity);
+                } else {
+                    params.put("currentCity", "");
+                }
+                params.put("province", PreferencesUtils.getCurrentProvince(CSApplication.getInstance()));
+                params.put("latitude", PreferencesUtils.getLatitude(CSApplication.getInstance()));
+                params.put("longitude", PreferencesUtils.getLongitude(CSApplication.getInstance()));
+                params.put("loginTime", String.valueOf(PreferencesUtils.getLoginTime(CSApplication.getInstance())));
+                RetrofitFactory.getRetrofit().create(IUserApi.class)
+                        .userLogin(AppManager.getClientUser().sessionId, params)
+                        .subscribeOn(Schedulers.io())
+                        .flatMap(responseBody -> {
+                            ClientUser clientUser = JsonUtils.parseClientUser(responseBody.string());
+                            return Observable.just(clientUser);
+                        })
+                        .doOnNext(clientUser -> {
+                            File faceLocalFile = new File(FileAccessorUtils.FACE_IMAGE,
+                                    Md5Util.md5(clientUser.face_url) + ".jpg");
+                            if(!faceLocalFile.exists()
+                                    && !TextUtils.isEmpty(clientUser.face_url)){
+                                new DownloadPortraitTask().request(clientUser.face_url,
+                                        FileAccessorUtils.FACE_IMAGE,
+                                        Md5Util.md5(clientUser.face_url) + ".jpg");
+                            } else {
+                                clientUser.face_local = faceLocalFile.getAbsolutePath();
+                            }
+                            AppManager.setClientUser(clientUser);
+                            AppManager.saveUserInfo();
+                            AppManager.getClientUser().loginTime = System.currentTimeMillis();
+                            PreferencesUtils.setLoginTime(LauncherActivity.this, System.currentTimeMillis());
+                            IMChattingHelper.getInstance().sendInitLoginMsg();
+                        })
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .as(this.bindAutoDispose())
+                        .subscribe(clientUser -> {
+                            if (clientUser == null) {
+                                ToastUtil.showMessage(R.string.network_requests_error);
+                                mHandler.sendEmptyMessage(LONG_FAIURE);
+                            } else {
+                                mHandler.sendEmptyMessage(LONG_SCUESS);
+                            }
+                        }, throwable -> {
+                            ToastUtil.showMessage(R.string.network_requests_error);
+                            mHandler.sendEmptyMessage(LONG_FAIURE);
+                        });
             }
         } catch (Exception e) {
             e.printStackTrace();
-            mHandler.sendEmptyMessage(LONG_FAIURE);
-        }
-    }
-
-    class UserLoginTask extends UserLoginRequest {
-        @Override
-        public void onPostExecute(ClientUser clientUser) {
-            if (clientUser != null) {
-                mHandler.sendEmptyMessage(LONG_SCUESS);
-                if(!new File(FileAccessorUtils.FACE_IMAGE,
-                        Md5Util.md5(clientUser.face_url) + ".jpg").exists()
-                        && !TextUtils.isEmpty(clientUser.face_url)){
-                    new DownloadPortraitTask().request(clientUser.face_url,
-                            FileAccessorUtils.FACE_IMAGE,
-                            Md5Util.md5(clientUser.face_url) + ".jpg");
-                }
-                AppManager.setClientUser(clientUser);
-                AppManager.saveUserInfo();
-                AppManager.getClientUser().loginTime = System.currentTimeMillis();
-                PreferencesUtils.setLoginTime(LauncherActivity.this, System.currentTimeMillis());
-                IMChattingHelper.getInstance().sendInitLoginMsg();
-            }
-        }
-
-        @Override
-        public void onErrorExecute(String error) {
-            ToastUtil.showMessage(error);
             mHandler.sendEmptyMessage(LONG_FAIURE);
         }
     }
@@ -267,6 +312,19 @@ public class LauncherActivity extends Activity {
         super.onPause();
         MobclickAgent.onPageEnd(this.getClass().getName());
         MobclickAgent.onPause(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_PERMISSION_READ_PHONE_STATE) {
+            requestPermission();
+        }
+    }
+
+    public <X> AutoDisposeConverter<X> bindAutoDispose() {
+        return AutoDispose.autoDisposable(AndroidLifecycleScopeProvider
+                .from(this, Lifecycle.Event.ON_DESTROY));
     }
 
 }

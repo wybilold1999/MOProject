@@ -84,7 +84,7 @@ public class NotificationManager {
                     mContext.getResources().getString(R.string.notification_tips), unContactNum, unReadNum);
         }*/
         if (!TextUtils.isEmpty(message.face_url)) {
-            title = mContext.getResources().getString(R.string.app_name);
+            title = mContext.getResources().getString(R.string.app_name_short);
         } else {
             title = message.sender_name;
         }

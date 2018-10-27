@@ -31,7 +31,7 @@ import java.util.List;
  * @Date:2015年7月27日下午3:28:06
  */
 public class PhotoChoserActivity extends BaseActivity implements
-        LoaderCallbacks<List<ImageBean>>, ChoseImageListener{
+		LoaderCallbacks<List<ImageBean>>, ChoseImageListener{
 
 	private TextView mSelectNumber;
 	private RecyclerView mRecyclerView;
@@ -40,7 +40,7 @@ public class PhotoChoserActivity extends BaseActivity implements
 	private List<ImageBean> mImages;
 	private int mSelectedCount = 0;
 
-	private static int MAX_SELECT_NUMBER = 4;
+	private static int MAX_SELECT_NUMBER = 6;
 
 	/**
 	 * 已经选中的url
@@ -84,7 +84,7 @@ public class PhotoChoserActivity extends BaseActivity implements
 	 * 设置数据
 	 */
 	private void setupData() {
-		MAX_SELECT_NUMBER = getIntent().getIntExtra(ValueKey.DATA, 4);
+		MAX_SELECT_NUMBER = getIntent().getIntExtra(ValueKey.DATA, 6);
 		ossUrl = new ArrayList<>();
 		mImages = new ArrayList<ImageBean>();
 		mAdapter = new PhotoChoserAdapter(this, mImages);

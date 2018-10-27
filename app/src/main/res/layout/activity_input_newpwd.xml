@@ -16,45 +16,43 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin">
 
-        <android.support.design.widget.TextInputLayout
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:background="@null">
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:textSize="16sp"
+            android:hint="@string/input_new_password"
+            fancy:met_baseColor="@color/colorPrimary"
+            fancy:met_primaryColor="@color/colorPrimary"
+            fancy:met_floatingLabelText="@string/input_new_password"
+            fancy:met_floatingLabel="highlight"
+            fancy:met_floatingLabelTextColor="@color/colorPrimary"
+            fancy:met_textColorHint="@color/gray_text"
+            fancy:met_underlineColor="@android:color/black"/>
 
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:hint="@string/input_new_password"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textSize="16sp" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/confirm_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:background="@null">
-
-            <EditText
-                android:id="@+id/confirm_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:hint="@string/input_re_password"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textSize="16sp" />
-        </android.support.design.widget.TextInputLayout>
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:textSize="16sp"
+            android:hint="@string/input_re_password"
+            fancy:met_baseColor="@color/colorPrimary"
+            fancy:met_primaryColor="@color/colorPrimary"
+            fancy:met_floatingLabelText="@string/input_re_password"
+            fancy:met_floatingLabel="highlight"
+            fancy:met_floatingLabelTextColor="@color/colorPrimary"
+            fancy:met_textColorHint="@color/gray_text"
+            fancy:met_underlineColor="@android:color/black"/>
 
         <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/login"

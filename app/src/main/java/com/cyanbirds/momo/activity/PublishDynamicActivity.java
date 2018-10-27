@@ -1,8 +1,14 @@
 package com.cyanbirds.momo.activity;
 
+import android.Manifest;
+import android.arch.lifecycle.Lifecycle;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,22 +26,34 @@ import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.Picture;
 import com.cyanbirds.momo.eventtype.PubDycEvent;
 import com.cyanbirds.momo.manager.AppManager;
+import com.cyanbirds.momo.net.IUserDynamic;
+import com.cyanbirds.momo.net.base.RetrofitFactory;
 import com.cyanbirds.momo.net.request.OSSImagUploadRequest;
-import com.cyanbirds.momo.net.request.PublishDynamicRequest;
+import com.cyanbirds.momo.utils.AESOperator;
+import com.cyanbirds.momo.utils.CheckUtil;
 import com.cyanbirds.momo.utils.FileAccessorUtils;
 import com.cyanbirds.momo.utils.ImageUtil;
 import com.cyanbirds.momo.utils.ProgressDialogUtils;
+import com.cyanbirds.momo.utils.RxBus;
 import com.cyanbirds.momo.utils.ToastUtil;
+import com.cyanbirds.momo.utils.Utils;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 import com.umeng.analytics.MobclickAgent;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
+import static com.cyanbirds.momo.activity.ModifyUserInfoActivity.REQUEST_PERMISSION_CAMERA_WRITE_EXTERNAL;
 
 /**
  * 作者：wangyb
@@ -46,7 +64,7 @@ public class PublishDynamicActivity extends BaseActivity {
 	@BindView(R.id.dynamic_text_content)
 	EditText mDynamicTextContent;
 	@BindView(R.id.recyclerview)
-    RecyclerView mRecyclerview;
+	RecyclerView mRecyclerview;
 
 	private PublishImageAdapter mAdapter;
 	private List<String> photoList;
@@ -54,6 +72,8 @@ public class PublishDynamicActivity extends BaseActivity {
 	private int count = 0;//OSS上传的时候修改piclist中的url值
 
 	public static final int CHOOSE_IMG_RESULT = 0;
+
+	private RxPermissions rxPermissions;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +84,7 @@ public class PublishDynamicActivity extends BaseActivity {
 			mToolbar.setNavigationIcon(R.mipmap.ic_up);
 		}
 		ButterKnife.bind(this);
+		rxPermissions = new RxPermissions(this);
 		setupView();
 		setupData();
 	}
@@ -77,12 +98,51 @@ public class PublishDynamicActivity extends BaseActivity {
 		mAdapter = new PublishImageAdapter(photoList){
 			@Override
 			public void openGallery() {
-				Intent intent = new Intent(PublishDynamicActivity.this, PhotoChoserActivity.class);
-				intent.putStringArrayListExtra(ValueKey.IMAGE_URL, (ArrayList<String>) photoList);
-				startActivityForResult(intent, CHOOSE_IMG_RESULT);
+				requestPermission();
 			}
 		};
 		mRecyclerview.setAdapter(mAdapter);
+	}
+
+	private void requestPermission() {
+	    if (!CheckUtil.isGetPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+                !CheckUtil.isGetPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            rxPermissions.requestEachCombined(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    .subscribe(permission -> {// will emit 1 Permission object
+                        if (permission.granted) {
+                            // All permissions are granted !
+                            toIntent();
+                        } else if (permission.shouldShowRequestPermissionRationale) {
+                            // At least one denied permission without ask never again
+                            showPermissionDialog(R.string.open_camera_write_external_permission, REQUEST_PERMISSION_CAMERA_WRITE_EXTERNAL);
+                        } else {
+                            // At least one denied permission with ask never again
+                            // Need to go to the settings
+                            showPermissionDialog(R.string.open_camera_write_external_permission, REQUEST_PERMISSION_CAMERA_WRITE_EXTERNAL);
+                        }
+                    }, throwable -> {
+
+                    });
+        } else {
+	    	toIntent();
+		}
+	}
+
+	private void toIntent() {
+		Intent intent = new Intent(PublishDynamicActivity.this, PhotoChoserActivity.class);
+		intent.putStringArrayListExtra(ValueKey.IMAGE_URL, (ArrayList<String>) photoList);
+		startActivityForResult(intent, CHOOSE_IMG_RESULT);
+	}
+
+	private void showPermissionDialog(int textResId, int requestCode) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.permission_request);
+		builder.setMessage(textResId);
+		builder.setPositiveButton(R.string.ok, (dialog, i) -> {
+			dialog.dismiss();
+			Utils.goToSetting(this, requestCode);
+		});
+		builder.show();
 	}
 
 	@Override
@@ -108,7 +168,7 @@ public class PublishDynamicActivity extends BaseActivity {
 							AppManager.getOSSFacePath(), imgUrl);
 				}
 			} else {
-				new PublishDynamicTask().request("", mDynamicTextContent.getText().toString());
+				publishDynamic("", mDynamicTextContent.getText().toString());
 			}
 			return true;
 		}
@@ -140,7 +200,7 @@ public class PublishDynamicActivity extends BaseActivity {
 				if (count == photoList.size()) {
 					Gson gson = new Gson();
 					String picUrls = gson.toJson(ossImgUrls);
-					new PublishDynamicTask().request(picUrls, mDynamicTextContent.getText().toString());
+					publishDynamic(picUrls, mDynamicTextContent.getText().toString());
 				}
 			}
 		}
@@ -151,19 +211,38 @@ public class PublishDynamicActivity extends BaseActivity {
 		}
 	}
 
-	class PublishDynamicTask extends PublishDynamicRequest {
-		@Override
-		public void onPostExecute(String s) {
-			ProgressDialogUtils.getInstance(PublishDynamicActivity.this).dismiss();
-			ToastUtil.showMessage(R.string.publish_success);
-			EventBus.getDefault().post(new PubDycEvent(s));
-			finish();
-		}
+	private void publishDynamic(String pictures, String content) {
+		ArrayMap<String, String> params = new ArrayMap<>(2);
+		params.put("pictures", pictures);
+		params.put("content", content);
+		RetrofitFactory.getRetrofit().create(IUserDynamic.class)
+				.publishDynamic(AppManager.getClientUser().sessionId, params)
+				.subscribeOn(Schedulers.io())
+				.map(responseBody -> {
+					String decryptData = AESOperator.getInstance().decrypt(responseBody.string());
+					JsonObject obj = new JsonParser().parse(decryptData).getAsJsonObject();
+					int code = obj.get("code").getAsInt();
+					if (code != 0) {
+						return null;
+					}
+					return decryptData;
+				})
+				.observeOn(AndroidSchedulers.mainThread())
+				.as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+				.subscribe(s -> {
+					ProgressDialogUtils.getInstance(PublishDynamicActivity.this).dismiss();
+					ToastUtil.showMessage(R.string.publish_success);
+					RxBus.getInstance().post(AppConstants.PUB_DYNAMIC, new PubDycEvent(s));
+					finish();
+				}, throwable -> {
+					ProgressDialogUtils.getInstance(PublishDynamicActivity.this).dismiss();
+					if (throwable instanceof NullPointerException) {
+						ToastUtil.showMessage(R.string.publish_dynamic_fail);
+					} else {
+						ToastUtil.showMessage(R.string.network_requests_error);
+					}
+				});
 
-		@Override
-		public void onErrorExecute(String error) {
-			ProgressDialogUtils.getInstance(PublishDynamicActivity.this).dismiss();
-		}
 	}
 
 	@Override
@@ -176,6 +255,8 @@ public class PublishDynamicActivity extends BaseActivity {
 				photoList.addAll(imgUrls);
 				mAdapter.notifyDataSetChanged();
 			}
+		} else if (requestCode == REQUEST_PERMISSION_CAMERA_WRITE_EXTERNAL) {
+			requestPermission();
 		}
 	}
 

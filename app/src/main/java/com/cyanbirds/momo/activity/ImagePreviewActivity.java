@@ -1,6 +1,5 @@
 package com.cyanbirds.momo.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
@@ -65,60 +63,44 @@ public class ImagePreviewActivity extends BaseActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		if (id == R.id.send) {
-			if(!AppManager.getClientUser().isShowVip || AppManager.getClientUser().is_vip){
-				if (AppManager.getClientUser().isShowGold && AppManager.getClientUser().gold_num  < 101) {
-					showGoldDialog();
+			if (AppManager.getClientUser().isShowVip) {
+				if (AppManager.getClientUser().is_vip) {
+					sendImg();
 				} else {
-					Intent intent = new Intent();
-					intent.setData(mUri);
-					setResult(RESULT_OK,intent);
-					finish();
-					return true;
+					showTurnOnVipDialog();
 				}
 			} else {
-				showTurnOnVipDialog();
+				sendImg();
 			}
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
+	private boolean sendImg() {
+		Intent intent = new Intent();
+		intent.setData(mUri);
+		setResult(RESULT_OK,intent);
+		finish();
+		return true;
+	}
+
 	private void showTurnOnVipDialog(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(R.string.un_send_msg);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
+		builder.setPositiveButton(R.string.ok, ((dialog, i) -> {
+			dialog.dismiss();
+			Intent intent = new Intent(ImagePreviewActivity.this, VipCenterActivity.class);
+			startActivity(intent);
+		}));
+		if (AppManager.getClientUser().isShowGiveVip) {
+			builder.setNegativeButton(R.string.free_give_vip, ((dialog, i) -> {
 				dialog.dismiss();
-				Intent intent = new Intent(ImagePreviewActivity.this, VipCenterActivity.class);
+				Intent intent = new Intent(ImagePreviewActivity.this, GiveVipActivity.class);
 				startActivity(intent);
-			}
-		});
-		builder.setNegativeButton(R.string.until_single, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
-		builder.show();
-	}
-
-	private void showGoldDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(R.string.no_gold_un_send_msg);
-		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-				Intent intent = new Intent(ImagePreviewActivity.this, MyGoldActivity.class);
-				startActivity(intent);
-			}
-		});
-		builder.setNegativeButton(R.string.until_single, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
+			}));
+		} else {
+			builder.setNegativeButton(R.string.until_single, ((dialog, i) -> dialog.dismiss()));
+		}
 		builder.show();
 	}
 
