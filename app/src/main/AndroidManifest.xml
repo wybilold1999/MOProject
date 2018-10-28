@@ -533,6 +533,12 @@
         <service android:name="com.huawei.updatesdk.service.deamon.download.DownloadService"
             android:exported="false"/>
 
+        <activity
+            android:name=".activity.VipHWCenterActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:label="@string/vip_center"
+            android:screenOrientation="portrait"/>
+
         //-----------------------------------huawei-------------------------------------
 
         <!-- *****************************ECSDK核心服务类 （必须配置）Start******************************************** -->

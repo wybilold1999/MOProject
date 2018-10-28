@@ -34,7 +34,9 @@ import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.GiveVipActivity;
+import com.cyanbirds.momo.activity.ShareLocationActivity;
 import com.cyanbirds.momo.activity.VipCenterActivity;
+import com.cyanbirds.momo.activity.VipHWCenterActivity;
 import com.cyanbirds.momo.adapter.TabPersonalPhotosAdapter;
 import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.config.ValueKey;
@@ -521,7 +523,12 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 		builder.setMessage(String.format(getResources().getString(R.string.social_id_need_vip), socialTpe));
 		builder.setPositiveButton(R.string.ok, ((dialog, i) -> {
 			dialog.dismiss();
-			Intent intent = new Intent(getActivity(), VipCenterActivity.class);
+			Intent intent = new Intent();
+			if (AppManager.getClientUser().isShowGold) {
+				intent.setClass(getActivity(), VipHWCenterActivity.class);
+			} else {
+				intent.setClass(getActivity(), VipCenterActivity.class);
+			}
 			startActivity(intent);
 		}));
 		if (AppManager.getClientUser().isShowGiveVip) {

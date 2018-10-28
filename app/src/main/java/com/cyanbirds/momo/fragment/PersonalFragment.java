@@ -26,6 +26,7 @@ import com.cyanbirds.momo.activity.MyGiftsActivity;
 import com.cyanbirds.momo.activity.PersonalInfoActivity;
 import com.cyanbirds.momo.activity.SettingActivity;
 import com.cyanbirds.momo.activity.VipCenterActivity;
+import com.cyanbirds.momo.activity.VipHWCenterActivity;
 import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.ClientUser;
@@ -264,7 +265,11 @@ public class PersonalFragment extends Fragment {
 				startActivity(intent);
 				break;
 			case R.id.vip_lay:
-				intent.setClass(getActivity(), VipCenterActivity.class);
+				if (AppManager.getClientUser().isShowGold) {
+					intent.setClass(getActivity(), VipHWCenterActivity.class);
+				} else {
+					intent.setClass(getActivity(), VipCenterActivity.class);
+				}
 				startActivity(intent);
 				break;
 			case R.id.my_attention:

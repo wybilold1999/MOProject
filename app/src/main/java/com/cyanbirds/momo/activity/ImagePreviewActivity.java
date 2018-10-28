@@ -89,7 +89,12 @@ public class ImagePreviewActivity extends BaseActivity {
 		builder.setMessage(R.string.un_send_msg);
 		builder.setPositiveButton(R.string.ok, ((dialog, i) -> {
 			dialog.dismiss();
-			Intent intent = new Intent(ImagePreviewActivity.this, VipCenterActivity.class);
+			Intent intent = new Intent();
+			if (AppManager.getClientUser().isShowGold) {
+				intent.setClass(ImagePreviewActivity.this, VipHWCenterActivity.class);
+			} else {
+				intent.setClass(ImagePreviewActivity.this, VipCenterActivity.class);
+			}
 			startActivity(intent);
 		}));
 		if (AppManager.getClientUser().isShowGiveVip) {

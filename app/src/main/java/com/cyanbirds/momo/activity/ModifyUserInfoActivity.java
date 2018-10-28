@@ -239,13 +239,6 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 						FileAccessorUtils.FACE_IMAGE,
 						Md5Util.md5(AppManager.getClientUser().face_url) + ".jpg");
 			}
-			if (AppManager.getClientUser().isShowLovers) {
-				mCardFriend.setVisibility(View.VISIBLE);
-				mTvFriend.setVisibility(View.VISIBLE);
-			} else {
-				mCardFriend.setVisibility(View.GONE);
-				mTvFriend.setVisibility(View.GONE);
-			}
 			if (!TextUtils.isEmpty(clientUser.user_name)) {
 				mNickName.setText(clientUser.user_name);
 			}

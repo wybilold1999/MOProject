@@ -54,7 +54,7 @@ public class GiftMarketAdapter extends
 		Gift gift =  mGifts.get(position);
 		holder.mGiftName.setText(gift.name);
 		holder.mImgUrl.setImageURI(Uri.parse(gift.dynamic_image_url));
-		if (AppManager.getClientUser().isShowGold) {
+		if (AppManager.getClientUser().isShowVip) {
 			holder.mPriceLay.setVisibility(View.VISIBLE);
 			holder.mLine.setVisibility(View.VISIBLE);
 			holder.mVipAmount.setVisibility(View.VISIBLE);

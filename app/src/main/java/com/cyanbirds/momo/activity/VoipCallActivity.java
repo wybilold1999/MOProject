@@ -139,7 +139,12 @@ public class VoipCallActivity extends BaseActivity {
         builder.setMessage(tips);
         builder.setPositiveButton(R.string.ok, ((dialog, i) -> {
             dialog.dismiss();
-            Intent intent = new Intent(VoipCallActivity.this, VipCenterActivity.class);
+            Intent intent = new Intent();
+            if (AppManager.getClientUser().isShowGold) {
+                intent.setClass(VoipCallActivity.this, VipHWCenterActivity.class);
+            } else {
+                intent.setClass(VoipCallActivity.this, VipCenterActivity.class);
+            }
             startActivity(intent);
             finish();
         }));

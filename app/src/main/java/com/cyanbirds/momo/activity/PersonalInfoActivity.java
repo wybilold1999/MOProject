@@ -168,13 +168,9 @@ public class PersonalInfoActivity extends BaseActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (AppManager.getClientUser().userId.equals(curUserId)) {
 			getMenuInflater().inflate(R.menu.personal_menu, menu);
-		} else if (!"oppo".equals(channel)){//oppo渠道不显示call
-			if (AppManager.getClientUser().isShowVip) {
-				if (!AppManager.getClientUser().is_vip) {
-					getMenuInflater().inflate(R.menu.call_menu, menu);
-				} else if (AppManager.getClientUser().isShowGold && AppManager.getClientUser().gold_num < 100) {
-					getMenuInflater().inflate(R.menu.call_menu, menu);
-				}
+		} else if (AppManager.getClientUser().isShowVip) {
+			if (!AppManager.getClientUser().is_vip) {
+				getMenuInflater().inflate(R.menu.call_menu, menu);
 			}
 		}
 		return super.onCreateOptionsMenu(menu);

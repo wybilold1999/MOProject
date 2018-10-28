@@ -136,7 +136,7 @@ public class GiftMarketActivity extends BaseActivity implements View.OnClickList
 		mOtherPortrait = (SimpleDraweeView) mGiftDialogView.findViewById(R.id.other_portrait);
 		mSendGift = (TextView) mGiftDialogView.findViewById(R.id.send_gift);
 		mSendGift.setOnClickListener(this);
-		if (AppManager.getClientUser().isShowGold) {
+		if (AppManager.getClientUser().isShowVip) {
 			mVipLay.setVisibility(View.VISIBLE);
 			mAmount.setVisibility(View.VISIBLE);
 		} else {
