@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -30,6 +31,9 @@ import com.cyanbirds.momo.utils.RxBus;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.cyanbirds.momo.utils.Util;
 import com.cyanbirds.momo.view.IUserLoginLogOut;
+import com.huawei.android.hms.agent.HMSAgent;
+import com.huawei.android.hms.agent.hwid.handler.SignInHandler;
+import com.huawei.hms.support.api.hwid.SignInHuaweiId;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.common.Constants;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
@@ -56,6 +60,7 @@ public class LoginActivity extends BaseActivity<IUserLoginLogOut.Presenter> impl
     TextView forgetPwd;
     ImageView weiXinLogin;
     ImageView qqLogin;
+    ImageView hwLogin;
 
     public static Tencent mTencent;
     private UserInfo mInfo;
@@ -89,7 +94,7 @@ public class LoginActivity extends BaseActivity<IUserLoginLogOut.Presenter> impl
         forgetPwd = findViewById(R.id.forget_pwd);
         weiXinLogin = findViewById(R.id.weixin_login);
         qqLogin = findViewById(R.id.qq_login);
-
+        hwLogin = findViewById(R.id.hw_login);
     }
 
     private void setupEvent() {
@@ -97,6 +102,7 @@ public class LoginActivity extends BaseActivity<IUserLoginLogOut.Presenter> impl
         forgetPwd.setOnClickListener(this);
         qqLogin.setOnClickListener(this);
         weiXinLogin.setOnClickListener(this);
+        hwLogin.setOnClickListener(this);
     }
 
     private void setupData(){
@@ -149,6 +155,10 @@ public class LoginActivity extends BaseActivity<IUserLoginLogOut.Presenter> impl
                     CSApplication.api.sendReq(req);
                 }
                 break;
+            case R.id.hw_login:
+                ProgressDialogUtils.getInstance(this).show(R.string.wait);
+                hwLogin();
+                break;
         }
     }
 
@@ -172,6 +182,28 @@ public class LoginActivity extends BaseActivity<IUserLoginLogOut.Presenter> impl
                     intent.putExtra("code", event.code);
                     startActivity(intent);
                 }
+            }
+        });
+    }
+
+    /**
+     * 华为登录授权 | Login Authorization
+     * 如果已经授权登录则直接回调结果，否则：forceLogin为true时会拉起界面，为false时直接回调错误码
+     */
+    private void hwLogin() {
+        HMSAgent.Hwid.signIn(true, (rtnCode, signInResult) -> {
+            ProgressDialogUtils.getInstance(this).dismiss();
+            if (rtnCode == HMSAgent.AgentResultCode.HMSAGENT_SUCCESS && signInResult != null) {
+                if (!TextUtils.isEmpty(AppManager.getClientUser().sex)) {
+                    onShowLoading();
+                    presenter.onHWLogin(signInResult.getOpenId());
+                } else {
+                    Intent intent = new Intent(this, SelectSexActivity.class);
+                    intent.putExtra("hw_open_id", signInResult.getOpenId());
+                    startActivity(intent);
+                }
+            } else {
+                ToastUtil.showMessage(R.string.weibosdk_demo_toast_auth_failed);
             }
         });
     }

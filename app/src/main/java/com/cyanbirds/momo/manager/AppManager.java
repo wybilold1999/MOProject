@@ -484,21 +484,6 @@ public class AppManager {
 	 */
 	public static void setUserInfo() {
 		try {
-			/*String userId = PreferencesUtils.getAccount(mContext);
-			String mobile = PreferencesUtils.getUserMobile(mContext);
-			String pwd = PreferencesUtils.getPassword(mContext);
-			String userName = PreferencesUtils.getUserName(mContext);
-			String face_local = PreferencesUtils.getFaceLocal(mContext);
-			String sessionId = PreferencesUtils.getSessionid(mContext);
-			ClientUser clientUser = new ClientUser();
-			clientUser.userId = userId;
-			clientUser.mobile = mobile;
-			clientUser.userPwd = pwd;
-			clientUser.user_name = userName;
-			clientUser.face_local = face_local;
-			clientUser.sessionId = sessionId;
-			clientUser.currentCity = PreferencesUtils.getCurrentCity(mContext);
-			clientUser.sex = PreferencesUtils.getSettingsSex(mContext);*/
 			String userId = sMMKV.decodeString(SETTINGS_RL_ACCOUNT, "");
 			String mobile = sMMKV.decodeString(SETTINGS_RL_USER_MOBILE, "");
 			String pwd = sMMKV.decodeString(SETTINGS_RL_PASSWORD, "");
@@ -534,15 +519,6 @@ public class AppManager {
 			sMMKV.encode(SETTINGS_RL_IS_LOGIN, true);
 			sMMKV.encode(SETTINGS_CURRENT_CITY, getClientUser().currentCity);
 			sMMKV.encode(SETTINGS_SEX, getClientUser().sex);
-			/*PreferencesUtils.setAccount(mContext, getClientUser().userId);
-			PreferencesUtils.setPassword(mContext, getClientUser().userPwd);
-			PreferencesUtils.setFaceLocal(mContext, getClientUser().face_local);
-			PreferencesUtils.setUserMobile(mContext, getClientUser().mobile);
-			PreferencesUtils.setUserName(mContext, getClientUser().user_name);
-			PreferencesUtils.setSessionId(mContext, getClientUser().sessionId);
-			PreferencesUtils.setIsLogin(mContext, true);
-			PreferencesUtils.setCurrentCity(mContext, getClientUser().currentCity);
-			PreferencesUtils.setSettingsSex(mContext, getClientUser().sex);*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

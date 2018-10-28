@@ -17,7 +17,8 @@ android {
 
         manifestPlaceholders = [
                 XG_ACCESS_ID:"2100281882",
-                XG_ACCESS_KEY : "AA2WT91C4I2T"
+                XG_ACCESS_KEY : "AA2WT91C4I2T",
+                HMSVERSION:"2.6.1",PACKAGE_NAME: "com.cyanbirds.momo", APPID:"100074243", CPID:"10086000000000293"
         ]
 
         ndk {
@@ -174,4 +175,13 @@ dependencies {
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
 
     implementation 'com.tencent:mmkv:1.0.12'
+
+    // 此处版本号仅为示例，请手动修改成实际集成的HMSSDK版本号
+    String HMSSDKVer = '2.6.1.301'
+    implementation 'com.huawei.android.hms:iap:'+HMSSDKVer
+    implementation 'com.huawei.android.hms:game:'+HMSSDKVer
+    implementation 'com.huawei.android.hms:sns:'+HMSSDKVer
+    implementation 'com.huawei.android.hms:hwid:'+HMSSDKVer
+    implementation 'com.huawei.android.hms:push:'+HMSSDKVer
+    implementation 'com.huawei.android.hms:opendevice:'+HMSSDKVer
 }

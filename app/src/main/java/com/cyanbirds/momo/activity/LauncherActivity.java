@@ -27,6 +27,9 @@ import com.cyanbirds.momo.utils.Md5Util;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.PushMsgUtil;
 import com.cyanbirds.momo.utils.ToastUtil;
+import com.huawei.android.hms.agent.HMSAgent;
+import com.huawei.android.hms.agent.common.handler.CheckUpdateHandler;
+import com.huawei.android.hms.agent.common.handler.ConnectHandler;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.uber.autodispose.AutoDispose;
@@ -85,6 +88,27 @@ public class LauncherActivity extends AppCompatActivity {
         requestPermission();
     }
 
+    private void hwConnect() {
+        // 在首个界面，需要调用connect进行连接 | In the first page, you need to call connect
+        HMSAgent.connect(this, new ConnectHandler() {
+            @Override
+            public void onConnect(int rst) {
+                init();
+                loadData();
+                checkHWUpdate();
+            }
+        });
+    }
+
+    private void checkHWUpdate() {
+        HMSAgent.checkUpdate(this, new CheckUpdateHandler() {
+            @Override
+            public void onResult(int rst) {
+                ToastUtil.showMessage("check app update rst:" + rst);
+            }
+        });
+    }
+
     private void requestPermission() {
         if (!CheckUtil.isGetPermission(this, Manifest.permission.READ_PHONE_STATE) ||
                 !CheckUtil.isGetPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -96,24 +120,20 @@ public class LauncherActivity extends AppCompatActivity {
                     .subscribe(permission -> {// will emit 1 Permission object
                         if (permission.granted) {
                             // All permissions are granted !
-                            init();
-                            loadData();
+                            hwConnect();
                         } else if (permission.shouldShowRequestPermissionRationale) {
                             // At least one denied permission without ask never again
-                            init();
-                            loadData();
+                            hwConnect();
                         } else {
                             // At least one denied permission with ask never again
                             // Need to go to the settings
-                            init();
-                            loadData();
+                            hwConnect();
                         }
                     }, throwable -> {
 
                     });
         } else {
-            init();
-            loadData();
+            hwConnect();
         }
     }
 
