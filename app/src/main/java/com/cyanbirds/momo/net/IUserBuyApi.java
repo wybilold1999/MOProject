@@ -50,4 +50,12 @@ public interface IUserBuyApi {
      */
     @GET("buy/getFareActivityInfo")
     Observable<ResponseBody> getFareActivityInfo(@Header("token") String token);
+
+    /**
+     * 获取华为支付key
+     * @param token
+     * @return
+     */
+    @GET("buy/hw_pay_key")
+    Observable<ResponseBody> getHWPayPrivateKey(@Header("token") String token);
 }

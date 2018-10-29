@@ -29,6 +29,7 @@ import com.cyanbirds.momo.net.IUserBuyApi;
 import com.cyanbirds.momo.net.base.RetrofitFactory;
 import com.cyanbirds.momo.ui.widget.DividerItemDecoration;
 import com.cyanbirds.momo.ui.widget.WrapperLinearLayoutManager;
+import com.cyanbirds.momo.utils.AESOperator;
 import com.cyanbirds.momo.utils.DensityUtil;
 import com.cyanbirds.momo.utils.JsonUtils;
 import com.cyanbirds.momo.utils.RxBus;
@@ -100,6 +101,8 @@ public class VipHWCenterActivity extends BaseActivity {
 
 	private Observable<?> observable;
 
+	private String hwPayPrivateKey = "";
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +118,7 @@ public class VipHWCenterActivity extends BaseActivity {
 		setupView();
 		rxBusSub();
 		setupData();
+		getHWPayKey();
 	}
 
 	private void setupView() {
@@ -211,32 +215,23 @@ public class VipHWCenterActivity extends BaseActivity {
 				}, throwable -> {});
 	}
 
-	private void setTurnOnVipUserName() {
-		turnOnVipNameList = new ArrayList<>();
-		turnOnVipNameList.add("雨天 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("秋叶 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("撕裂时光 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("真爱 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("许愿树 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("木瓜 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("山楂 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("夕阳 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("花依旧开 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("心在这里 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("无花果 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("萌兔 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("残缺布偶 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("潮汐 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("寂寞的心 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("丹樱。。。 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("如影随形 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("葛葛 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("薛金玲 开通了会员，赶快去和TA聊天吧！");
-		turnOnVipNameList.add("花物语 开通了会员，赶快去和TA聊天吧！");
-		if (null != mMarqueeView) {
-			mMarqueeView.startWithList(turnOnVipNameList);
-		}
+	/**
+	 * 请求华为支付所需要的key
+	 */
+	private void getHWPayKey() {
+		RetrofitFactory.getRetrofit().create(IUserBuyApi.class)
+				.getHWPayPrivateKey(AppManager.getClientUser().sessionId)
+				.subscribeOn(Schedulers.io())
+				.map(responseBody -> AESOperator.getInstance().decrypt(responseBody.string()))
+				.observeOn(AndroidSchedulers.mainThread())
+				.as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+				.subscribe(payKey -> {
+					if (!TextUtils.isEmpty(payKey)) {
+						hwPayPrivateKey = payKey;
+					}
+				}, throwable -> {});
 	}
+
 
 	private MemberBuyAdapter.OnItemClickListener mOnItemClickListener = new MemberBuyAdapter.OnItemClickListener() {
 		@Override
@@ -317,7 +312,7 @@ public class VipHWCenterActivity extends BaseActivity {
 
 		//对单机应用可以直接调用此方法对请求信息签名，非单机应用一定要在服务器端储存签名私钥，并在服务器端进行签名操作。| For stand-alone applications, this method can be called directly to the request information signature, not stand-alone application must store the signature private key on the server side, and sign operation on the server side.
 		// 在服务端进行签名的cp可以将getStringForSign返回的待签名字符串传给服务端进行签名 | The CP, signed on the server side, can pass the pending signature string returned by Getstringforsign to the service side for signature
-		payReq.sign = PaySignUtil.rsaSign(PaySignUtil.getStringForSign(payReq), "");
+		payReq.sign = PaySignUtil.rsaSign(PaySignUtil.getStringForSign(payReq), hwPayPrivateKey);
 
 		return payReq;
 	}
@@ -354,6 +349,33 @@ public class VipHWCenterActivity extends BaseActivity {
 								.show();
 					}
 				}, throwable -> {});
+	}
+
+	private void setTurnOnVipUserName() {
+		turnOnVipNameList = new ArrayList<>();
+		turnOnVipNameList.add("雨天 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("秋叶 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("撕裂时光 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("真爱 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("许愿树 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("木瓜 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("山楂 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("夕阳 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("花依旧开 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("心在这里 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("无花果 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("萌兔 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("残缺布偶 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("潮汐 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("寂寞的心 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("丹樱。。。 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("如影随形 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("葛葛 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("薛金玲 开通了会员，赶快去和TA聊天吧！");
+		turnOnVipNameList.add("花物语 开通了会员，赶快去和TA聊天吧！");
+		if (null != mMarqueeView) {
+			mMarqueeView.startWithList(turnOnVipNameList);
+		}
 	}
 
 	@Override
