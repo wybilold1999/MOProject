@@ -11,8 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cyanbirds.momo.R;
@@ -43,17 +41,13 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class GiftMarketActivity extends BaseActivity implements View.OnClickListener{
 	@BindView(R.id.recyclerview)
-	RecyclerView mRecyclerview;
+    RecyclerView mRecyclerview;
 
 	TextView mGiftName;
 	SimpleDraweeView mGiftUrl;
-	TextView mAmount;
-	TextView mVipAmount;
 	SimpleDraweeView mMyPortrait;
 	SimpleDraweeView mOtherPortrait;
 	TextView mSendGift;
-	ImageView mVip;
-	LinearLayout mVipLay;
 
 	private View mGiftDialogView;
 	private AlertDialog mGiftDialog;
@@ -109,12 +103,6 @@ public class GiftMarketActivity extends BaseActivity implements View.OnClickList
 
 			mGiftName.setText(gift.name);
 			mGiftUrl.setImageURI(Uri.parse(gift.dynamic_image_url));
-			if (gift.vip_amount == 0) {
-				mVipAmount.setText("免费");
-			} else {
-				mVipAmount.setText(gift.vip_amount + "金币");
-			}
-			mAmount.setText(String.format(getResources().getString(R.string.org_price), gift.amount));
 			if (!TextUtils.isEmpty(AppManager.getClientUser().face_url)) {
 				mMyPortrait.setImageURI(Uri.parse(AppManager.getClientUser().face_url));
 			}
@@ -128,21 +116,10 @@ public class GiftMarketActivity extends BaseActivity implements View.OnClickList
 		mGiftDialogView = LayoutInflater.from(this).inflate(R.layout.dialog_send_gift, null);
 		mGiftName = (TextView) mGiftDialogView.findViewById(R.id.gift_name);
 		mGiftUrl = (SimpleDraweeView) mGiftDialogView.findViewById(R.id.gift_url);
-		mAmount = (TextView) mGiftDialogView.findViewById(R.id.amount);
-		mVip = (ImageView) mGiftDialogView.findViewById(R.id.iv_vip);
-		mVipLay = (LinearLayout)  mGiftDialogView.findViewById(R.id.vip_lay);
-		mVipAmount = (TextView) mGiftDialogView.findViewById(R.id.vip_amount);
 		mMyPortrait = (SimpleDraweeView) mGiftDialogView.findViewById(R.id.my_portrait);
 		mOtherPortrait = (SimpleDraweeView) mGiftDialogView.findViewById(R.id.other_portrait);
 		mSendGift = (TextView) mGiftDialogView.findViewById(R.id.send_gift);
 		mSendGift.setOnClickListener(this);
-		if (AppManager.getClientUser().isShowVip) {
-			mVipLay.setVisibility(View.VISIBLE);
-			mAmount.setVisibility(View.VISIBLE);
-		} else {
-			mVipLay.setVisibility(View.GONE);
-			mAmount.setVisibility(View.GONE);
-		}
 	}
 
 	@Override

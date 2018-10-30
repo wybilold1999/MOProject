@@ -32,6 +32,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_CURRENT_CITY;
+import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_LATITUDE;
+import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_LONGITUDE;
 import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_RL_ACCOUNT;
 import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_RL_FACE_LOCAL;
 import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_RL_IS_LOGIN;
@@ -499,6 +501,8 @@ public class AppManager {
 			clientUser.sessionId = sessionId;
 			clientUser.currentCity = sMMKV.decodeString(SETTINGS_CURRENT_CITY, "");
 			clientUser.sex = sMMKV.decodeString(SETTINGS_SEX, "");
+			clientUser.latitude = sMMKV.decodeString(SETTINGS_LATITUDE, "");
+			clientUser.longitude = sMMKV.decodeString(SETTINGS_LONGITUDE, "");
 			setClientUser(clientUser);
 		} catch (Exception e) {
 			e.printStackTrace();
