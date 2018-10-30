@@ -141,4 +141,12 @@ public interface IUserApi {
     @GET
     Observable<ResponseBody> getCityByIP(@Url String url);
 
+    /**
+     * 修改华为支付成功之后user为vip
+     * @param token
+     * @return
+     */
+    @GET("user/modifyUserVip")
+    Observable<ResponseBody> modifyUserVip(@Header("token") String token);
+
 }

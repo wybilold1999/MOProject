@@ -34,7 +34,6 @@ import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.GiveVipActivity;
-import com.cyanbirds.momo.activity.ShareLocationActivity;
 import com.cyanbirds.momo.activity.VipCenterActivity;
 import com.cyanbirds.momo.activity.VipHWCenterActivity;
 import com.cyanbirds.momo.adapter.TabPersonalPhotosAdapter;

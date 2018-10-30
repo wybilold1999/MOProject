@@ -215,13 +215,13 @@ public class PersonalFragment extends Fragment {
 			} else {
 				isVip.setVisibility(View.GONE);
 			}
-			if (clientUser.isShowVip) {
+			/*if (clientUser.isShowVip) {
 				mVipCard.setVisibility(View.VISIBLE);
 				vipLay.setVisibility(View.VISIBLE);
 			} else {
 				mVipCard.setVisibility(View.GONE);
 				vipLay.setVisibility(View.GONE);
-			}
+			}*/
 			if (clientUser.isShowAppointment) {
 				mAppointmentLay.setVisibility(View.VISIBLE);
 			} else {

@@ -39,6 +39,7 @@ public class SelectSexActivity extends BaseActivity<IUserLoginLogOut.Presenter> 
     private String mWeChatCode;
     private String mQQToken;
     private String mQQOpenId;
+    private String mHWOpenId;
 
     private FancyButton mBtLogin;
 
@@ -72,6 +73,7 @@ public class SelectSexActivity extends BaseActivity<IUserLoginLogOut.Presenter> 
         mWeChatCode = getIntent().getStringExtra("code");
         mQQToken = getIntent().getStringExtra("token");
         mQQOpenId = getIntent().getStringExtra("openId");
+        mHWOpenId = getIntent().getStringExtra("hw_open_id");
     }
 
     @Override
@@ -125,8 +127,10 @@ public class SelectSexActivity extends BaseActivity<IUserLoginLogOut.Presenter> 
         onShowLoading();
         if (!TextUtils.isEmpty(mWeChatCode)) {
             presenter.onWXLogin(mWeChatCode);
-        } else {
+        } else if (!TextUtils.isEmpty(mQQToken) && !TextUtils.isEmpty(mQQOpenId)){
             presenter.onQQLogin(mQQToken, mQQOpenId);
+        } else if (!TextUtils.isEmpty(mHWOpenId)) {
+            presenter.onHWLogin(mHWOpenId);
         }
     }
 

@@ -138,7 +138,7 @@ public class ClientUser implements Serializable{
     public String latitude = "";
     public String longitude = "";
 
-    public String currentCity;//定位的当前城市
+    public String currentCity = "";//定位的当前城市
 
     public long loginTime;//登录时间
     

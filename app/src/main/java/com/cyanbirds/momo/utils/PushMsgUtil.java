@@ -59,7 +59,7 @@ public class PushMsgUtil {
 		if (pushMsgModel != null && !TextUtils.isEmpty(pushMsgModel.sender)) {
 			if (pushMsgModel.msgType == PushMsgModel.MessageType.VOIP) {
 				if (!AppManager.getTopActivity(CSApplication.getInstance()).equals("com.cyanbirds.momo.activity.VoipCallActivity")) {
-					if (!AppManager.getClientUser().is_vip || AppManager.getClientUser().gold_num < 100) {
+					if (!AppManager.getClientUser().is_vip) {
 						//当前接收到消息的时间和登录时间相距小于1分钟，就延迟执行
 						if (System.currentTimeMillis() - AppManager.getClientUser().loginTime < 60000) {
 							mHandler.postDelayed(new Runnable() {
@@ -86,7 +86,7 @@ public class PushMsgUtil {
 			}
 			if (System.currentTimeMillis() - AppManager.getClientUser().loginTime < 60000 &&
 					pushMsgModel.msgType == PushMsgModel.MessageType.VOIP) {
-				if (!AppManager.getClientUser().is_vip || AppManager.getClientUser().gold_num < 100) {
+				if (!AppManager.getClientUser().is_vip) {
 					mHandler.postDelayed(new Runnable() {
 						@Override
 						public void run() {

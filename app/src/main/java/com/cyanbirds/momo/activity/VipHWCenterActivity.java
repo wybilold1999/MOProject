@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cyanbirds.momo.CSApplication;
@@ -74,6 +75,8 @@ public class VipHWCenterActivity extends BaseActivity {
 	NestedScrollView mScrollView;
 	@BindView(R.id.cum_qq)
 	TextView mCumQQ;
+	@BindView(R.id.speaker_lay)
+	RelativeLayout mSpeakerLay;
 
 	private MemberBuyAdapter mAdapter;
 
@@ -131,6 +134,11 @@ public class VipHWCenterActivity extends BaseActivity {
 	}
 
 	private void setupData() {
+		if (AppManager.getClientUser().isShowVip) {
+			mSpeakerLay.setVisibility(View.VISIBLE);
+		} else {
+			mSpeakerLay.setVisibility(View.GONE);
+		}
 		if (AppManager.getClientUser().isShowGiveVip || AppManager.getClientUser().isShowDownloadVip) {
 			mCumQQ.setVisibility(View.VISIBLE);
 		} else {
@@ -207,11 +215,7 @@ public class VipHWCenterActivity extends BaseActivity {
 		PayReq payReq = createPayReq(memberBuy);
 		HMSAgent.Pay.pay(payReq, (retCode, payInfo) -> {
 			if (retCode == HMSAgent.AgentResultCode.HMSAGENT_SUCCESS && payInfo != null) {
-				SDKCoreHelper.init(CSApplication.getInstance(), ECInitParams.LoginMode.FORCE_LOGIN);
-				AppManager.getClientUser().is_vip = true;
-				Snackbar.make(findViewById(R.id.vip_layout),
-						"您已经是会员了，赶快去聊天吧", Snackbar.LENGTH_SHORT)
-						.show();
+				modifyUserToVIP();
 			} else if (retCode == HMSAgent.AgentResultCode.ON_ACTIVITY_RESULT_ERROR
 					|| retCode == PayStatusCodes.PAY_STATE_TIME_OUT
 					|| retCode == PayStatusCodes.PAY_STATE_NET_ERROR) {
@@ -308,6 +312,31 @@ public class VipHWCenterActivity extends BaseActivity {
 						AppManager.getClientUser().is_vip = userVipModel.isVip;
 						AppManager.getClientUser().is_download_vip = userVipModel.isDownloadVip;
 						AppManager.getClientUser().gold_num = userVipModel.goldNum;
+						Snackbar.make(findViewById(R.id.vip_layout),
+								"您已经是会员了，赶快去聊天吧", Snackbar.LENGTH_SHORT)
+								.show();
+					}
+				}, throwable -> {});
+	}
+
+	/**
+	 * 修改user为vip
+	 */
+	private void modifyUserToVIP() {
+		RetrofitFactory.getRetrofit().create(IUserApi.class)
+				.modifyUserVip(AppManager.getClientUser().sessionId)
+				.subscribeOn(Schedulers.io())
+				.map(responseBody -> {
+					JsonObject obj = new JsonParser().parse(responseBody.string()).getAsJsonObject();
+					int code = obj.get("code").getAsInt();
+					return code;
+				})
+				.observeOn(AndroidSchedulers.mainThread())
+				.as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+				.subscribe(status -> {
+					if (status == 0) {//成功
+						SDKCoreHelper.init(CSApplication.getInstance(), ECInitParams.LoginMode.FORCE_LOGIN);
+						AppManager.getClientUser().is_vip = true;
 						Snackbar.make(findViewById(R.id.vip_layout),
 								"您已经是会员了，赶快去聊天吧", Snackbar.LENGTH_SHORT)
 								.show();

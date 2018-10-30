@@ -28,8 +28,6 @@ import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.PushMsgUtil;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.huawei.android.hms.agent.HMSAgent;
-import com.huawei.android.hms.agent.common.handler.CheckUpdateHandler;
-import com.huawei.android.hms.agent.common.handler.ConnectHandler;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.uber.autodispose.AutoDispose;
@@ -89,23 +87,10 @@ public class LauncherActivity extends AppCompatActivity {
     }
 
     private void hwConnect() {
-        // 在首个界面，需要调用connect进行连接 | In the first page, you need to call connect
-        HMSAgent.connect(this, new ConnectHandler() {
-            @Override
-            public void onConnect(int rst) {
-                init();
-                loadData();
-                checkHWUpdate();
-            }
-        });
-    }
-
-    private void checkHWUpdate() {
-        HMSAgent.checkUpdate(this, new CheckUpdateHandler() {
-            @Override
-            public void onResult(int rst) {
-                ToastUtil.showMessage("check app update rst:" + rst);
-            }
+        // 在首个界面，需要调用connect进行连接
+        HMSAgent.connect(this, rst -> {
+            init();
+            loadData();
         });
     }
 
