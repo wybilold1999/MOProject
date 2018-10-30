@@ -36,6 +36,7 @@ import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.IUserFollowApi;
 import com.cyanbirds.momo.net.base.RetrofitFactory;
 import com.cyanbirds.momo.net.request.DownloadFileRequest;
+import com.cyanbirds.momo.utils.CheckUtil;
 import com.cyanbirds.momo.utils.FileAccessorUtils;
 import com.cyanbirds.momo.utils.JsonUtils;
 import com.cyanbirds.momo.utils.Md5Util;
@@ -130,6 +131,8 @@ public class PersonalFragment extends Fragment {
 
 	private Observable<UserEvent> observable;
 
+	private String channel;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
@@ -156,6 +159,7 @@ public class PersonalFragment extends Fragment {
 	}
 
 	private void setupData() {
+		channel = CheckUtil.getAppMetaData(getActivity(), "UMENG_CHANNEL");
 		mLoveRedPoint.setVisibility(View.VISIBLE);
 		mAttentionRedPoint.setVisibility(View.VISIBLE);
 		mGiftRedPoint.setVisibility(View.VISIBLE);
@@ -271,9 +275,13 @@ public class PersonalFragment extends Fragment {
 				break;
 			case R.id.vip_lay:
 				if (AppManager.getClientUser().isShowGold) {
-					intent.setClass(getActivity(), VipHWCenterActivity.class);
-				} else {
 					intent.setClass(getActivity(), VipCenterActivity.class);
+				} else {
+					intent.setClass(getActivity(), VipHWCenterActivity.class);
+				}
+				if (AppConstants.CITY.contains(AppManager.getClientUser().currentCity) &&
+						"huawei".equals(channel)) {//华为渠道，并且在深圳，就跳转到华为支付，不受isShowGold字段影响
+					intent.setClass(getActivity(), VipHWCenterActivity.class);
 				}
 				startActivity(intent);
 				break;

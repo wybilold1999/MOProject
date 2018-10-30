@@ -493,9 +493,9 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 			dialog.dismiss();
 			Intent intent = new Intent();
 			if (AppManager.getClientUser().isShowGold) {
-				intent.setClass(ChatActivity.this, VipHWCenterActivity.class);
-			} else {
 				intent.setClass(ChatActivity.this, VipCenterActivity.class);
+			} else {
+				intent.setClass(ChatActivity.this, VipHWCenterActivity.class);
 			}
 			startActivity(intent);
 		}));

@@ -141,9 +141,9 @@ public class VoipCallActivity extends BaseActivity {
             dialog.dismiss();
             Intent intent = new Intent();
             if (AppManager.getClientUser().isShowGold) {
-                intent.setClass(VoipCallActivity.this, VipHWCenterActivity.class);
-            } else {
                 intent.setClass(VoipCallActivity.this, VipCenterActivity.class);
+            } else {
+                intent.setClass(VoipCallActivity.this, VipHWCenterActivity.class);
             }
             startActivity(intent);
             finish();

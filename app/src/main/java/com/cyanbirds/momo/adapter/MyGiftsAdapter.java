@@ -178,9 +178,9 @@ public class MyGiftsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             dialog.dismiss();
             Intent intent = new Intent();
             if (AppManager.getClientUser().isShowGold) {
-                intent.setClass(mContext, VipHWCenterActivity.class);
-            } else {
                 intent.setClass(mContext, VipCenterActivity.class);
+            } else {
+                intent.setClass(mContext, VipHWCenterActivity.class);
             }
             mContext.startActivity(intent);
         }));

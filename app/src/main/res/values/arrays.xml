@@ -137,7 +137,7 @@
     </string-array>
     <string-array name="quit_items">
         <item>退出当前账号</item>
-        <item>关闭探爱交友</item>
+        <item>关闭同城有缘交友</item>
     </string-array>
 
     <string-array name="marry_state">

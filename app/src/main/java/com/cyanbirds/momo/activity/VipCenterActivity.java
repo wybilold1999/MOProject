@@ -180,7 +180,7 @@ public class VipCenterActivity extends BaseActivity {
 		} else {
 			mVip7Lay.setVisibility(View.GONE);
 		}
-		if (AppManager.getClientUser().is_vip || AppManager.getClientUser().isShowDownloadVip) {
+		if (!AppManager.getClientUser().isShowGiveVip || AppManager.getClientUser().isShowDownloadVip) {
 			mCumQQ.setVisibility(View.VISIBLE);
 		} else {
 			mCumQQ.setVisibility(View.INVISIBLE);

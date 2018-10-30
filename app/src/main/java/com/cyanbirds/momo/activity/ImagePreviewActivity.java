@@ -91,9 +91,9 @@ public class ImagePreviewActivity extends BaseActivity {
 			dialog.dismiss();
 			Intent intent = new Intent();
 			if (AppManager.getClientUser().isShowGold) {
-				intent.setClass(ImagePreviewActivity.this, VipHWCenterActivity.class);
-			} else {
 				intent.setClass(ImagePreviewActivity.this, VipCenterActivity.class);
+			} else {
+				intent.setClass(ImagePreviewActivity.this, VipHWCenterActivity.class);
 			}
 			startActivity(intent);
 		}));

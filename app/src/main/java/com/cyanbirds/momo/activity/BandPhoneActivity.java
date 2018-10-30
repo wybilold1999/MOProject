@@ -1,39 +1,23 @@
 package com.cyanbirds.momo.activity;
 
-import android.arch.lifecycle.Lifecycle;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.widget.EditText;
 
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
-import com.cyanbirds.momo.entity.ClientUser;
-import com.cyanbirds.momo.manager.AppManager;
-import com.cyanbirds.momo.net.IUserApi;
-import com.cyanbirds.momo.net.base.RetrofitFactory;
+import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.utils.CheckUtil;
-import com.cyanbirds.momo.utils.ProgressDialogUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.uber.autodispose.AutoDispose;
-import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 import com.umeng.analytics.MobclickAgent;
-
-import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.ObservableSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
+import cn.smssdk.SMSSDK;
 import mehdi.sakout.fancybuttons.FancyButton;
-import okhttp3.ResponseBody;
 
 /**
  * @author wangyb
@@ -46,6 +30,8 @@ public class BandPhoneActivity extends BaseActivity {
     EditText mPhoneNum;
     @BindView(R.id.next)
     FancyButton mNext;
+
+    private final int START_INTENT = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,70 +62,21 @@ public class BandPhoneActivity extends BaseActivity {
     @OnClick(R.id.next)
     public void onViewClicked() {
         if (checkInput()) {
-            ProgressDialogUtils.getInstance(this).show(R.string.wait);
-            AppManager.getClientUser().isCheckPhone = true;
-            AppManager.getClientUser().mobile = mPhoneNum.getText().toString();
-            RetrofitFactory.getRetrofit().create(IUserApi.class)
-                    .updateUserInfo(AppManager.getClientUser().sessionId, getParam(AppManager.getClientUser()))
-                    .subscribeOn(Schedulers.io())
-                    .map(responseBody -> {
-                        AppManager.setClientUser(AppManager.getClientUser());
-                        AppManager.saveUserInfo();
-                        JsonObject obj = new JsonParser().parse(responseBody.string()).getAsJsonObject();
-                        int code = obj.get("code").getAsInt();
-                        return code;
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
-                    .subscribe(integer -> {
-                        ProgressDialogUtils.getInstance(BandPhoneActivity.this).dismiss();
-                        if (integer == 0) {//绑定成功
-                            ToastUtil.showMessage(R.string.bangding_success);
-                        } else {
-                            ToastUtil.showMessage(R.string.bangding_faile);
-                        }
-                        finish();
-                    }, throwable -> {
-                        ProgressDialogUtils.getInstance(BandPhoneActivity.this).dismiss();
-                        ToastUtil.showMessage(R.string.network_requests_error);
-                    });
+            String phone_num = mPhoneNum.getText().toString();
+            SMSSDK.getVerificationCode("86", phone_num);
+            Intent intent = new Intent(BandPhoneActivity.this, RegisterCaptchaActivity.class);
+            intent.putExtra(ValueKey.PHONE_NUMBER, phone_num);
+            intent.putExtra(ValueKey.INPUT_PHONE_TYPE, 2);
+            startActivityForResult(intent, START_INTENT);
         }
     }
 
-    private ArrayMap<String, String> getParam(ClientUser clientUser) {
-        ArrayMap<String, String> params = new ArrayMap<>();
-        params.put("sex", clientUser.sex);
-        params.put("nickName", clientUser.user_name);
-        params.put("faceurl", clientUser.face_url);
-        if(!TextUtils.isEmpty(clientUser.personality_tag)){
-            params.put("personalityTag", clientUser.personality_tag);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == START_INTENT && resultCode ==RESULT_OK) {
+            finish();
         }
-        if(!TextUtils.isEmpty(clientUser.part_tag)){
-            params.put("partTag", clientUser.part_tag);
-        }
-        if(!TextUtils.isEmpty(clientUser.intrest_tag)){
-            params.put("intrestTag", clientUser.intrest_tag);
-        }
-        params.put("age", String.valueOf(clientUser.age));
-        params.put("signature", clientUser.signature == null ? "" : clientUser.signature);
-        params.put("qq", clientUser.qq_no == null ? "" : clientUser.qq_no);
-        params.put("wechat", clientUser.weixin_no == null ? "" : clientUser.weixin_no);
-        params.put("publicSocialNumber", String.valueOf(clientUser.publicSocialNumber));
-        params.put("emotionStatus", clientUser.state_marry == null ? "" : clientUser.state_marry);
-        params.put("tall", clientUser.tall == null ? "" : clientUser.tall);
-        params.put("weight", clientUser.weight == null ? "" : clientUser.weight);
-        params.put("constellation", clientUser.constellation == null ? "" : clientUser.constellation);
-        params.put("occupation", clientUser.occupation == null ? "" : clientUser.occupation);
-        params.put("education", clientUser.education == null ? "" : clientUser.education);
-        params.put("purpose", clientUser.purpose == null ? "" : clientUser.purpose);
-        params.put("loveWhere", clientUser.love_where == null ? "" : clientUser.love_where);
-        params.put("doWhatFirst", clientUser.do_what_first == null ? "" : clientUser.do_what_first);
-        params.put("conception", clientUser.conception == null ? "" : clientUser.conception);
-        params.put("isDownloadVip", String.valueOf(clientUser.is_download_vip));
-        params.put("goldNum", String.valueOf(clientUser.gold_num));
-        params.put("phone", clientUser.mobile);
-        params.put("isCheckPhone", String.valueOf(clientUser.isCheckPhone));
-        return params;
     }
 
     /**

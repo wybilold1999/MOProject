@@ -34,6 +34,7 @@ import com.cyanbirds.momo.utils.RxBus;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.cyanbirds.momo.utils.Util;
 import com.cyanbirds.momo.view.IUserLoginLogOut;
+import com.huawei.android.hms.agent.HMSAgent;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.common.Constants;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
@@ -63,6 +64,7 @@ public class RegisterActivity extends BaseActivity<IUserLoginLogOut.Presenter> i
     ImageView weiXinLogin;
     ImageView mSelectMan;
     ImageView mSelectLady;
+    ImageView hwLogin;
 
     public static Tencent mTencent;
     private UserInfo mInfo;
@@ -101,6 +103,7 @@ public class RegisterActivity extends BaseActivity<IUserLoginLogOut.Presenter> i
         qqLogin = findViewById(R.id.qq_login);
         mSelectMan = findViewById(R.id.select_man);
         mSelectLady = findViewById(R.id.select_lady);
+        hwLogin = findViewById(R.id.hw_login);
 
     }
 
@@ -110,6 +113,7 @@ public class RegisterActivity extends BaseActivity<IUserLoginLogOut.Presenter> i
         mSelectLady.setOnClickListener(this);
         qqLogin.setOnClickListener(this);
         weiXinLogin.setOnClickListener(this);
+        hwLogin.setOnClickListener(this);
     }
 
     @Override
@@ -141,6 +145,13 @@ public class RegisterActivity extends BaseActivity<IUserLoginLogOut.Presenter> i
                     ToastUtil.showMessage(R.string.please_select_sex);
                 }
                 break;
+            case R.id.hw_login:
+                if (!TextUtils.isEmpty(AppManager.getClientUser().sex)) {
+                    hwLogin();
+                } else {
+                    ToastUtil.showMessage(R.string.please_select_sex);
+                }
+                break;
         }
     }
 
@@ -163,6 +174,24 @@ public class RegisterActivity extends BaseActivity<IUserLoginLogOut.Presenter> i
             mTencent.login(this, "all", loginListener);
         }
     }
+
+    /**
+     * 华为登录授权 | Login Authorization
+     * 如果已经授权登录则直接回调结果，否则：forceLogin为true时会拉起界面，为false时直接回调错误码
+     */
+    private void hwLogin() {
+        ProgressDialogUtils.getInstance(this).show(R.string.wait);
+        HMSAgent.Hwid.signIn(true, (rtnCode, signInResult) -> {
+            ProgressDialogUtils.getInstance(this).dismiss();
+            if (rtnCode == HMSAgent.AgentResultCode.HMSAGENT_SUCCESS && signInResult != null) {
+                onShowLoading();
+                presenter.onHWLogin(signInResult.getOpenId());
+            } else {
+                ToastUtil.showMessage(R.string.weibosdk_demo_toast_auth_failed);
+            }
+        });
+    }
+
 
     /**
      * rx订阅

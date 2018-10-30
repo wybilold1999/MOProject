@@ -1,8 +1,10 @@
 package com.cyanbirds.momo.activity;
 
+import android.arch.lifecycle.Lifecycle;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,13 +16,22 @@ import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.ClientUser;
+import com.cyanbirds.momo.manager.AppManager;
+import com.cyanbirds.momo.net.IUserApi;
+import com.cyanbirds.momo.net.base.RetrofitFactory;
 import com.cyanbirds.momo.presenter.SmsCodePresenterImpl;
 import com.cyanbirds.momo.utils.ProgressDialogUtils;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.cyanbirds.momo.view.IUserLoginLogOut;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 import com.umeng.analytics.MobclickAgent;
 
 import cn.smssdk.SMSSDK;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import mehdi.sakout.fancybuttons.FancyButton;
 
 /**
@@ -139,25 +150,94 @@ public class RegisterCaptchaActivity extends BaseActivity<IUserLoginLogOut.Check
 
 	@Override
 	public void checkSmsCode(int checkCode) {
-		ProgressDialogUtils.getInstance(RegisterCaptchaActivity.this).dismiss();
 		if (checkCode == 200) {
 			Intent intent = new Intent();
 			if(mPhoneType == 0){//注册
+				ProgressDialogUtils.getInstance(RegisterCaptchaActivity.this).dismiss();
 				intent.setClass(RegisterCaptchaActivity.this, RegisterSubmitActivity.class);
 				intent.putExtra(ValueKey.USER, mClientUser);
 				startActivity(intent);
 			} else if(mPhoneType == 1){//找回密码
+				ProgressDialogUtils.getInstance(RegisterCaptchaActivity.this).dismiss();
 				intent.setClass(RegisterCaptchaActivity.this, InputNewPwdActivity.class);
 				intent.putExtra(ValueKey.SMS_CODE, mSmsCode.getText().toString().trim());
 				intent.putExtra(ValueKey.PHONE_NUMBER, mPhone);
 				intent.putExtra(ValueKey.LOCATION, mCurrrentCity);
 				startActivity(intent);
+			} else if(mPhoneType == 2){//绑定手机
+				bandPhone();
 			}
 		} else {
+			ProgressDialogUtils.getInstance(RegisterCaptchaActivity.this).dismiss();
 			ToastUtil.showMessage("验证失败");
 		}
 	}
-
+	
+	private void bandPhone() {
+		AppManager.getClientUser().isCheckPhone = true;
+		AppManager.getClientUser().mobile = mPhone;
+		RetrofitFactory.getRetrofit().create(IUserApi.class)
+				.updateUserInfo(AppManager.getClientUser().sessionId, getParam(AppManager.getClientUser()))
+				.subscribeOn(Schedulers.io())
+				.map(responseBody -> {
+					AppManager.setClientUser(AppManager.getClientUser());
+					AppManager.saveUserInfo();
+					JsonObject obj = new JsonParser().parse(responseBody.string()).getAsJsonObject();
+					int code = obj.get("code").getAsInt();
+					return code;
+				})
+				.observeOn(AndroidSchedulers.mainThread())
+				.as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
+				.subscribe(integer -> {
+					ProgressDialogUtils.getInstance(RegisterCaptchaActivity.this).dismiss();
+					if (integer == 0) {//绑定成功
+						ToastUtil.showMessage(R.string.bangding_success);
+						setResult(RESULT_OK);
+					} else {
+						ToastUtil.showMessage(R.string.bangding_faile);
+					}
+					finish();
+				}, throwable -> {
+					ProgressDialogUtils.getInstance(RegisterCaptchaActivity.this).dismiss();
+					ToastUtil.showMessage(R.string.network_requests_error);
+				});
+	}
+	
+	private ArrayMap<String, String> getParam(ClientUser clientUser) {
+		ArrayMap<String, String> params = new ArrayMap<>();
+		params.put("sex", clientUser.sex);
+		params.put("nickName", clientUser.user_name);
+		params.put("faceurl", clientUser.face_url);
+		if(!TextUtils.isEmpty(clientUser.personality_tag)){
+			params.put("personalityTag", clientUser.personality_tag);
+		}
+		if(!TextUtils.isEmpty(clientUser.part_tag)){
+			params.put("partTag", clientUser.part_tag);
+		}
+		if(!TextUtils.isEmpty(clientUser.intrest_tag)){
+			params.put("intrestTag", clientUser.intrest_tag);
+		}
+		params.put("age", String.valueOf(clientUser.age));
+		params.put("signature", clientUser.signature == null ? "" : clientUser.signature);
+		params.put("qq", clientUser.qq_no == null ? "" : clientUser.qq_no);
+		params.put("wechat", clientUser.weixin_no == null ? "" : clientUser.weixin_no);
+		params.put("publicSocialNumber", String.valueOf(clientUser.publicSocialNumber));
+		params.put("emotionStatus", clientUser.state_marry == null ? "" : clientUser.state_marry);
+		params.put("tall", clientUser.tall == null ? "" : clientUser.tall);
+		params.put("weight", clientUser.weight == null ? "" : clientUser.weight);
+		params.put("constellation", clientUser.constellation == null ? "" : clientUser.constellation);
+		params.put("occupation", clientUser.occupation == null ? "" : clientUser.occupation);
+		params.put("education", clientUser.education == null ? "" : clientUser.education);
+		params.put("purpose", clientUser.purpose == null ? "" : clientUser.purpose);
+		params.put("loveWhere", clientUser.love_where == null ? "" : clientUser.love_where);
+		params.put("doWhatFirst", clientUser.do_what_first == null ? "" : clientUser.do_what_first);
+		params.put("conception", clientUser.conception == null ? "" : clientUser.conception);
+		params.put("isDownloadVip", String.valueOf(clientUser.is_download_vip));
+		params.put("goldNum", String.valueOf(clientUser.gold_num));
+		params.put("phone", clientUser.mobile);
+		params.put("isCheckPhone", String.valueOf(clientUser.isCheckPhone));
+		return params;
+	}
 
 	/**
 	 * 验证输入

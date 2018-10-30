@@ -344,9 +344,9 @@ public class ShareLocationActivity extends BaseActivity implements
 			dialog.dismiss();
 			Intent intent = new Intent();
 			if (AppManager.getClientUser().isShowGold) {
-				intent.setClass(ShareLocationActivity.this, VipHWCenterActivity.class);
-			} else {
 				intent.setClass(ShareLocationActivity.this, VipCenterActivity.class);
+			} else {
+				intent.setClass(ShareLocationActivity.this, VipHWCenterActivity.class);
 			}
 			startActivity(intent);
 		}));

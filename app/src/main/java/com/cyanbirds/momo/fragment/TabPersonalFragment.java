@@ -524,9 +524,9 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 			dialog.dismiss();
 			Intent intent = new Intent();
 			if (AppManager.getClientUser().isShowGold) {
-				intent.setClass(getActivity(), VipHWCenterActivity.class);
-			} else {
 				intent.setClass(getActivity(), VipCenterActivity.class);
+			} else {
+				intent.setClass(getActivity(), VipHWCenterActivity.class);
 			}
 			startActivity(intent);
 		}));
