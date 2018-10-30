@@ -586,54 +586,109 @@
                 app:cardElevation="1dp"
                 app:cardPreventCornerOverlap="true">
 
-                <RelativeLayout
-                    android:id="@+id/feedback"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="?android:selectableItemBackground"
-                    android:clickable="true"
-                    android:descendantFocusability="blocksDescendants">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/iv_feedback"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_alignParentLeft="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp"
-                        android:contentDescription="@null"
-                        android:src="@mipmap/write_paper_icon"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_toRightOf="@id/iv_feedback"
-                        android:text="@string/feed_back"
-                        android:textSize="16sp"/>
-
-                    <ImageView
-                        android:id="@id/personal_enter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="20dp"
-                        android:layout_marginRight="20dp"
-                        android:contentDescription="@null"
-                        android:src="@mipmap/personal_enter"/>
-
-                    <View
+                    <RelativeLayout
+                        android:id="@+id/custom_service"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/divider_height"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginLeft="@dimen/divider_margin_left"
-                        android:background="@color/divider_color"
-                        android:contentDescription="@null"/>
-                </RelativeLayout>
+                        android:layout_height="50dp"
+                        android:background="?android:selectableItemBackground"
+                        android:clickable="true"
+                        android:descendantFocusability="blocksDescendants">
+
+                        <ImageView
+                            android:id="@+id/iv_cs"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="20dp"
+                            android:contentDescription="@null"
+                            android:src="@mipmap/icon_custom_service"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_toRightOf="@id/iv_cs"
+                            android:text="@string/my_custom_service_tv"
+                            android:textSize="16sp"/>
+
+                        <ImageView
+                            android:id="@id/personal_enter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginRight="20dp"
+                            android:contentDescription="@null"
+                            android:src="@mipmap/personal_enter"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/divider_height"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginLeft="@dimen/divider_margin_left"
+                            android:background="@color/divider_color"
+                            android:contentDescription="@null"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/feedback"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="?android:selectableItemBackground"
+                        android:clickable="true"
+                        android:descendantFocusability="blocksDescendants">
+
+                        <ImageView
+                            android:id="@+id/iv_feedback"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="20dp"
+                            android:contentDescription="@null"
+                            android:src="@mipmap/write_paper_icon"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_toRightOf="@id/iv_feedback"
+                            android:text="@string/feed_back"
+                            android:textSize="16sp"/>
+
+                        <ImageView
+                            android:id="@id/personal_enter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginRight="20dp"
+                            android:contentDescription="@null"
+                            android:src="@mipmap/personal_enter"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/divider_height"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginLeft="@dimen/divider_margin_left"
+                            android:background="@color/divider_color"
+                            android:contentDescription="@null"/>
+                    </RelativeLayout>
+                </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView

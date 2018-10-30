@@ -28,20 +28,12 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/about_us"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
         android:layout_gravity="center_horizontal"
-        android:text="Copyright @2013-2016"
+        android:text="@string/obout_us"
         android:textColor="@color/gray_text"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:layout_gravity="center_horizontal"
-        android:text="深圳市青鸟网络科技有限公司"
-        android:textColor="@color/gray_text"
-        android:visibility="gone"/>
 
 </LinearLayout>

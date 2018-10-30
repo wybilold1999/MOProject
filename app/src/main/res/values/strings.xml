@@ -386,7 +386,7 @@
     <string name="tv_fare">充值送话费！让您尽情谈情，尽情约爱！</string>
     <string name="tv_fare_info">1.限时抢购单次充值满100即有机会获赠话费\n2.绑定手机充值话费将会自动充值到您的手机中</string>
     <!--<string name="tv_refund">退费说明：\n我司为了更加重视和关注完善用户体验，根据有旧版本的用户的相关反馈，特意提供退费联系人信息。也请新用户继续监督和提供宝贵的意见和建议。谢谢！\n注意，退款需要提供以下信息：\n1.退款方式\n2.退款联系人相关信息\n3.支付宝账户、微信账户、银行卡号 三者选一\n\n客服QQ：2350635875</string>-->
-    <string name="tv_refund">我司为了更加重视和关注完善用户体验，特意提供了意见反馈功能和QQ客服功能，请用户继续监督和提供宝贵的意见和建议。谢谢！\n\n客服QQ：2350635875</string>
+    <string name="tv_refund">我司为了更加重视和关注完善用户体验，特意提供了意见反馈功能和QQ客服功能，请用户继续监督和提供宝贵的意见和建议。谢谢！</string>
 
     <string name="geting_tel_fare">充值送话费活动火热进行中!</string>
     <string name="get_tel_fare">领取话费</string>
@@ -420,5 +420,17 @@
     <string name="can_not_use_app">禁止使用该权限将无法使用该软件,请在权限选项中打开该权限</string>
     <string name="permission_request">权限申请</string>
     <string name="selected_sex_not_modify">请选择您的性别，选择确定后将无法更改</string>
+
+    <string name="my_custom_service_tv">我的客服</string>
+    <string name="obout_us">如有任何问题，请及时联系我们\n统一客服QQ:2350635875\n工作时间：9:00~18:00(周一至周日)\nCopyright@2018</string>
+    <string name="my_custom_service">尊敬的用户，您有任何问题，可联系客服中心，我们将竭诚为您服务：\n统一客服QQ:2350635875\n工作时间：9:00~18:00(周一至周日)\n\n
+        常见问题：\n一、为什么异性不给我回复消息？\n(1)对方当前不在线或者掉线\n(2)对方屏蔽了您的消息\n(3)对方收信太多，您的消息未被对方看到或者未吸引到对方\n\n
+        二、如何增加异性的回复消息的概率？\n(1)上传五官清晰的个人头像\n(2)增加您的活跃度，让更多异性发现您
+    </string>
+    <string name="my_custom_service_vip">(3)升级VIP，您的消息将会在对方消息界面置顶\n\n三、购买VIP会员后还是不能聊天？\n在设置界面退出之后用您开通VIP的账号重新登录即可</string>
+    <string name="my_custom_service_notice">注意：\n请大家自觉文明聊天，共同营造良好的交友环境！\n\n重要提示：如发现上传了带有色情的昵称和头像、冒充性别、发布广告信息等将直接封杀永不解封\n\n
+        特别提醒：请不要轻易加对方微信QQ等账号，以免被对方诈骗！一定不要转账给陌生人！！！一上来就让你加社交联系方式的，那一定是打广告的骗子，请不要相信！最后您在使用的过程中有任何疑问，可直接联系客服小妹获得帮助
+    </string>
+    <string name="no_responsibility">免责声明</string>
 
 </resources>

@@ -11,6 +11,7 @@ import com.cyanbirds.momo.entity.FollowModel;
 import com.cyanbirds.momo.entity.Gift;
 import com.cyanbirds.momo.entity.LoveModel;
 import com.cyanbirds.momo.entity.MemberBuy;
+import com.cyanbirds.momo.entity.NoResponsibilityModel;
 import com.cyanbirds.momo.entity.PictureModel;
 import com.cyanbirds.momo.entity.ReceiveGiftModel;
 import com.cyanbirds.momo.entity.WeChatPay;
@@ -528,4 +529,19 @@ public class JsonUtils {
         return "";
     }
 
+    public static NoResponsibilityModel parseNoResponsibilityModel(String json) {
+        try {
+            String decryptData = AESOperator.getInstance().decrypt(json);
+            JsonObject obj = new JsonParser().parse(decryptData).getAsJsonObject();
+            int code = obj.get("code").getAsInt();
+            if (code != 0) {
+                return null;
+            }
+            Gson gson = new Gson();
+            NoResponsibilityModel model = gson.fromJson(obj.getAsJsonObject("data"), NoResponsibilityModel.class);
+            return model;
+        } catch (Exception e) {
+        }
+        return null;
+    }
 }

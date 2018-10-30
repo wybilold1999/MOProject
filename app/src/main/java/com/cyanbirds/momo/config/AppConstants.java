@@ -67,6 +67,10 @@ public class AppConstants {
 
 	public static String BUGLY_ID = "f073ac20a8";
 
+	public static String HW_APP_ID = "100074243";//华为appid
+
+	public static String HW_MERCHANT_ID = "890086000101001987";//华为支付商户id
+
 	public static String CITY_WE_CHAT_RESP_CODE = "city_we_chat_resp_code";
 
 	public static String PAY_SUCCESS = "pay_success";

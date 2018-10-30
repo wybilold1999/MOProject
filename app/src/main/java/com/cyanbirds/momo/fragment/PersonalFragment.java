@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.AboutActivity;
 import com.cyanbirds.momo.activity.AttentionMeActivity;
+import com.cyanbirds.momo.activity.CustomServiceActivity;
 import com.cyanbirds.momo.activity.FeedBackActivity;
 import com.cyanbirds.momo.activity.GiveVipActivity;
 import com.cyanbirds.momo.activity.LoveFormeActivity;
@@ -50,7 +51,6 @@ import java.io.File;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -100,13 +100,13 @@ public class PersonalFragment extends Fragment {
 	@BindView(R.id.about)
 	RelativeLayout about;
 	@BindView(R.id.portrait)
-	SimpleDraweeView mPortrait;
+    SimpleDraweeView mPortrait;
 	@BindView(R.id.my_gifts)
 	RelativeLayout mMyGifts;
 	@BindView(R.id.gifts_count)
 	TextView giftsCount;
 	@BindView(R.id.vip_card)
-	CardView mVipCard;
+    CardView mVipCard;
 	@BindView(R.id.gift_red_point)
 	ImageView mGiftRedPoint;
 	@BindView(R.id.attention_red_point)
@@ -114,9 +114,11 @@ public class PersonalFragment extends Fragment {
 	@BindView(R.id.love_red_point)
 	ImageView mLoveRedPoint;
 	@BindView(R.id.card_feedback)
-	CardView mFeedBackCard;
+    CardView mFeedBackCard;
 	@BindView(R.id.feedback)
 	RelativeLayout mFeedBack;
+	@BindView(R.id.custom_service)
+	RelativeLayout mCustomService;
 	@BindView(R.id.my_appointment_lay)
 	RelativeLayout mAppointmentLay;
 	@BindView(R.id.give_vip)
@@ -216,11 +218,9 @@ public class PersonalFragment extends Fragment {
 			if (clientUser.isShowVip) {
 				mVipCard.setVisibility(View.VISIBLE);
 				vipLay.setVisibility(View.VISIBLE);
-				mFeedBackCard.setVisibility(View.GONE);
 			} else {
 				mVipCard.setVisibility(View.GONE);
 				vipLay.setVisibility(View.GONE);
-				mFeedBackCard.setVisibility(View.VISIBLE);
 			}
 			if (clientUser.isShowAppointment) {
 				mAppointmentLay.setVisibility(View.VISIBLE);
@@ -231,6 +231,11 @@ public class PersonalFragment extends Fragment {
 				mGiveVipLay.setVisibility(View.VISIBLE);
 			} else {
 				mGiveVipLay.setVisibility(View.GONE);
+			}
+			if (!clientUser.isShowGiveVip || clientUser.isShowDownloadVip) {
+				mCustomService.setVisibility(View.VISIBLE);
+			} else {
+				mCustomService.setVisibility(View.GONE);
 			}
 		}
 	}
@@ -255,7 +260,7 @@ public class PersonalFragment extends Fragment {
 	@OnClick({
 			R.id.head_portrait_lay, R.id.vip_lay, R.id.my_attention,
 			R.id.attentioned_user, R.id.good_user, R.id.setting, R.id.about, R.id.my_gifts,
-			R.id.feedback, R.id.my_appointment_lay, R.id.give_vip})
+			R.id.feedback, R.id.custom_service, R.id.my_appointment_lay, R.id.give_vip})
 	public void onClick(View view) {
 		Intent intent = new Intent();
 		switch (view.getId()) {
@@ -301,6 +306,10 @@ public class PersonalFragment extends Fragment {
 				break;
 			case R.id.feedback:
 				intent.setClass(getActivity(), FeedBackActivity.class);
+				startActivity(intent);
+				break;
+			case R.id.custom_service:
+				intent.setClass(getActivity(), CustomServiceActivity.class);
 				startActivity(intent);
 				break;
 			case R.id.my_appointment_lay:

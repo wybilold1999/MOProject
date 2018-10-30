@@ -26,6 +26,8 @@ import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 
+import mehdi.sakout.fancybuttons.FancyButton;
+
 /**
  * Created by Administrator on 2016/4/23.
  */
@@ -37,7 +39,8 @@ public class SelectSexActivity extends BaseActivity<IUserLoginLogOut.Presenter> 
     private String mWeChatCode;
     private String mQQToken;
     private String mQQOpenId;
-    private String mHWOpenId;
+
+    private FancyButton mBtLogin;
 
 
     @Override
@@ -56,19 +59,19 @@ public class SelectSexActivity extends BaseActivity<IUserLoginLogOut.Presenter> 
     private void setupView() {
         mSelectMan = findViewById(R.id.select_man);
         mSelectLady = findViewById(R.id.select_lady);
-
+        mBtLogin = findViewById(R.id.btn_login);
     }
 
     private void setupEvent() {
         mSelectMan.setOnClickListener(this);
         mSelectLady.setOnClickListener(this);
+        mBtLogin.setOnClickListener(this);
     }
 
     private void setupData(){
         mWeChatCode = getIntent().getStringExtra("code");
         mQQToken = getIntent().getStringExtra("token");
         mQQOpenId = getIntent().getStringExtra("openId");
-        mHWOpenId = getIntent().getStringExtra("hw_open_id");
     }
 
     @Override
@@ -79,6 +82,9 @@ public class SelectSexActivity extends BaseActivity<IUserLoginLogOut.Presenter> 
                 break;
             case R.id.select_lady :
                 showSelectSexDialog(R.id.select_lady);
+                break;
+            case R.id.btn_login :
+                loginType();
                 break;
         }
     }
@@ -110,7 +116,6 @@ public class SelectSexActivity extends BaseActivity<IUserLoginLogOut.Presenter> 
                             mSelectLady.setImageResource(R.mipmap.radio_women_focused_bg);
                         }
                         dialog.dismiss();
-                        loginType();
                     }
                 });
         builder.show();
@@ -120,10 +125,8 @@ public class SelectSexActivity extends BaseActivity<IUserLoginLogOut.Presenter> 
         onShowLoading();
         if (!TextUtils.isEmpty(mWeChatCode)) {
             presenter.onWXLogin(mWeChatCode);
-        } else if (!TextUtils.isEmpty(mQQOpenId) && !TextUtils.isEmpty(mQQToken)){
+        } else {
             presenter.onQQLogin(mQQToken, mQQOpenId);
-        } else if (!TextUtils.isEmpty(mHWOpenId)){
-            presenter.onHWLogin(mHWOpenId);
         }
     }
 

@@ -58,4 +58,6 @@ public interface IUserBuyApi {
      */
     @GET("buy/hw_pay_key")
     Observable<ResponseBody> getHWPayPrivateKey(@Header("token") String token);
+
+
 }

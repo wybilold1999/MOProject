@@ -3,6 +3,7 @@ package com.cyanbirds.momo.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -36,6 +37,10 @@ import butterknife.OnClick;
  */
 public class SettingActivity extends BaseActivity<IUserLoginLogOut.Presenter> implements IUserLoginLogOut.View {
 
+    @BindView(R.id.card_no_responsibility)
+    CardView mNoRespCard;
+    @BindView(R.id.no_responsibility_lay)
+    RelativeLayout mNoRespLay;
     @BindView(R.id.switch_msg)
     SwitchCompat mSwitchMsg;
     @BindView(R.id.switch_msg_content)
@@ -72,6 +77,11 @@ public class SettingActivity extends BaseActivity<IUserLoginLogOut.Presenter> im
     }
 
     private void setupData() {
+        if (AppManager.getClientUser().isShowVip) {
+            mNoRespCard.setVisibility(View.VISIBLE);
+        } else {
+            mNoRespCard.setVisibility(View.GONE);
+        }
         if (AppManager.getClientUser().isCheckPhone) {
             mIsBangdingPhone.setText(R.string.already_bangding);
         } else {
@@ -97,13 +107,18 @@ public class SettingActivity extends BaseActivity<IUserLoginLogOut.Presenter> im
         } else {
             mSwitchVibrate.setChecked(false);
         }
+
     }
 
-    @OnClick({R.id.switch_msg, R.id.switch_msg_content, R.id.switch_voice, R.id.switch_vibrate,
+    @OnClick({R.id.no_responsibility_lay, R.id.switch_msg, R.id.switch_msg_content, R.id.switch_voice, R.id.switch_vibrate,
             R.id.banding_phone_lay, R.id.modify_pwd_lay, R.id.quit})
     public void onViewClicked(View view) {
         Intent intent = new Intent();
         switch (view.getId()) {
+            case R.id.no_responsibility_lay:
+                intent.setClass(this, NoResponsibilityActivity.class);
+                startActivity(intent);
+                break;
             case R.id.switch_msg:
                 if (PreferencesUtils.getNewMessageNotice(this)) {
                     mSwitchMsg.setChecked(false);

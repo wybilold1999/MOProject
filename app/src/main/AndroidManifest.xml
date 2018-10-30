@@ -405,6 +405,22 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity
+            android:name=".activity.CustomServiceActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="@string/my_custom_service_tv"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".activity.NoResponsibilityActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="@string/no_responsibility"
+            android:screenOrientation="portrait">
+        </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.cyanbirds.momo.fileProvider"

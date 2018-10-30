@@ -11,8 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cyanbirds.momo.CSApplication;
@@ -72,14 +70,8 @@ public class VipHWCenterActivity extends BaseActivity {
 	MarqueeView mMarqueeView;
 	@BindView(R.id.recyclerview)
 	RecyclerView mRecyclerView;
-	@BindView(R.id.preferential)
-	TextView mPreferential;//优惠的说明文字，可以控制什么时候显示
-	@BindView(R.id.vip_7_lay)
-	RelativeLayout mVip7Lay;
 	@BindView(R.id.scrollView)
 	NestedScrollView mScrollView;
-	@BindView(R.id.pref_tel_fare_lay)
-	LinearLayout mPrefTelFareLay;
 	@BindView(R.id.cum_qq)
 	TextView mCumQQ;
 
@@ -95,10 +87,6 @@ public class VipHWCenterActivity extends BaseActivity {
 	 */
 	private final int NORMAL_VIP = 0;
 
-	private List<Integer> array;
-
-	private String mPref;//优惠信息
-
 	private Observable<?> observable;
 
 	private String hwPayPrivateKey = "";
@@ -107,7 +95,7 @@ public class VipHWCenterActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_vipcenter);
+		setContentView(R.layout.activity_hw_vipcenter);
 		ButterKnife.bind(this);
 		mToolbar = (Toolbar) findViewById(R.id.toolbar);
 		if (mToolbar != null) {
@@ -143,20 +131,10 @@ public class VipHWCenterActivity extends BaseActivity {
 	}
 
 	private void setupData() {
-		if (!AppManager.getClientUser().is_vip) {
-			mVip7Lay.setVisibility(View.VISIBLE);
-		} else {
-			mVip7Lay.setVisibility(View.GONE);
-		}
-		if (AppManager.getClientUser().is_vip || AppManager.getClientUser().isShowDownloadVip) {
+		if (AppManager.getClientUser().isShowGiveVip || AppManager.getClientUser().isShowDownloadVip) {
 			mCumQQ.setVisibility(View.VISIBLE);
 		} else {
 			mCumQQ.setVisibility(View.INVISIBLE);
-		}
-		if (AppManager.getClientUser().isShowLovers) {
-			mPrefTelFareLay.setVisibility(View.VISIBLE);
-		} else {
-			mPrefTelFareLay.setVisibility(View.GONE);
 		}
 		getMemberBuy(NORMAL_VIP);
 	}
@@ -178,7 +156,6 @@ public class VipHWCenterActivity extends BaseActivity {
 							turnOnVipNameList.add(name + " 开通了会员，赶快去和TA聊天吧！");
 						}
 						mMarqueeView.startWithList(turnOnVipNameList);
-						mPreferential.setText(mPref);
 					} else {
 						setTurnOnVipUserName();
 					}
@@ -196,21 +173,6 @@ public class VipHWCenterActivity extends BaseActivity {
 					mAdapter = new MemberBuyAdapter(VipHWCenterActivity.this, memberBuys);
 					mAdapter.setOnItemClickListener(mOnItemClickListener);
 					mRecyclerView.setAdapter(mAdapter);
-
-					if (null != memberBuys && memberBuys.size() > 0) {
-						array = new ArrayList<>(memberBuys.size());
-						for (int i = 0; i < memberBuys.size(); i++) {
-							if (!TextUtils.isEmpty(memberBuys.get(i).preferential) &&
-									memberBuys.get(i).preferential.length() > 10) {
-								mPreferential.setVisibility(View.VISIBLE);
-								mPref = memberBuys.get(i).preferential;
-								continue;
-							}
-							if (!TextUtils.isEmpty(memberBuys.get(i).preferential)) {
-								array.add(Integer.parseInt(memberBuys.get(i).preferential));
-							}
-						}
-					}
 					getUserName(1, 100);
 				}, throwable -> {});
 	}
@@ -245,7 +207,11 @@ public class VipHWCenterActivity extends BaseActivity {
 		PayReq payReq = createPayReq(memberBuy);
 		HMSAgent.Pay.pay(payReq, (retCode, payInfo) -> {
 			if (retCode == HMSAgent.AgentResultCode.HMSAGENT_SUCCESS && payInfo != null) {
-				getPayResult();
+				SDKCoreHelper.init(CSApplication.getInstance(), ECInitParams.LoginMode.FORCE_LOGIN);
+				AppManager.getClientUser().is_vip = true;
+				Snackbar.make(findViewById(R.id.vip_layout),
+						"您已经是会员了，赶快去聊天吧", Snackbar.LENGTH_SHORT)
+						.show();
 			} else if (retCode == HMSAgent.AgentResultCode.ON_ACTIVITY_RESULT_ERROR
 					|| retCode == PayStatusCodes.PAY_STATE_TIME_OUT
 					|| retCode == PayStatusCodes.PAY_STATE_NET_ERROR) {
@@ -253,8 +219,6 @@ public class VipHWCenterActivity extends BaseActivity {
 				getPayResult();
 			} else {
 				ToastUtil.showMessage(R.string.pay_failure);
-//					showLog("pay: onResult: pay fail=" + retCode);
-				// 其他错误码意义参照支付api参考 | Other error code meaning reference payment API reference
 			}
 		});
 	}
@@ -285,9 +249,9 @@ public class VipHWCenterActivity extends BaseActivity {
 		//商品描述 | Product Description
 		payReq.productDesc = memberBuy.descreption;
 		// 商户ID，来源于开发者联盟，也叫“支付id” | Merchant ID, from the Developer Alliance, also known as "Payment ID"
-		payReq.merchantId = "cpId";
+		payReq.merchantId = AppConstants.HW_MERCHANT_ID;
 		// 应用ID，来源于开发者联盟 | Application ID, from the Developer Alliance
-		payReq.applicationID = "100074243";
+		payReq.applicationID = AppConstants.HW_APP_ID;
 		// 支付金额 | Amount paid
 		payReq.amount = amount;
 		// 支付订单号 | Payment order Number
@@ -339,7 +303,7 @@ public class VipHWCenterActivity extends BaseActivity {
 				.observeOn(AndroidSchedulers.mainThread())
 				.as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(this, Lifecycle.Event.ON_DESTROY)))
 				.subscribe(userVipModel -> {
-					if (userVipModel != null) {
+					if (userVipModel != null && userVipModel.isVip) {
 						SDKCoreHelper.init(CSApplication.getInstance(), ECInitParams.LoginMode.FORCE_LOGIN);
 						AppManager.getClientUser().is_vip = userVipModel.isVip;
 						AppManager.getClientUser().is_download_vip = userVipModel.isDownloadVip;

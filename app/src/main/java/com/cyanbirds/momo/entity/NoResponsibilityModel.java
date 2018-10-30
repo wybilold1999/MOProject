@@ -2,10 +2,10 @@ package com.cyanbirds.momo.entity;
 
 /**
  * Created by wangyb on 2018/2/23.
- * 返话费活动
+ * 免责声明
  */
 
-public class FareActivityModel {
+public class NoResponsibilityModel {
     public String qualify;//资格
     public String getRule;//规则
     public String getCondition;//条件

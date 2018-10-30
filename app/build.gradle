@@ -18,7 +18,7 @@ android {
         manifestPlaceholders = [
                 XG_ACCESS_ID:"2100281882",
                 XG_ACCESS_KEY : "AA2WT91C4I2T",
-                HMSVERSION:"2.6.1",PACKAGE_NAME: "com.cyanbirds.momo", APPID:"100074243", CPID:"10086000000000293"
+                HMSVERSION:"2.6.1",PACKAGE_NAME: "com.cyanbirds.momo", APPID:"100074243", CPID:"890086000101001987"
         ]
 
         ndk {

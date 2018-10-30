@@ -2,6 +2,7 @@ package com.cyanbirds.momo.activity;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.TextView;
 
 import com.cyanbirds.momo.R;
@@ -18,6 +19,7 @@ import com.umeng.analytics.MobclickAgent;
 public class AboutActivity extends BaseActivity {
 
 	private TextView mVersionInfo;
+	private TextView mBoutUs;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +30,6 @@ public class AboutActivity extends BaseActivity {
 			toolbar.setNavigationIcon(R.mipmap.ic_up);
 		}
 		setupViews();
-		setupEvent();
 		setupData();
 	}
 
@@ -36,13 +37,13 @@ public class AboutActivity extends BaseActivity {
 	 * 设置视图
 	 */
 	private void setupViews() {
-		mVersionInfo = (TextView) findViewById(R.id.version_info);
-	}
-
-	/**
-	 * 设置事件
-	 */
-	private void setupEvent() {
+		mVersionInfo = findViewById(R.id.version_info);
+		mBoutUs = findViewById(R.id.about_us);
+		if (!AppManager.getClientUser().isShowGiveVip || AppManager.getClientUser().isShowDownloadVip) {
+			mBoutUs.setVisibility(View.VISIBLE);
+		} else {
+			mBoutUs.setVisibility(View.GONE);
+		}
 	}
 
 	/**

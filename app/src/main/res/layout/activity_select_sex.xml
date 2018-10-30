@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -37,6 +38,20 @@
         android:layout_below="@id/toolbar_actionbar"
         android:textSize="16sp"
         android:text="@string/selected_sex_not_modify"/>
+
+    <mehdi.sakout.fancybuttons.FancyButton
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/sex_img_layout"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        fancy:fb_defaultColor="@color/colorPrimary"
+        fancy:fb_focusColor="@color/colorAccent"
+        fancy:fb_radius="5dp"
+        fancy:fb_text="@string/login"
+        fancy:fb_textColor="#ffffffff"/>
 
 
 
