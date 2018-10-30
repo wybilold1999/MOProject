@@ -137,7 +137,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/icon_attentioned"/>
+                            android:src="@mipmap/my_profile_dynamic_icon"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -236,7 +236,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/icon_square_letter"/>
+                            android:src="@mipmap/module_msgsender_guider_gift"/>
 
                         <TextView
                             android:id="@+id/tv_my_gift"
@@ -315,7 +315,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/icon_lookme"/>
+                            android:src="@mipmap/my_invite_friend_icon"/>
 
                         <TextView
                             android:id="@+id/tv_attention_me"
@@ -394,7 +394,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/good_focused"/>
+                            android:src="@mipmap/my_profile_mylove_icon"/>
 
                         <TextView
                             android:id="@+id/tv_love_me"
@@ -491,7 +491,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/icon_vip"/>
+                            android:src="@mipmap/my_profile_vip_icon"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -607,7 +607,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/icon_custom_service"/>
+                            android:src="@mipmap/vip_free_message"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -656,7 +656,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/write_paper_icon"/>
+                            android:src="@mipmap/vip_free_signup"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -721,7 +721,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/icon_settings"/>
+                            android:src="@mipmap/my_profile_setting_icon"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -770,7 +770,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
                             android:contentDescription="@null"
-                            android:src="@mipmap/about"/>
+                            android:src="@mipmap/my_profile_qa_icon"/>
 
                         <TextView
                             android:layout_width="wrap_content"

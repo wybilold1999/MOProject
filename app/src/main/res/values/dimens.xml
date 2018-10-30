@@ -7,7 +7,6 @@
     <!-- actionBar title左边距 -->
     <dimen name="keyline_2">20dp</dimen>
     <dimen name="keyline_2_minus_16dp">56dp</dimen>
-    <dimen name="headerbar_elevation">0dp</dimen>
 
     <!-- 分割线 -->
     <dimen name="divider_height">1.0px</dimen>
@@ -17,9 +16,6 @@
     <!-- 位置信息图片宽高 -->
     <dimen name="location_img_w">220dp</dimen>
     <dimen name="location_img_h">130dp</dimen>
-
-    <dimen name="codelab_fab_margin_right">16dp</dimen>
-    <dimen name="codelab_fab_margin_bottom">16dp</dimen>
 
     <!-- CircularProgress Default -->
     <color name="circular_progress_color">@color/colorPrimary</color>
@@ -36,6 +32,5 @@
     <dimen name="conversation_enoticon_wh">20dp</dimen>
 
     <dimen name="sn_16sp">16sp</dimen>
-    <dimen name="dp_10dp">20dp</dimen>
 
 </resources>

@@ -10,6 +10,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -96,6 +97,8 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 	private RxPermissions rxPermissions;
 
 	private static Handler mHandler = new Handler();
+
+	private ViewPagerAdapter mViewPagerAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -435,6 +438,15 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 				if(bottomNavigationView.getMenu().getItem(position).isChecked()){
 					bottomNavigationView.getMenu().getItem(position).setChecked(false);
 				}
+				String title = getResources().getString(R.string.tab_find_love);
+				if (position == 1) {
+					title = getResources().getString(R.string.tab_found);
+				} else if (position == 2) {
+					title = getResources().getString(R.string.tab_message);
+				} else if (position == 3) {
+					title = getResources().getString(R.string.tab_personal);
+				}
+				mViewPagerAdapter.getItem(position).getActivity().setTitle(title);
 			}
 
 			@Override
@@ -458,13 +470,13 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 	}
 
 	private void setupViewPager(ViewPager viewPager) {
-		ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+		mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-		adapter.addFragment(new HomeLoveFragment());
-		adapter.addFragment(new FoundFragment());
-		adapter.addFragment(new MessageFragment());
-		adapter.addFragment(new PersonalFragment());
-		viewPager.setAdapter(adapter);
+		mViewPagerAdapter.addFragment(new HomeLoveFragment());
+		mViewPagerAdapter.addFragment(new FoundFragment());
+		mViewPagerAdapter.addFragment(new MessageFragment());
+		mViewPagerAdapter.addFragment(new PersonalFragment());
+		viewPager.setAdapter(mViewPagerAdapter);
 	}
 
 

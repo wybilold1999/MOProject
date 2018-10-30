@@ -139,21 +139,10 @@
         <item>退出当前账号</item>
         <item>关闭探爱交友</item>
     </string-array>
-    <string-array name="login_history_more">
-        <item>切换账号</item>
-        <item>注册</item>
-    </string-array>
 
     <string-array name="marry_state">
         <item>单身</item>
         <item>热恋</item>
-    </string-array>
-
-    <string-array name="blood_type">
-        <item>A型</item>
-        <item>B型</item>
-        <item>AB型</item>
-        <item>O型</item>
     </string-array>
 
     <string-array name="constellation">
@@ -425,23 +414,6 @@
         <item>唱歌</item>
         <item>交友</item>
         <item>听音乐</item>
-    </string-array>
-
-    <string-array name="appointment_content">
-        <item>看电影</item>
-        <item>吃饭</item>
-        <item>逛街</item>
-        <item>唱歌</item>
-        <item>运动</item>
-        <item>其他</item>
-    </string-array>
-
-    <string-array name="appointment_long">
-        <item>1小时</item>
-        <item>2小时</item>
-        <item>3小时</item>
-        <item>4小时</item>
-        <item>5小时</item>
     </string-array>
 
 </resources>
