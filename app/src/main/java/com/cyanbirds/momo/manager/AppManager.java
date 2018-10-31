@@ -17,7 +17,6 @@ import com.alibaba.sdk.android.oss.OSS;
 import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.entity.FederationToken;
 import com.cyanbirds.momo.entity.IMessage;
-import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mmkv.MMKV;
 
@@ -328,16 +327,20 @@ public class AppManager {
 	 * @return boolean
 	 */
 	public static boolean isAppAlive(Context context, String packageName) {
-		ActivityManager activityManager = (ActivityManager) context
-				.getSystemService(Context.ACTIVITY_SERVICE);
-		List<ActivityManager.RunningAppProcessInfo> processInfos = activityManager
-				.getRunningAppProcesses();
-		for (int i = 0; i < processInfos.size(); i++) {
-			if (processInfos.get(i).processName.equals(packageName)) {
-				return true;
+		ActivityManager am = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+		List<RunningTaskInfo> list = am.getRunningTasks(100);
+		if (list.size() <= 0) {
+			return false;
+		}
+		boolean isAppRunning = false;
+		//100表示取的最大的任务数，info.topActivity表示当前正在运行的Activity，info.baseActivity表系统后台有此进程在运行
+		for (RunningTaskInfo info : list) {
+			if (info.topActivity.getPackageName().equals(packageName) || info.baseActivity.getPackageName().equals(packageName)) {
+				isAppRunning = true;
+				break;
 			}
 		}
-		return false;
+		return isAppRunning;
 	}
 
 	/**

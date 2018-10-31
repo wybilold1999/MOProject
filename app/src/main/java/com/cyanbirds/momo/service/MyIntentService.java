@@ -61,7 +61,7 @@ public class MyIntentService extends GTIntentService {
 		if (!TextUtils.isEmpty(clientid) && !isAlreadyUpload) {
 			isAlreadyUpload = true;
 			PushManager.getInstance().bindAlias(context, AppManager.getClientUser().userId);
-			new UploadTokenRequest().request(clientid, "");
+			new UploadTokenRequest().request(clientid, "", "");
 		}
 	}
 

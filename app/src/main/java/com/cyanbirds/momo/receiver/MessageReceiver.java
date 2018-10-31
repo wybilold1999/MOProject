@@ -121,7 +121,7 @@ public class MessageReceiver extends XGPushBaseReceiver {
         if (errorCode == XGPushBaseReceiver.SUCCESS) {
             // 在这里拿token
             String token = message.getToken();
-            new UploadTokenRequest().request("", token);
+            new UploadTokenRequest().request("", token, "");
         }
     }
 

@@ -17,10 +17,11 @@ import retrofit2.Callback;
  * @email 395044952@qq.com
  */
 public class UploadTokenRequest extends ResultPostExecute<String> {
-    public void request(String gtClientId, String xgToken){
+    public void request(String gtClientId, String xgToken, String hwToken){
         ArrayMap<String, String> map = new ArrayMap<>();
         map.put("gtClientId", gtClientId);
         map.put("xgToken", xgToken);
+        map.put("hwToken", hwToken);
         Call<ResponseBody> call = RetrofitFactory.getRetrofit().create(IUserApi.class).uploadToken(map, AppManager.getClientUser().sessionId);
         call.enqueue(new Callback<ResponseBody>() {
             @Override

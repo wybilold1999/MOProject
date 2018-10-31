@@ -10,7 +10,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -58,6 +57,7 @@ import com.cyanbirds.momo.utils.MsgUtil;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.PushMsgUtil;
 import com.cyanbirds.momo.utils.Utils;
+import com.huawei.android.hms.agent.HMSAgent;
 import com.igexin.sdk.PushManager;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.android.tpush.XGPushManager;
@@ -128,7 +128,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 
 				XGPushManager.registerPush(getApplicationContext());
 
-				loadData();
+				initHWPush();
 
 			}
 		});
@@ -140,6 +140,9 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 		} else {
 			SDKCoreHelper.init(CSApplication.getInstance(), ECInitParams.LoginMode.FORCE_LOGIN);
 		}
+
+		loadData();
+
 	}
 
 	/**
@@ -213,6 +216,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 	private void loadData() {
 		String msg = getIntent().getStringExtra(ValueKey.DATA);
 		if (!TextUtils.isEmpty(msg)) {
+			viewPager.setCurrentItem(2);
 			PushMsgUtil.getInstance().handlePushMsg(false, msg);
 			NotificationManager.getInstance().cancelNotification();
 			AppManager.isMsgClick = true;
@@ -274,6 +278,21 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 		// SDK初始化，第三方程序启动时，都要进行SDK初始化工作
 		PushManager.getInstance().initialize(this.getApplicationContext(), MyPushService.class);
 		PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), MyIntentService.class);
+	}
+
+	/**
+	 * 华为推送注册
+	 */
+	private void initHWPush() {
+		HMSAgent.Push.getToken((rst) -> {
+			if (rst != 0) {
+				initHWPush();
+			}
+		});
+		/**
+		 * 能接收透传消息
+		 */
+		HMSAgent.Push.enableReceiveNormalMsg(true ,(rst -> {}));
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">同城有缘交友</string>
-    <string name="app_name_short">有缘交友</string>
     <string name="setting">设置</string>
     <string name="about">关于</string>
     <string name="feed_back">意见反馈</string>
