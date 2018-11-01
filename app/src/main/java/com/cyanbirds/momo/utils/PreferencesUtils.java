@@ -17,47 +17,47 @@ import com.cyanbirds.momo.manager.AppManager;
 public class PreferencesUtils {
 
 	/** 保存登陆账号 */
-	public static final String SETTINGS_RL_ACCOUNT = "com.cyanbird.tanlove_account";
+	public static final String SETTINGS_RL_ACCOUNT = "com.cyanbirds.momo_account";
 	/** 保存登陆密码 */
-	public static final String SETTINGS_RL_PASSWORD = "com.cyanbird.tanlove_p";
+	public static final String SETTINGS_RL_PASSWORD = "com.cyanbirds.momo_p";
 	/** 手机号 */
-	public static final String SETTINGS_RL_USER_MOBILE = "com.cyanbird.tanlove_mobile";
+	public static final String SETTINGS_RL_USER_MOBILE = "com.cyanbirds.momo_mobile";
 	/** 用户名 */
-	public static final String SETTINGS_RL_USER_USER_NAME = "com.cyanbird.tanlove_user_name";
+	public static final String SETTINGS_RL_USER_USER_NAME = "com.cyanbirds.momo_user_name";
 	/** 某用户是否第一次登录 */
-	public static final String SETTINGS_RL_FIRST_LOGIN = "com.cyanbird.tanlove_first_login";
+	public static final String SETTINGS_RL_FIRST_LOGIN = "com.cyanbirds.momo_first_login";
 	/** 是否登录 */
-	public static final String SETTINGS_RL_IS_LOGIN = "com.cyanbird.tanlove_is_login";
+	public static final String SETTINGS_RL_IS_LOGIN = "com.cyanbirds.momo_is_login";
 	/** 本地头像地址 */
-	public static final String SETTINGS_RL_FACE_LOCAL = "com.cyanbird.tanlove_face_local";
+	public static final String SETTINGS_RL_FACE_LOCAL = "com.cyanbirds.momo_face_local";
 	/**sessionId */
-	public static final String SETTINGS_RL_SESSIONID = "com.cyanbird.tanlove_sessionid";
+	public static final String SETTINGS_RL_SESSIONID = "com.cyanbirds.momo_sessionid";
 	/** 新消息提醒 */
-	public static final String SETTINGS_RL_NEW_MESSAGE_NOTICE = "com.cyanbird.tanlove_new_message_notice";
+	public static final String SETTINGS_RL_NEW_MESSAGE_NOTICE = "com.cyanbirds.momo_new_message_notice";
 	/** 通知显示消息详情 */
-	public static final String SETTINGS_RL_NOTICE_MESSAGE_INFO = "com.cyanbird.tanlove_notice_message_info";
+	public static final String SETTINGS_RL_NOTICE_MESSAGE_INFO = "com.cyanbirds.momo_notice_message_info";
 	/** 通知声音*/
-	public static final String SETTINGS_RL_NOTICE_VOICE = "com.cyanbird.tanlove_notice_voice";
+	public static final String SETTINGS_RL_NOTICE_VOICE = "com.cyanbirds.momo_notice_voice";
 	/** 通知震动*/
-	public static final String SETTINGS_RL_NOTICE_SHOCK = "com.cyanbird.tanlove_notice_shock";
+	public static final String SETTINGS_RL_NOTICE_SHOCK = "com.cyanbirds.momo_notice_shock";
 	/** 听筒播放*/
-	public static final String SETTINGS_RL_EARPIECE_PLAY_VOICE = "com.cyanbird.tanlove_earpiece_play_voice";
+	public static final String SETTINGS_RL_EARPIECE_PLAY_VOICE = "com.cyanbirds.momo_earpiece_play_voice";
 	/** 定位到的城市*/
-	public static final String SETTINGS_CURRENT_CITY = "com.cyanbird.tanlove_current_city";
+	public static final String SETTINGS_CURRENT_CITY = "com.cyanbirds.momo_current_city";
 	/** 最近喜欢我的userid*/
-	public static final String SETTINGS_LOVE_ME_USER_ID = "com.cyanbird.tanlove_love_me_user_id";
+	public static final String SETTINGS_LOVE_ME_USER_ID = "com.cyanbirds.momo_love_me_user_id";
 	/** 最近关注我的userid*/
-	public static final String SETTINGS_ATTENTION_ME_USER_ID = "com.cyanbird.tanlove_attention_me_user_id";
+	public static final String SETTINGS_ATTENTION_ME_USER_ID = "com.cyanbirds.momo_attention_me_user_id";
 	/** 最近送我礼物的userid*/
-	public static final String SETTINGS_GIFT_ME_USER_ID = "com.cyanbird.tanlove_gift_me_user_id";
+	public static final String SETTINGS_GIFT_ME_USER_ID = "com.cyanbirds.momo_gift_me_user_id";
 	/** 登录时间*/
-	public static final String SETTINGS_LOGIN_TIME = "com.cyanbird.tanlove_login_time";
+	public static final String SETTINGS_LOGIN_TIME = "com.cyanbirds.momo_login_time";
 	/** 省份*/
-	public static final String SETTINGS_CURRENT_PROVINCE = "com.cyanbird.tanlove_current_province";
+	public static final String SETTINGS_CURRENT_PROVINCE = "com.cyanbirds.momo_current_province";
 	/** 经度*/
-	public static final String SETTINGS_LATITUDE = "com.cyanbird.tanlove_latitude";
+	public static final String SETTINGS_LATITUDE = "com.cyanbirds.momo_latitude";
 	/** 纬度*/
-	public static final String SETTINGS_LONGITUDE = "com.cyanbird.tanlove_longitude";
+	public static final String SETTINGS_LONGITUDE = "com.cyanbirds.momo_longitude";
 	/** 是否上传好评截图*/
 	public static final String SETTINGS_APP_COMMENT = "com.cyanbirds.momo_app_comment";
 	/** 高德定位是否成功 **/

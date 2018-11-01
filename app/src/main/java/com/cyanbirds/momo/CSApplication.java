@@ -1,9 +1,7 @@
 package com.cyanbirds.momo;
 
 import android.graphics.Bitmap;
-import android.preference.PreferenceManager;
 import android.support.multidex.MultiDexApplication;
-import android.text.TextUtils;
 import android.util.SparseIntArray;
 
 import com.cyanbirds.momo.config.AppConstants;
@@ -11,7 +9,6 @@ import com.cyanbirds.momo.helper.AppActivityLifecycleCallbacks;
 import com.cyanbirds.momo.helper.CrashHandler;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.net.base.RetrofitManager;
-import com.cyanbirds.momo.utils.FileAccessorUtils;
 import com.facebook.cache.disk.DiskCacheConfig;
 import com.facebook.common.util.ByteConstants;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -33,7 +30,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.cyanbirds.momo.config.AppConstants.BUGLY_ID;
-import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_RL_ACCOUNT;
 
 /**
  * 
@@ -63,9 +59,6 @@ public class CSApplication extends MultiDexApplication {
 			MMKV.initialize(sApplication);
 			AppManager.setMMKV(MMKV.defaultMMKV());
 			AppManager.setContext(sApplication);
-			if (TextUtils.isEmpty(AppManager.getMMKV().decodeString(SETTINGS_RL_ACCOUNT))) {
-				AppManager.getMMKV().importFromSharedPreferences(PreferenceManager.getDefaultSharedPreferences(sApplication));
-			}
 
 			AppManager.setUserInfo();
 
@@ -108,7 +101,7 @@ public class CSApplication extends MultiDexApplication {
 	private void initFresco() {
 		DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(this)
 				.setBaseDirectoryPath(getCacheDir())
-				.setBaseDirectoryName("tan_love")
+				.setBaseDirectoryName("mo_love")
 				.setMaxCacheSize(500*1024*1024)//500MB
 				.setMaxCacheSizeOnLowDiskSpace(10 * 1024 * 1024)
 				.setMaxCacheSizeOnVeryLowDiskSpace(5 * 1024 * 1024)
