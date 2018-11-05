@@ -40,11 +40,11 @@ public class SmsCodePresenterImpl implements IUserLoginLogOut.CheckSmsCodePresen
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(status -> {
-                    if (mViewWeakReference.get() != null) {
+                    if (null != mViewWeakReference && mViewWeakReference.get() != null) {
                         mViewWeakReference.get().checkSmsCode(status);
                     }
                 }, throwable -> {
-                    if (mViewWeakReference.get() != null) {
+                    if (null != mViewWeakReference && mViewWeakReference.get() != null) {
                         mViewWeakReference.get().onShowNetError();
                     }
                 });

@@ -88,7 +88,7 @@ public class SelectSexActivity extends BaseActivity<IUserLoginLogOut.Presenter> 
                 if (!TextUtils.isEmpty(AppManager.getClientUser().sex)) {
                     loginType();
                 } else {
-                    ToastUtil.showMessage(R.string.select_sex);
+                    ToastUtil.showMessage(R.string.please_select_sex);
                 }
                 break;
         }

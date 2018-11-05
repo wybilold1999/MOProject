@@ -65,18 +65,18 @@ public class UserLoginPresenterImpl implements IUserLoginLogOut.Presenter {
                     IMChattingHelper.getInstance().sendInitLoginMsg();
                 })
                 .observeOn(AndroidSchedulers.mainThread());
-        if (mViewWeakReference.get() != null) {
+        if (null != mViewWeakReference && mViewWeakReference.get() != null) {
             observable.as(mViewWeakReference.get().bindAutoDispose());
         }
         observable.subscribe(clientUser -> {
-                    if (mViewWeakReference.get() != null) {
+                    if (null != mViewWeakReference && mViewWeakReference.get() != null) {
                         mViewWeakReference.get().loginLogOutSuccess(clientUser);
                     } else {
                         return;
                     }
                 },
                 throwable -> {
-                    if (mViewWeakReference.get() != null) {
+                    if (null != mViewWeakReference && mViewWeakReference.get() != null) {
                         if (throwable instanceof NullPointerException) {
                             mViewWeakReference.get().loginLogOutSuccess(null);
                         } else {
@@ -125,18 +125,18 @@ public class UserLoginPresenterImpl implements IUserLoginLogOut.Presenter {
                     IMChattingHelper.getInstance().sendInitLoginMsg();
                 })
                 .observeOn(AndroidSchedulers.mainThread());
-        if (mViewWeakReference.get() != null) {
+        if (null != mViewWeakReference && mViewWeakReference.get() != null) {
             observable.as(mViewWeakReference.get().bindAutoDispose());
         }
         observable.subscribe(clientUser -> {
-                    if (mViewWeakReference.get() != null) {
+                    if (null != mViewWeakReference && mViewWeakReference.get() != null) {
                         mViewWeakReference.get().loginLogOutSuccess(clientUser);
                     } else {
                         return;
                     }
                 },
                 throwable -> {
-                    if (mViewWeakReference.get() != null) {
+                    if (null != mViewWeakReference && mViewWeakReference.get() != null) {
                         if (throwable instanceof NullPointerException) {
                             mViewWeakReference.get().loginLogOutSuccess(null);
                         } else {
@@ -187,18 +187,18 @@ public class UserLoginPresenterImpl implements IUserLoginLogOut.Presenter {
                     IMChattingHelper.getInstance().sendInitLoginMsg();
                 })
                 .observeOn(AndroidSchedulers.mainThread());
-        if (mViewWeakReference.get() != null) {
+        if (null != mViewWeakReference && mViewWeakReference.get() != null) {
             observable.as(mViewWeakReference.get().bindAutoDispose());
         }
         observable.subscribe(clientUser -> {
-                    if (mViewWeakReference.get() != null) {
+                    if (null != mViewWeakReference && mViewWeakReference.get() != null) {
                         mViewWeakReference.get().loginLogOutSuccess(clientUser);
                     } else {
                         return;
                     }
                 },
                 throwable -> {
-                    if (mViewWeakReference.get() != null) {
+                    if (null != mViewWeakReference && mViewWeakReference.get() != null) {
                         if (throwable instanceof NullPointerException) {
                             mViewWeakReference.get().loginLogOutSuccess(null);
                         } else {
@@ -252,18 +252,18 @@ public class UserLoginPresenterImpl implements IUserLoginLogOut.Presenter {
                     IMChattingHelper.getInstance().sendInitLoginMsg();
                 })
                 .observeOn(AndroidSchedulers.mainThread());
-        if (mViewWeakReference.get() != null) {
+        if (null != mViewWeakReference && mViewWeakReference.get() != null) {
             observable.as(mViewWeakReference.get().bindAutoDispose());
         }
         observable.subscribe(mClientUser -> {
-                    if (mViewWeakReference.get() != null) {
+                    if (null != mViewWeakReference && mViewWeakReference.get() != null) {
                         mViewWeakReference.get().loginLogOutSuccess(mClientUser);
                     } else {
                         return;
                     }
                 },
                 throwable -> {
-                    if (mViewWeakReference.get() != null) {
+                    if (null != mViewWeakReference && mViewWeakReference.get() != null) {
                         if (throwable instanceof NullPointerException) {
                             mViewWeakReference.get().loginLogOutSuccess(null);
                         } else {
@@ -297,18 +297,18 @@ public class UserLoginPresenterImpl implements IUserLoginLogOut.Presenter {
                     return clientUser;
                 })
                 .observeOn(AndroidSchedulers.mainThread());
-        if (mViewWeakReference.get() != null) {
+        if (null != mViewWeakReference && mViewWeakReference.get() != null) {
             observable.as(mViewWeakReference.get().bindAutoDispose());
         }
         observable.subscribe(mClientUser -> {
-                    if (mViewWeakReference.get() != null) {
+                    if (null != mViewWeakReference && mViewWeakReference.get() != null) {
                         mViewWeakReference.get().loginLogOutSuccess(mClientUser);
                     } else {
                         return;
                     }
                 },
                 throwable -> {
-                    if (mViewWeakReference.get() != null) {
+                    if (null != mViewWeakReference && mViewWeakReference.get() != null) {
                         mViewWeakReference.get().onShowNetError();
                     } else {
                         return;
@@ -353,18 +353,18 @@ public class UserLoginPresenterImpl implements IUserLoginLogOut.Presenter {
                     IMChattingHelper.getInstance().sendInitLoginMsg();
                 })
                 .observeOn(AndroidSchedulers.mainThread());
-        if (mViewWeakReference.get() != null) {
+        if (null != mViewWeakReference && mViewWeakReference.get() != null) {
             observable.as(mViewWeakReference.get().bindAutoDispose());
         }
         observable.subscribe(clientUser -> {
-                    if (mViewWeakReference.get() != null) {
+                    if (null != mViewWeakReference && mViewWeakReference.get() != null) {
                         mViewWeakReference.get().loginLogOutSuccess(clientUser);
                     } else {
                         return;
                     }
                 },
                 throwable -> {
-                    if (mViewWeakReference.get() != null) {
+                    if (null != mViewWeakReference && mViewWeakReference.get() != null) {
                         if (throwable instanceof NullPointerException) {
                             mViewWeakReference.get().loginLogOutSuccess(null);
                         } else {

@@ -451,6 +451,8 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 			return false;
 		});
 
+		setupViewPager(viewPager);
+
 		viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -465,7 +467,10 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 				} else if (position == 3) {
 					title = getResources().getString(R.string.tab_personal);
 				}
-				mViewPagerAdapter.getItem(position).getActivity().setTitle(title);
+				if (mViewPagerAdapter != null && mViewPagerAdapter.getItem(position) !=null &&
+						mViewPagerAdapter.getItem(position).getActivity() != null) {
+					mViewPagerAdapter.getItem(position).getActivity().setTitle(title);
+				}
 			}
 
 			@Override
@@ -477,8 +482,6 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 			public void onPageScrollStateChanged(int state) {
 			}
 		});
-
-		setupViewPager(viewPager);
 
 		BottomNavigationMenuView menuView = (BottomNavigationMenuView) bottomNavigationView.getChildAt(0);
 		if (menuView != null) {
