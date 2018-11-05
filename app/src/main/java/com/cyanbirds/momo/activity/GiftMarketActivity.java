@@ -1,6 +1,7 @@
 package com.cyanbirds.momo.activity;
 
 import android.arch.lifecycle.Lifecycle;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -125,9 +126,39 @@ public class GiftMarketActivity extends BaseActivity implements View.OnClickList
 	@Override
 	public void onClick(View v) {
 		mGiftDialog.dismiss();
-		Snackbar.make(findViewById(R.id.recyclerview),
-				getResources().getString(R.string.send_gift_success),
-				Snackbar.LENGTH_LONG).show();
+		if (AppManager.getClientUser().isShowVip) {
+			if (AppManager.getClientUser().is_vip) {
+				Snackbar.make(findViewById(R.id.recyclerview),
+						getResources().getString(R.string.send_gift_success),
+						Snackbar.LENGTH_LONG).show();
+			} else {
+				showVipDialog();
+			}
+		} else {
+			Snackbar.make(findViewById(R.id.recyclerview),
+					getResources().getString(R.string.send_gift_success),
+					Snackbar.LENGTH_LONG).show();
+		}
+	}
+
+	private void showVipDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.un_send_msg);
+		builder.setPositiveButton(R.string.ok, ((dialog, i) -> {
+			dialog.dismiss();
+			Intent intent = new Intent(GiftMarketActivity.this, VipCenterActivity.class);
+			startActivity(intent);
+		}));
+		if (AppManager.getClientUser().isShowGiveVip) {
+			builder.setNegativeButton(R.string.free_give_vip, ((dialog, i) -> {
+				dialog.dismiss();
+				Intent intent = new Intent(GiftMarketActivity.this, GiveVipActivity.class);
+				startActivity(intent);
+			}));
+		} else {
+			builder.setNegativeButton(R.string.until_single, ((dialog, i) -> dialog.dismiss()));
+		}
+		builder.show();
 	}
 
 	@Override
