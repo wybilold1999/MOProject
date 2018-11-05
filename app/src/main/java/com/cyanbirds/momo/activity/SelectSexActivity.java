@@ -1,6 +1,5 @@
 package com.cyanbirds.momo.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -86,7 +85,11 @@ public class SelectSexActivity extends BaseActivity<IUserLoginLogOut.Presenter> 
                 showSelectSexDialog(R.id.select_lady);
                 break;
             case R.id.btn_login :
-                loginType();
+                if (!TextUtils.isEmpty(AppManager.getClientUser().sex)) {
+                    loginType();
+                } else {
+                    ToastUtil.showMessage(R.string.select_sex);
+                }
                 break;
         }
     }
@@ -99,27 +102,19 @@ public class SelectSexActivity extends BaseActivity<IUserLoginLogOut.Presenter> 
         } else {
             builder.setMessage(String.format(getResources().getString(R.string.select_sex_tips), "女生"));
         }
-        builder.setNegativeButton(getResources().getString(R.string.cancel),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                    }
-                });
-        builder.setPositiveButton(getResources().getString(R.string.ok),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        mSelectMan.setEnabled(false);
-                        mSelectLady.setEnabled(false);
-                        if (sexId == R.id.select_man) {
-                            AppManager.getClientUser().sex = "1";
-                            mSelectMan.setImageResource(R.mipmap.radio_men_focused_bg);
-                        } else {
-                            AppManager.getClientUser().sex = "0";
-                            mSelectLady.setImageResource(R.mipmap.radio_women_focused_bg);
-                        }
-                        dialog.dismiss();
-                    }
-                });
+        builder.setNegativeButton(getResources().getString(R.string.cancel), ((dialog, i) -> dialog.dismiss()));
+        builder.setPositiveButton(getResources().getString(R.string.ok), ((dialog, i) -> {
+            mSelectMan.setEnabled(false);
+            mSelectLady.setEnabled(false);
+            if (sexId == R.id.select_man) {
+                AppManager.getClientUser().sex = "1";
+                mSelectMan.setImageResource(R.mipmap.radio_men_focused_bg);
+            } else {
+                AppManager.getClientUser().sex = "0";
+                mSelectLady.setImageResource(R.mipmap.radio_women_focused_bg);
+            }
+            dialog.dismiss();
+        }));
         builder.show();
     }
 
@@ -132,13 +127,6 @@ public class SelectSexActivity extends BaseActivity<IUserLoginLogOut.Presenter> 
         } else if (!TextUtils.isEmpty(mHWOpenId)) {
             presenter.onHWLogin(mHWOpenId);
         }
-    }
-
-    private void toBackStatus() {
-        mSelectMan.setEnabled(true);
-        mSelectLady.setEnabled(true);
-        mSelectMan.setImageResource(R.mipmap.radio_men_default_bg);
-        mSelectLady.setImageResource(R.mipmap.radio_women_default_bg);
     }
 
     @Override
@@ -155,7 +143,6 @@ public class SelectSexActivity extends BaseActivity<IUserLoginLogOut.Presenter> 
     public void onShowNetError() {
         onHideLoading();
         ToastUtil.showMessage(R.string.network_requests_error);
-        toBackStatus();
     }
 
     @Override
