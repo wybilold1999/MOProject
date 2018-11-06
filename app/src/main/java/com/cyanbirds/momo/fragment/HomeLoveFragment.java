@@ -2,6 +2,7 @@ package com.cyanbirds.momo.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import com.cyanbirds.momo.activity.BandPhoneActivity;
 import com.cyanbirds.momo.adapter.HomeTabFragmentAdapter;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.manager.AppManager;
+import com.cyanbirds.momo.service.ConnectServerService;
 import com.cyanbirds.momo.service.DownloadUpdateService;
 import com.cyanbirds.momo.utils.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
@@ -76,6 +78,7 @@ public class HomeLoveFragment extends Fragment {
 	}
 
 	private void setupData() {
+		startConnectServerService();
 		if (AppManager.getClientUser().versionCode > AppManager.getVersionCode()) {
 			showVersionInfo();
 		}
@@ -83,6 +86,15 @@ public class HomeLoveFragment extends Fragment {
 				AppManager.getClientUser().isShowTd &&
 				!AppManager.getClientUser().isCheckPhone) {//显示vip，并且isShowTd为true且未绑定号码的时候
 			showBandPhoneDialog();
+		}
+	}
+
+	private void startConnectServerService() {
+		Intent intent = new Intent(getActivity(), ConnectServerService.class);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			getActivity().startForegroundService(intent);
+		} else {
+			getActivity().startService(intent);
 		}
 	}
 

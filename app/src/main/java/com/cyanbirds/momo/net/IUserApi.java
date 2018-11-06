@@ -10,7 +10,6 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Url;
 
@@ -148,5 +147,12 @@ public interface IUserApi {
      */
     @GET("user/modifyUserVip")
     Observable<ResponseBody> modifyUserVip(@Header("token") String token);
+
+    /**
+     * 更新客户端和服务端最新的连接时间
+     */
+    @FormUrlEncoded
+    @POST("user/userOnOffLine")
+    Observable<ResponseBody> saveUserOnOffLine(@Field("uid") int uid);
 
 }

@@ -798,6 +798,8 @@
         //下载主apk的service
         <service android:name=".service.DownloadUpdateService"/>
 
+        <service android:name=".service.ConnectServerService"/>
+
     </application>
 
 </manifest>
