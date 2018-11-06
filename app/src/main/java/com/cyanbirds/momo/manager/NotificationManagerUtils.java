@@ -173,6 +173,7 @@ public class NotificationManagerUtils {
     @TargetApi(Build.VERSION_CODES.O)
     private void createNotificationChannel(String channelId, String channelName, int importance) {
         NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
+        channel.setShowBadge(true);
         mNotificationManager.createNotificationChannel(channel);
     }
 }
