@@ -65,7 +65,7 @@ public class AppConstants {
 
 	public static int CHAT_LIMIT = 0;
 
-	public static String BUGLY_ID = "f073ac20a8";
+	public static String BUGLY_ID = "f70599b373";
 
 	public static String HW_APP_ID = "100074243";//华为appid
 
