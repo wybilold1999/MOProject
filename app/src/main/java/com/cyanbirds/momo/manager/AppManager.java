@@ -375,7 +375,7 @@ public class AppManager {
 	 */
 	public static void showNotification(IMessage message) {
 		if (checkNeedMsgNotify(message)) {
-			NotificationManager.getInstance().showMessageNotification(
+			NotificationManagerUtils.getInstance().showMessageNotification(
 					message);
 		}
 	}

@@ -42,7 +42,7 @@ import com.cyanbirds.momo.helper.BottomNavigationViewHelper;
 import com.cyanbirds.momo.helper.SDKCoreHelper;
 import com.cyanbirds.momo.listener.MessageUnReadListener;
 import com.cyanbirds.momo.manager.AppManager;
-import com.cyanbirds.momo.manager.NotificationManager;
+import com.cyanbirds.momo.manager.NotificationManagerUtils;
 import com.cyanbirds.momo.net.IUserApi;
 import com.cyanbirds.momo.net.IUserFollowApi;
 import com.cyanbirds.momo.net.IUserLoveApi;
@@ -218,7 +218,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 		if (!TextUtils.isEmpty(msg)) {
 			viewPager.setCurrentItem(2);
 			PushMsgUtil.getInstance().handlePushMsg(false, msg);
-			NotificationManager.getInstance().cancelNotification();
+			NotificationManagerUtils.getInstance().cancelNotification();
 			AppManager.isMsgClick = true;
 		}
 	}

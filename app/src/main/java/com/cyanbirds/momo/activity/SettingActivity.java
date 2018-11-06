@@ -16,7 +16,7 @@ import com.cyanbirds.momo.db.IMessageDaoManager;
 import com.cyanbirds.momo.db.MyGoldDaoManager;
 import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.manager.AppManager;
-import com.cyanbirds.momo.manager.NotificationManager;
+import com.cyanbirds.momo.manager.NotificationManagerUtils;
 import com.cyanbirds.momo.presenter.UserLoginPresenterImpl;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.ProgressDialogUtils;
@@ -177,7 +177,7 @@ public class SettingActivity extends BaseActivity<IUserLoginLogOut.Presenter> im
         } else {
             MobclickAgent.onProfileSignOff();
             release();
-            NotificationManager.getInstance().cancelNotification();
+            NotificationManagerUtils.getInstance().cancelNotification();
             finishAll();
             PreferencesUtils.setIsLogin(SettingActivity.this, false);
             Intent intent = getBaseContext().getPackageManager()

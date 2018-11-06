@@ -57,7 +57,7 @@ import com.cyanbirds.momo.listener.MessageCallbackListener.OnMessageReportCallba
 import com.cyanbirds.momo.listener.MessageStatusReportListener;
 import com.cyanbirds.momo.listener.MessageStatusReportListener.OnMessageStatusReport;
 import com.cyanbirds.momo.manager.AppManager;
-import com.cyanbirds.momo.manager.NotificationManager;
+import com.cyanbirds.momo.manager.NotificationManagerUtils;
 import com.cyanbirds.momo.ui.widget.WrapperLinearLayoutManager;
 import com.cyanbirds.momo.utils.CheckUtil;
 import com.cyanbirds.momo.utils.EmoticonUtil;
@@ -533,7 +533,7 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 		if (mClientUser != null) {
 			AppManager.currentChatTalker = mClientUser.userId;
 		}
-		NotificationManager.getInstance().cancelNotification();
+		NotificationManagerUtils.getInstance().cancelNotification();
 		MobclickAgent.onPageStart(this.getClass().getName());
 		MobclickAgent.onResume(this);
 	}

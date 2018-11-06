@@ -1,9 +1,13 @@
 package com.cyanbirds.momo.manager;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
@@ -16,25 +20,32 @@ import com.cyanbirds.momo.entity.IMessage;
 import com.cyanbirds.momo.receiver.NotificationReceiver;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 /**
  * 通知管理
  * Created by Administrator on 2016/3/14.
  */
-public class NotificationManager {
+public class NotificationManagerUtils {
 
-    public static NotificationManager mInstance;
     public static Context mContext;
 
-    public static NotificationManager getInstance() {
-        if (mInstance == null) {
-            mInstance = new NotificationManager(AppManager.getContext());
-        }
+    private NotificationManager mNotificationManager;
 
-        return mInstance;
+
+    public static NotificationManagerUtils getInstance() {
+        return SingletonHolder.INSTANCE;
     }
 
-    private NotificationManager(Context context) {
+    private static class SingletonHolder {
+        private static final NotificationManagerUtils INSTANCE = new NotificationManagerUtils(AppManager.getContext());
+    }
+
+    private NotificationManagerUtils(Context context) {
         mContext = context;
+        if (mNotificationManager == null) {
+            mNotificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+        }
     }
 
     /**
@@ -46,10 +57,8 @@ public class NotificationManager {
         try {
             Notification notification = getNotification(message);
             if (notification != null) {
-                NotificationManagerCompat notificationManager = NotificationManagerCompat
-                        .from(mContext);
                 notification.flags = (Notification.FLAG_AUTO_CANCEL | notification.flags);
-                notificationManager.notify(0, notification);
+                mNotificationManager.notify(0, notification);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,8 +76,13 @@ public class NotificationManager {
             return null;
         cancelNotification();
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(
-                mContext);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelId = AppManager.pkgName;
+            String channelName = mContext.getResources().getString(R.string.app_name);
+            int importance = NotificationManagerCompat.IMPORTANCE_HIGH;
+            createNotificationChannel(channelId, channelName, importance);
+        }
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, AppManager.pkgName);
         String title;
         String content;
         int unReadNum = ConversationSqlManager.getInstance(mContext).getAnalyticsUnReadConversation();
@@ -156,4 +170,9 @@ public class NotificationManager {
         NotificationManagerCompat.from(mContext).cancelAll();
     }
 
+    @TargetApi(Build.VERSION_CODES.O)
+    private void createNotificationChannel(String channelId, String channelName, int importance) {
+        NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
+        mNotificationManager.createNotificationChannel(channel);
+    }
 }
