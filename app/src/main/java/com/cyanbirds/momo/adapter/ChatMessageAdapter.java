@@ -113,12 +113,8 @@ public class ChatMessageAdapter extends
                         } else {
                             textHolder.portrait.setImageURI(Uri.parse("file://" + mConversation.localPortrait));
                         }
-                    } else {
-                        mConversation = ConversationSqlManager.getInstance(mContext)
-                                .queryConversationForById(message.conversationId);
-                        if (null != mConversation) {
-                            textHolder.portrait.setImageURI(Uri.parse("file://" + mConversation.localPortrait));
-                        }
+                    } else if (null != mConversation) {
+                        textHolder.portrait.setImageURI(Uri.parse(mConversation.faceUrl));
                     }
 
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) textHolder.portrait
@@ -230,12 +226,8 @@ public class ChatMessageAdapter extends
                         } else {
                             imageHolder.portrait.setImageURI(Uri.parse("file://" + mConversation.localPortrait));
                         }
-                    } else {
-                        mConversation = ConversationSqlManager.getInstance(mContext)
-                                .queryConversationForById(message.conversationId);
-                        if (null != mConversation) {
-                            imageHolder.portrait.setImageURI(Uri.parse("file://" + mConversation.localPortrait));
-                        }
+                    } else if (mConversation != null){
+                        imageHolder.portrait.setImageURI(Uri.parse(mConversation.faceUrl));
                     }
 
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageHolder.portrait
@@ -301,12 +293,8 @@ public class ChatMessageAdapter extends
                         } else {
                             locationHolder.portrait.setImageURI(Uri.parse("file://" + mConversation.localPortrait));
                         }
-                    } else {
-                        mConversation = ConversationSqlManager.getInstance(mContext)
-                                .queryConversationForById(message.conversationId);
-                        if (null != mConversation) {
-                            locationHolder.portrait.setImageURI(Uri.parse("file://" + mConversation.localPortrait));
-                        }
+                    }  else if (mConversation != null){
+                        locationHolder.portrait.setImageURI(Uri.parse(mConversation.faceUrl));
                     }
 
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) locationHolder.portrait
