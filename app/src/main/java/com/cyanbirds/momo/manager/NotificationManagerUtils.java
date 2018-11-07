@@ -138,7 +138,9 @@ public class NotificationManagerUtils {
             int importance = NotificationManagerCompat.IMPORTANCE_HIGH;
             createNotificationChannel(channelId, channelName, importance);
         }
-        Notification notification = new NotificationCompat.Builder(mContext, AppManager.pkgName).build();
+        Notification notification = new NotificationCompat.Builder(mContext, AppManager.pkgName)
+                .setChannelId(AppManager.pkgName)
+                .build();
         return notification;
     }
 
