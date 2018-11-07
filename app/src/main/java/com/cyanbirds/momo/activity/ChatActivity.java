@@ -643,7 +643,7 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 		} else if (resultCode == RESULT_OK
 				&& requestCode == PREVIEW_IMAGE_RESULT) {
 			Uri uri = data.getData();
-            String imgUrl = ImageUtil.compressImage(uri.getPath(), FileAccessorUtils.IMESSAGE_IMAGE);
+            String imgUrl = ImageUtil.compressImage(uri.getPath(), FileAccessorUtils.getImagePathName().getAbsolutePath());
 			IMChattingHelper.getInstance().sendImgMsg(mClientUser, imgUrl);
 		} else if (resultCode == RESULT_OK
 				&& requestCode == SHARE_LOCATION_RESULT) {
