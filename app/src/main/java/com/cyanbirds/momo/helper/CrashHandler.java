@@ -90,7 +90,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 		long currentTime = System.currentTimeMillis();
 		String crashTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 				.format(new Date(currentTime));
-		File crashFile = new File(FileAccessorUtils.CRASH_PATH, "crash" + crashTime + ".log");
+		File crashFile = new File(FileAccessorUtils.getCrashPathName().getAbsolutePath(), "crash" + crashTime + ".log");
 		try {
 			PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(crashFile)));
 			pw.println(crashTime);
