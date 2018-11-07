@@ -150,7 +150,7 @@ public class SelectSexActivity extends BaseActivity<IUserLoginLogOut.Presenter> 
         onHideLoading();
         if (clientUser != null) {
             hideSoftKeyboard();
-            File faceLocalFile = new File(FileAccessorUtils.FACE_IMAGE,
+            File faceLocalFile = new File(FileAccessorUtils.getFacePathName().getAbsolutePath(),
                     Md5Util.md5(clientUser.face_url) + ".jpg");
             if(!faceLocalFile.exists()
                     && !TextUtils.isEmpty(clientUser.face_url)){

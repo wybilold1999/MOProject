@@ -60,7 +60,6 @@ import com.cyanbirds.momo.utils.Utils;
 import com.huawei.android.hms.agent.HMSAgent;
 import com.igexin.sdk.PushManager;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-import com.tencent.android.tpush.XGPushManager;
 import com.uber.autodispose.AutoDispose;
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
 import com.umeng.analytics.MobclickAgent;
@@ -125,8 +124,6 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 
 				//个推
 				initGeTuiPush();
-
-				XGPushManager.registerPush(getApplicationContext());
 
 				initHWPush();
 

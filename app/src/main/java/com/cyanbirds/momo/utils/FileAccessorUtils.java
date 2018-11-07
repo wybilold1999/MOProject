@@ -20,26 +20,26 @@ public class FileAccessorUtils {
 			+ "/momo";
 	/** 文件存储路径 */
 	public static final String FILE_PATH = getExternalStorePath()
-			+ "/momo/.file";
+			+ "/momo/file";
 	/** 图像的存储路径 */
 	public static final String IMESSAGE_IMAGE = getExternalStorePath()
-			+ "/momo/.image";
+			+ "/momo/image";
 	/** 头像存储路径 */
 	public static final String FACE_IMAGE = getExternalStorePath()
-			+ "/momo/.face";
+			+ "/momo/face";
 	/** 语音存储路径 */
 	public static final String VOICE_PATH = getExternalStorePath()
-			+ "/momo/.voice";
+			+ "/momo/voice";
 	/** 视频存储路径 */
 	public static final String VIDEO_PATH = getExternalStorePath()
-			+ "/momo/.video";
+			+ "/momo/video";
 	/** crash路径 */
 	public static final String CRASH_PATH = getExternalStorePath()
-			+ "/momo/.crash";
+			+ "/momo/crash";
 
 	/** APK文件暂时存放的路径 */
 	public static final String APK_PATH = getExternalStorePath()
-			+ "/momo/.apk";
+			+ "/momo/apk";
 
 	/**
 	 * 外置存储卡的路径

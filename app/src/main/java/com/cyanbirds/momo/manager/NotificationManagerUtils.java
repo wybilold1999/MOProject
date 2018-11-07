@@ -86,17 +86,6 @@ public class NotificationManagerUtils {
         String title;
         String content;
         int unReadNum = ConversationSqlManager.getInstance(mContext).getAnalyticsUnReadConversation();
-        // 显示消息详情
-        /*if (PreferencesUtils.getShowMessageInfo(mContext)) {
-            title = mContext.getResources().getString(R.string.app_name_short);
-            content = getTickerText(message);
-        } else {
-            int unContactNum = ConversationSqlManager
-                    .getInstance(mContext).getConversationUnReadNum();
-            title = mContext.getResources().getString(R.string.app_name_short);
-            content = String.format(
-                    mContext.getResources().getString(R.string.notification_tips), unContactNum, unReadNum);
-        }*/
         if (!TextUtils.isEmpty(message.face_url)) {
             title = mContext.getResources().getString(R.string.app_name);
         } else {
@@ -142,6 +131,17 @@ public class NotificationManagerUtils {
         return notification;
     }
 
+    public Notification getNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelId = AppManager.pkgName;
+            String channelName = mContext.getResources().getString(R.string.app_name);
+            int importance = NotificationManagerCompat.IMPORTANCE_HIGH;
+            createNotificationChannel(channelId, channelName, importance);
+        }
+        Notification notification = new NotificationCompat.Builder(mContext, AppManager.pkgName).build();
+        return notification;
+    }
+
     /**
      * 获取显示的内容
      *
@@ -167,7 +167,11 @@ public class NotificationManagerUtils {
      * 关闭通知
      */
     public void cancelNotification() {
-        NotificationManagerCompat.from(mContext).cancelAll();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mNotificationManager.deleteNotificationChannel(AppManager.pkgName);
+        } else {
+            NotificationManagerCompat.from(mContext).cancelAll();
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.O)

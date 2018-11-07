@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.config.ValueKey;
@@ -17,6 +16,7 @@ import com.cyanbirds.momo.helper.AppActivityLifecycleCallbacks;
 import com.cyanbirds.momo.listener.MessageChangedListener;
 import com.cyanbirds.momo.listener.MessageUnReadListener;
 import com.cyanbirds.momo.manager.AppManager;
+import com.cyanbirds.momo.service.ConnectServerService;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.PushMsgUtil;
 import com.google.gson.Gson;
@@ -29,14 +29,16 @@ public class HWPushTranslateActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String content = getIntent().getData().getQueryParameter("action");
-        if (AppManager.isAppAlive(this, AppManager.pkgName)) {
-            Log.e("hw_test", "----------------------1------------------");
+
+        if (AppManager.isServiceRunning(this, ConnectServerService.class.getName())) {
+//            Log.e("hw_test", "----------------------1------------------");
             if (!AppActivityLifecycleCallbacks.getInstance().getIsForeground()) {
-                Log.e("hw_test", "----------------------2------------------");
+//                Log.e("hw_test", "----------------------2------------------");
                 if (PreferencesUtils.getIsLogin(this)) {
-                    PushMsgUtil.getInstance().handlePushMsg(false, content);
                     Gson gson = new Gson();
                     PushMsgModel pushMsgModel = gson.fromJson(content, PushMsgModel.class);
+
+                    PushMsgUtil.getInstance().handlePushMsg(false, content);
                     Conversation conversation = ConversationSqlManager.getInstance(CSApplication.getInstance())
                             .queryConversationForByTalkerId(pushMsgModel.sender);
                     if (conversation != null) {
@@ -53,18 +55,17 @@ public class HWPushTranslateActivity extends AppCompatActivity {
                     chatIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                             | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(chatIntent);
-                    Log.e("hw_test", "----------------------3------------------");
-                    Log.e("hw_test", content);
+//                    Log.e("hw_test", "----------------------3------------------");
                 } else {
-                    Log.e("hw_test", "----------------------4------------------");
+//                    Log.e("hw_test", "----------------------4------------------");
                     toLaunch(content);
                 }
             } else {
-                Log.e("hw_test", "----------------------5------------------");
+//                Log.e("hw_test", "----------------------5------------------");
                 PushMsgUtil.getInstance().handlePushMsg(false, content);
             }
         } else {
-            Log.e("hw_test", "----------------------6------------------");
+//            Log.e("hw_test", "----------------------6------------------");
             toLaunch(content);
         }
         finish();
@@ -75,8 +76,6 @@ public class HWPushTranslateActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(content)) {
             intent.putExtra(ValueKey.DATA, content);
         }
-        intent.setFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         intent.setClass(this, LauncherActivity.class);
         startActivity(intent);
     }

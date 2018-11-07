@@ -1,14 +1,19 @@
 package com.cyanbirds.momo.net.request;
 
-import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.entity.IMessage;
+import com.cyanbirds.momo.listener.DownloadListener;
 import com.cyanbirds.momo.listener.FileProgressListener;
-import com.cyanbirds.momo.listener.NetFileDownloadListener;
+import com.cyanbirds.momo.net.IDownLoadApi;
 import com.cyanbirds.momo.net.base.ResultPostExecute;
-import com.liulishuo.filedownloader.BaseDownloadTask;
-import com.liulishuo.filedownloader.FileDownloader;
+import com.cyanbirds.momo.net.base.RetrofitFactory;
+import com.cyanbirds.momo.utils.FileUtils;
 
 import java.io.File;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * 
@@ -33,37 +38,43 @@ public class DownloadImageRequest extends ResultPostExecute<File> {
 	public void request(String url, String savePath,
 						String fileName,final IMessage message) {
 		final File file = new File(savePath, fileName);
-		FileDownloader.setup(CSApplication.getInstance());
-		FileDownloader.getImpl().create(url)
-				.setPath(file.getAbsolutePath())
-				.setListener(new NetFileDownloadListener(){
+		RetrofitFactory.getRetrofit().create(IDownLoadApi.class)
+				.downloadFileWithDynamicUrlSync(url)
+				.enqueue(new Callback<ResponseBody>() {
 					@Override
-					protected void completed(BaseDownloadTask task) {
-						onPostExecute(file);
-						if (message != null) {
-							message.localPath = file.getPath();
-							FileProgressListener.getInstance()
-									.notifyFileProgressChanged(message, 100);
-						}
+					public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+						FileUtils.writeResponseBodyToDisk(response.body(), file.getAbsolutePath(), new DownloadListener(){
+							@Override
+							public void progress(int progress) {
+								if (progress >= 100) {
+									if (message != null)
+										message.status = IMessage.MessageStatus.RECEIVED;
+								}
+								if (message != null)
+									FileProgressListener.getInstance()
+											.notifyFileProgressChanged(message, progress);
+							}
+
+							@Override
+							public void completed(String path) {
+								onPostExecute(file);
+								if (message != null) {
+									message.localPath = file.getPath();
+									FileProgressListener.getInstance()
+											.notifyFileProgressChanged(message, 100);
+								}
+							}
+
+							@Override
+							public void error(String error) {
+							}
+						});
 					}
 
 					@Override
-					protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-						int progress = (int) ((totalBytes > 0) ? (soFarBytes * 1.0 / totalBytes) * 100
-								: -1);
-						if (progress >= 100) {
-							if (message != null)
-								message.status = IMessage.MessageStatus.RECEIVED;
-						}
-						if (message != null)
-							FileProgressListener.getInstance()
-									.notifyFileProgressChanged(message, progress);
-					}
+					public void onFailure(Call<ResponseBody> call, Throwable t) {
 
-					@Override
-					protected void error(BaseDownloadTask task, Throwable e) {
-						onErrorExecute("");
 					}
-				}).start();
+				});
 	}
 }

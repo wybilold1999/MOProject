@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static android.content.Context.ACTIVITY_SERVICE;
 import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_CURRENT_CITY;
 import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_LATITUDE;
 import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_LONGITUDE;
@@ -271,7 +272,7 @@ public class AppManager {
 	 */
 	public static boolean isAppIsInBackground(Context context) {
 		boolean isInBackground = true;
-		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+		ActivityManager am = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
 		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
 			List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
 			for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
@@ -305,7 +306,7 @@ public class AppManager {
 		boolean isTop = false;
 		if (null == mActivityManager) {
 			mActivityManager = ((ActivityManager) context
-					.getSystemService(Context.ACTIVITY_SERVICE));
+					.getSystemService(ACTIVITY_SERVICE));
 		}
 		if (null != mActivityManager) {
 			tasksInfo = mActivityManager.getRunningTasks(1);
@@ -327,7 +328,7 @@ public class AppManager {
 	 * @return boolean
 	 */
 	public static boolean isAppAlive(Context context, String packageName) {
-		ActivityManager am = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+		ActivityManager am = (ActivityManager)context.getSystemService(ACTIVITY_SERVICE);
 		List<RunningTaskInfo> list = am.getRunningTasks(100);
 		if (list.size() <= 0) {
 			return false;
@@ -343,6 +344,16 @@ public class AppManager {
 		return isAppRunning;
 	}
 
+	public static boolean isServiceRunning(Context context, String ServicePackageName) {
+		ActivityManager manager = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
+		for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+			if (ServicePackageName.equals(service.service.getClassName())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * 获取当前栈顶的activity的名称
 	 * 
@@ -353,7 +364,7 @@ public class AppManager {
 	public static String getTopActivity(Context context) {
 		if (null == mActivityManager) {
 			mActivityManager = ((ActivityManager) context
-					.getSystemService(Context.ACTIVITY_SERVICE));
+					.getSystemService(ACTIVITY_SERVICE));
 		}
 		if (null != mActivityManager) {
 			tasksInfo = mActivityManager.getRunningTasks(1);

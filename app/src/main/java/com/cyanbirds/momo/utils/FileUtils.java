@@ -9,13 +9,19 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
+
+import com.cyanbirds.momo.listener.DownloadListener;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+
+import okhttp3.ResponseBody;
 
 /**
  * 
@@ -293,22 +299,54 @@ public class FileUtils {
 		return duration;
 	}
 
-	public static void writeStringToFile(String str) {
-		File f=new File(FileAccessorUtils.CRASH_PATH + File.separator + "1.txt");//新建一个文件对象
-		FileWriter fw;
-		BufferedWriter bufferedWriter;
+	public static boolean writeResponseBodyToDisk(ResponseBody body, String filePath, DownloadListener downloadListener) {
 		try {
-			if (!f.exists()) {
-				f.createNewFile();
+			File futureStudioIconFile = new File(filePath);
+			InputStream inputStream = null;
+			OutputStream outputStream = null;
+			try {
+				byte[] fileReader = new byte[4096];
+				long fileSize = body.contentLength();
+				long fileSizeDownloaded = 0;
+				inputStream = body.byteStream();
+				outputStream = new FileOutputStream(futureStudioIconFile);
+				long totalLength = body.contentLength();
+				while (true) {
+					int read = inputStream.read(fileReader);
+					if (read == -1) {
+						break;
+					}
+					outputStream.write(fileReader, 0, read);
+					fileSizeDownloaded += read;
+					Log.d("test", "file download: " + fileSizeDownloaded + " of " + fileSize);
+					if (downloadListener != null) {
+						int progress = (int) (100 * fileSizeDownloaded / totalLength);
+						downloadListener.progress(progress);
+					}
+				}
+				outputStream.flush();
+				if (downloadListener != null) {
+					downloadListener.completed(filePath);
+				}
+				return true;
+			} catch (IOException e) {
+				if (downloadListener != null) {
+					downloadListener.error(e.getMessage());
+				}
+				return false;
+			} finally {
+				if (inputStream != null) {
+					inputStream.close();
+				}
+				if (outputStream != null) {
+					outputStream.close();
+				}
 			}
-			fw = new FileWriter(f);//新建一个FileWriter
-			bufferedWriter = new BufferedWriter(fw);
-			bufferedWriter.write(str);
-			bufferedWriter.flush();
-			bufferedWriter.close();
-			fw.close();
-		} catch (Exception e) {
-
+		} catch (IOException e) {
+			if (downloadListener != null) {
+				downloadListener.error(e.getMessage());
+			}
+			return false;
 		}
 	}
 

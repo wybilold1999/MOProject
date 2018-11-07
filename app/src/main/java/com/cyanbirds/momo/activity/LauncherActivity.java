@@ -239,7 +239,7 @@ public class LauncherActivity extends AppCompatActivity {
                             return Observable.just(clientUser);
                         })
                         .doOnNext(clientUser -> {
-                            File faceLocalFile = new File(FileAccessorUtils.FACE_IMAGE,
+                            File faceLocalFile = new File(FileAccessorUtils.getFacePathName().getAbsolutePath(),
                                     Md5Util.md5(clientUser.face_url) + ".jpg");
                             if(!faceLocalFile.exists()
                                     && !TextUtils.isEmpty(clientUser.face_url)){

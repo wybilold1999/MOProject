@@ -15,6 +15,7 @@ import com.cyanbirds.momo.entity.Conversation;
 import com.cyanbirds.momo.listener.MessageChangedListener;
 import com.cyanbirds.momo.listener.MessageUnReadListener;
 import com.cyanbirds.momo.manager.AppManager;
+import com.cyanbirds.momo.manager.NotificationManagerUtils;
 
 /**
  * 通知广播
@@ -25,16 +26,10 @@ public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (AppManager.isAppAlive(context, AppManager.getPackageName())
-                && AppManager.getClientUser() != null/*
-                && Integer.parseInt(AppManager.getClientUser().userId) > 0*/) {
-            /*Intent mainIntent = new Intent(context, MainActivity.class);
-            mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    | Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    | Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(mainIntent);*/
-
+                && AppManager.getClientUser() != null) {
             ClientUser clientUser = (ClientUser) intent.getSerializableExtra(ValueKey.USER);
             if (clientUser != null) {
+                NotificationManagerUtils.getInstance().cancelNotification();
                 Conversation conversation = ConversationSqlManager.getInstance(CSApplication.getInstance())
                         .queryConversationForByTalkerId(clientUser.userId);
                 if (conversation != null) {
