@@ -141,7 +141,7 @@
     <string name="search_option">筛选条件</string>
     <string name="init_official_message">在匆忙的城市里，每天都有无数人在擦肩而过，却又没有方法彼此相识，这是一种全新的相遇方式，简单、心动、惊喜,相遇本该如此美好。</string>
     <string name="weibosdk_demo_toast_auth_failed">授权失败</string>
-    <string name="access_location">获取您的位置后才能更精确的查看附近用户，请在设置界面打开位置定位权限</string>
+    <string name="access_location">获取您的位置后才能更精确的查看附近用户，请在权限选项中打开存储和位置定位权限</string>
     <string name="open_camera_write_external_permission">打开相机和存储权限才能拍照和访问相册,请在权限选项中打开相机和存储权限</string>
     <string name="decline_call">已拒绝来电</string>
     <string name="no_vip_receive_calling">您还不是会员,暂时无法接听,立即开通会员接听来电?</string>

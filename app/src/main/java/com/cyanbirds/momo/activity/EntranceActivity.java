@@ -218,7 +218,7 @@ public class EntranceActivity extends BaseActivity implements AMapLocationListen
     }
 
     private void requestLocationPermission() {
-        if (!CheckUtil.isGetPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) &&
+        if (!CheckUtil.isGetPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ||
                 !CheckUtil.isGetPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
             if (rxPermissions == null) {
                 rxPermissions = new RxPermissions(this);
