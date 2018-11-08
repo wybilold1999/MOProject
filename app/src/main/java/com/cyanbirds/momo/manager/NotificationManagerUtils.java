@@ -169,6 +169,7 @@ public class NotificationManagerUtils {
     public void cancelNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mNotificationManager.deleteNotificationChannel(AppManager.pkgName);
+            mNotificationManager.cancelAll();
         } else {
             NotificationManagerCompat.from(mContext).cancelAll();
         }

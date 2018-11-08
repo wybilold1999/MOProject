@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.cyanbirds.momo.manager.NotificationManagerUtils;
 import com.cyanbirds.momo.net.request.UploadTokenRequest;
 import com.cyanbirds.momo.utils.PushMsgUtil;
 import com.huawei.hms.support.api.push.PushReceiver;
@@ -29,6 +30,7 @@ public class HUAWEIPushRevicer extends PushReceiver {
             String content = new String(msg, "UTF-8");
             JSONObject jsonObject = new JSONObject(content);
             PushMsgUtil.getInstance().handlePushMsg(false, jsonObject.optString("msg_content"));
+            NotificationManagerUtils.getInstance().cancelNotification();
         } catch (Exception e) {
             e.printStackTrace();
         }
