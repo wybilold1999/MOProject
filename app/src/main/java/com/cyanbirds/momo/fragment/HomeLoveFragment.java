@@ -15,11 +15,8 @@ import android.view.ViewGroup;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.BandPhoneActivity;
 import com.cyanbirds.momo.adapter.HomeTabFragmentAdapter;
-import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.service.ConnectServerService;
-import com.cyanbirds.momo.service.DownloadUpdateService;
-import com.cyanbirds.momo.utils.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -79,9 +76,6 @@ public class HomeLoveFragment extends Fragment {
 
 	private void setupData() {
 		startConnectServerService();
-		if (AppManager.getClientUser().versionCode > AppManager.getVersionCode()) {
-			showVersionInfo();
-		}
 		if (AppManager.getClientUser().isShowVip &&
 				AppManager.getClientUser().isShowTd &&
 				!AppManager.getClientUser().isCheckPhone) {//显示vip，并且isShowTd为true且未绑定号码的时候
@@ -96,37 +90,6 @@ public class HomeLoveFragment extends Fragment {
 		} else {
 			getActivity().startService(intent);
 		}
-	}
-
-	private void showVersionInfo() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle(R.string.new_version);
-		builder.setMessage(AppManager.getClientUser().versionUpdateInfo);
-		builder.setPositiveButton(getResources().getString(R.string.update),
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.dismiss();
-						/**
-						 * 开始下载apk文件
-						 */
-						Intent intent = new Intent(getActivity(), DownloadUpdateService.class);
-						intent.putExtra(ValueKey.APK_URL, AppManager.getClientUser().apkUrl);
-						getActivity().startService(intent);
-						ToastUtil.showMessage(R.string.bg_downloading);
-//						AppManager.goToMarket(getActivity(), channel);
-					}
-				});
-		if (!AppManager.getClientUser().isForceUpdate) {
-			builder.setNegativeButton(getResources().getString(R.string.cancel),
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.dismiss();
-						}
-					});
-		}
-		builder.setCancelable(false);
-		builder.show();
 	}
 
 	private void showBandPhoneDialog() {

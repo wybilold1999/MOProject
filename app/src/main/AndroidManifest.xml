@@ -45,6 +45,7 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     //=============小米推送=====================//
     <permission
@@ -719,9 +720,6 @@
 
 
         <receiver android:name=".receiver.NotificationReceiver"/>
-
-        //下载主apk的service
-        <service android:name=".service.DownloadUpdateService"/>
 
         <service android:name=".service.ConnectServerService"/>
 

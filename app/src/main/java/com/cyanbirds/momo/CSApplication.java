@@ -8,6 +8,7 @@ import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.helper.AppActivityLifecycleCallbacks;
 import com.cyanbirds.momo.helper.CrashHandler;
 import com.cyanbirds.momo.manager.AppManager;
+import com.cyanbirds.momo.manager.NotificationManagerUtils;
 import com.cyanbirds.momo.net.base.RetrofitManager;
 import com.facebook.cache.disk.DiskCacheConfig;
 import com.facebook.common.util.ByteConstants;
@@ -67,6 +68,8 @@ public class CSApplication extends MultiDexApplication {
 			initFresco();
 
 			registerWeiXin();
+
+			NotificationManagerUtils.getInstance().createNotificationChannel();
 		});
 
 		//初始化短信sdk
@@ -77,6 +80,7 @@ public class CSApplication extends MultiDexApplication {
 		initBugly();
 
 		HMSAgent.init(this);
+
 	}
 
 	private void initBugly() {

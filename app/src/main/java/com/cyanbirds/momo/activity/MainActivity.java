@@ -108,7 +108,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 		setupEvent();
 		initOSS();
 		if (AppManager.getClientUser().is_vip) {
-			SDKCoreHelper.init(CSApplication.getInstance(), ECInitParams.LoginMode.FORCE_LOGIN);
+//			SDKCoreHelper.init(CSApplication.getInstance(), ECInitParams.LoginMode.FORCE_LOGIN);
 		}
 		updateConversationUnRead();
 
@@ -135,7 +135,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 			mHandler.postDelayed(() -> requestMyGiftList(1, 1), 5000 * 10);
 			mHandler.postDelayed(() -> requestFollowList("followFormeList", 1, 1), 1500 * 10);
 		} else {
-			SDKCoreHelper.init(CSApplication.getInstance(), ECInitParams.LoginMode.FORCE_LOGIN);
+//			SDKCoreHelper.init(CSApplication.getInstance(), ECInitParams.LoginMode.FORCE_LOGIN);
 		}
 
 		loadData();
@@ -596,9 +596,23 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK
 				&& event.getAction() == KeyEvent.ACTION_DOWN) {
-			moveTaskToBack(false);
+			showQuitDialog();
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+
+	private void showQuitDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.quit_app_name);
+		builder.setMessage(R.string.quit_are_you_sure);
+		builder.setNegativeButton(R.string.cancel, (dialog, i) -> {
+			dialog.dismiss();
+		});
+		builder.setPositiveButton(R.string.ok, (dialog, i) -> {
+			dialog.dismiss();
+			exitApp();
+		});
+		builder.show();
 	}
 
 	@Override

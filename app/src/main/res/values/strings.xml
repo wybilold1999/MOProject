@@ -231,4 +231,7 @@
     </string>
     <string name="no_responsibility">免责声明</string>
 
+    <string name="quit_app_name">退出同城有缘交友</string>
+    <string name="quit_are_you_sure">确定要退出吗？</string>
+
 </resources>

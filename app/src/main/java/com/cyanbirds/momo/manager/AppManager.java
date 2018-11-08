@@ -10,7 +10,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Build;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 import com.alibaba.sdk.android.oss.OSS;
@@ -24,9 +23,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -44,7 +42,7 @@ import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_RL_USER_USER_NA
 import static com.cyanbirds.momo.utils.PreferencesUtils.SETTINGS_SEX;
 
 /**
- * 
+ *
  * @ClassName:AppManager
  * @Description:APP管理类
  * @Author:wangyb
@@ -114,7 +112,7 @@ public class AppManager {
 
 	/**
 	 * 设置用户信息
-	 * 
+	 *
 	 * @param user
 	 */
 	public static void setClientUser(ClientUser user) {
@@ -123,7 +121,7 @@ public class AppManager {
 
 	/**
 	 * 获取用户信息
-	 * 
+	 *
 	 * @return
 	 */
 	public static ClientUser getClientUser() {
@@ -132,7 +130,7 @@ public class AppManager {
 
 	/**
 	 * 获取包名
-	 * 
+	 *
 	 * @return
 	 */
 	public static String getPackageName() {
@@ -141,7 +139,7 @@ public class AppManager {
 
 	/**
 	 * 返回上下文对象
-	 * 
+	 *
 	 * @return
 	 */
 	public static Context getContext() {
@@ -150,7 +148,7 @@ public class AppManager {
 
 	/**
 	 * 设置上下文对象
-	 * 
+	 *
 	 * @param context
 	 */
 	public static void setContext(Context context) {
@@ -160,7 +158,7 @@ public class AppManager {
 
 	/**
 	 * 获取应用程序版本名称
-	 * 
+	 *
 	 * @return 版本名称
 	 */
 	public static String getVersion() {
@@ -181,7 +179,7 @@ public class AppManager {
 
 	/**
 	 * 获取应用版本号
-	 * 
+	 *
 	 * @return 版本号
 	 */
 	public static int getVersionCode() {
@@ -202,35 +200,35 @@ public class AppManager {
 
 	/**
 	 * 获取设备ID
-	 * 
+	 *
 	 * @return
 	 */
 	public static String getDeviceId() {
-		String deviceId = "";
+		String serial = null;
+		String m_szDevIDShort = "35" +
+				Build.BOARD.length()%10+ Build.BRAND.length()%10 +
+
+				Build.CPU_ABI.length()%10 + Build.DEVICE.length()%10 +
+
+				Build.DISPLAY.length()%10 + Build.HOST.length()%10 +
+
+				Build.ID.length()%10 + Build.MANUFACTURER.length()%10 +
+
+				Build.MODEL.length()%10 + Build.PRODUCT.length()%10 +
+
+				Build.TAGS.length()%10 + Build.TYPE.length()%10 +
+
+				Build.USER.length()%10 ; //13 位
 		try {
-			// 获取ID
-			TelephonyManager tm = (TelephonyManager) mContext
-					.getSystemService(Context.TELEPHONY_SERVICE);
-			String id = tm.getDeviceId();
-			// 获取mac地址
-			String macSerial = null;
-			String str = "";
-			Process pp = Runtime.getRuntime().exec(
-					"cat /sys/class/net/wlan0/address ");
-			InputStreamReader ir = new InputStreamReader(pp.getInputStream());
-			LineNumberReader input = new LineNumberReader(ir);
-			for (; null != str;) {
-				str = input.readLine();
-				if (str != null) {
-					macSerial = str.trim();
-					break;
-				}
-			}
-			deviceId = "Android_" + id + "_" + macSerial;
-		} catch (Exception e) {
-			e.printStackTrace();
+			serial = android.os.Build.class.getField("SERIAL").get(null).toString();
+			//API>=9 使用serial号
+			return new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
+		} catch (Exception exception) {
+			//serial需要一个初始化
+			serial = "serial"; // 随便一个初始化
 		}
-		return deviceId;
+		//使用硬件信息拼凑出来的15位号码
+		return new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
 	}
 
 	/**
