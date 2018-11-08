@@ -238,7 +238,7 @@ public class RegisterActivity extends BaseActivity<IUserLoginLogOut.Presenter> i
     public void loginLogOutSuccess(ClientUser clientUser) {
         onHideLoading();
         if (clientUser != null) {
-            File faceLocalFile = new File(FileAccessorUtils.getFacePathName().getAbsolutePath(),
+            File faceLocalFile = new File(FileAccessorUtils.FACE_IMAGE,
                     Md5Util.md5(clientUser.face_url) + ".jpg");
             if(!faceLocalFile.exists()
                     && !TextUtils.isEmpty(clientUser.face_url)){

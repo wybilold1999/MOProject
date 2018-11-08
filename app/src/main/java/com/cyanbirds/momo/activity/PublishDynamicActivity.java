@@ -163,7 +163,7 @@ public class PublishDynamicActivity extends BaseActivity {
 				ossImgUrls = new ArrayList<>();
 				for (String path : photoList) {
 					ossImgUrls.add(ImageUtil.getPicInfoForPath(path));
-					String imgUrl = ImageUtil.compressImage(path, FileAccessorUtils.getImagePathName().getAbsolutePath());
+					String imgUrl = ImageUtil.compressImage(path, FileAccessorUtils.IMESSAGE_IMAGE);
 					new OSSUploadImgTask().request(AppManager.getFederationToken().bucketName,
 							AppManager.getOSSFacePath(), imgUrl);
 				}

@@ -204,9 +204,13 @@ public class PersonalFragment extends Fragment {
 				mPortrait.setImageURI(Uri.parse("file://" + clientUser.face_local));
 			} else if (!TextUtils.isEmpty(clientUser.face_url)) {
 				mPortrait.setImageURI(Uri.parse(clientUser.face_url));
-				new DownloadPortraitTask().request(clientUser.face_url,
-						FileAccessorUtils.FACE_IMAGE,
-						Md5Util.md5(clientUser.face_url) + ".jpg");
+				try {
+					new DownloadPortraitTask().request(clientUser.face_url,
+							FileAccessorUtils.FACE_IMAGE,
+							Md5Util.md5(clientUser.face_url) + ".jpg");
+				} catch (Exception e) {
+
+				}
 			}
 			if (!TextUtils.isEmpty(clientUser.signature)) {
 				signature.setText(clientUser.signature);

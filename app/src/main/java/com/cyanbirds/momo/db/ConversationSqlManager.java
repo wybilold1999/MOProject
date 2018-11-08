@@ -215,7 +215,7 @@ public class ConversationSqlManager extends DBManager {
 		if (TextUtils.isEmpty(conversation.localPortrait) ||
 				!new File(conversation.localPortrait).exists()) {
 			new DownloadPortraitTask(conversation).request(
-					portraitUrl, FileAccessorUtils.getFacePathName().getAbsolutePath(), Md5Util.md5(portraitUrl) + ".jpg");
+					portraitUrl, FileAccessorUtils.FACE_IMAGE, Md5Util.md5(portraitUrl) + ".jpg");
 		}
 		/**
 		 * 通知会话内容的改变
