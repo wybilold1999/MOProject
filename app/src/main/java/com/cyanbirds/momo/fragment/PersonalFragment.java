@@ -206,7 +206,7 @@ public class PersonalFragment extends Fragment {
 				mPortrait.setImageURI(Uri.parse(clientUser.face_url));
 				try {
 					new DownloadPortraitTask().request(clientUser.face_url,
-							FileAccessorUtils.FACE_IMAGE,
+							FileAccessorUtils.getFacePathName().getAbsolutePath(),
 							Md5Util.md5(clientUser.face_url) + ".jpg");
 				} catch (Exception e) {
 

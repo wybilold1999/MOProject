@@ -125,7 +125,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 				//个推
 				initGeTuiPush();
 
-				initHWPush();
+//				initHWPush();
 
 			}
 		});

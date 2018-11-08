@@ -108,6 +108,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme" >
 
         <meta-data
@@ -660,72 +661,6 @@
         //====================小米推送结束=================================
 
         //====================个推推送开始=================================
-        <meta-data
-            android:name="PUSH_APPID"
-            android:value="opj7gozQ30AVtgwvmtGOT1" />
-        <meta-data
-            android:name="PUSH_APPKEY"
-            android:value="lStaD5RbCQ6m2uIVArImw3" />
-        <meta-data
-            android:name="PUSH_APPSECRET"
-            android:value="d6vUFMTUmT6OUKN2jzhhZ1" />
-
-        <!-- 配置SDK核心服务 -->
-        <service
-            android:name="com.igexin.sdk.PushService"
-            android:exported="true"
-            android:label="NotificationCenter"
-            android:process=":pushservice">
-            <intent-filter>
-                <action android:name="com.igexin.sdk.action.service.message"/>
-            </intent-filter>
-        </service>
-
-        <receiver
-            android:name="com.igexin.sdk.PushReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-                <action android:name="android.intent.action.USER_PRESENT"/>
-                <action android:name="com.igexin.sdk.action.refreshls"/>
-                <action android:name="android.intent.action.MEDIA_MOUNTED"/>
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
-                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
-            </intent-filter>
-        </receiver>
-
-        <activity
-            android:name="com.igexin.sdk.PushActivity"
-            android:excludeFromRecents="true"
-            android:exported="false"
-            android:process=":pushservice"
-            android:taskAffinity="com.igexin.sdk.PushActivityTask"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-
-        <activity
-            android:name="com.igexin.sdk.GActivity"
-            android:excludeFromRecents="true"
-            android:exported="true"
-            android:process=":pushservice"
-            android:taskAffinity="com.igexin.sdk.PushActivityTask"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-
-        <service
-            android:name="com.igexin.download.DownloadService"
-            android:process=":pushservice"/>
-
-        <receiver
-            android:name="com.igexin.download.DownloadReceiver">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-            </intent-filter>
-        </receiver>
-
-        <provider
-            android:name="com.igexin.download.DownloadProvider"
-            android:authorities="com.cyanbirds.momo"
-            android:exported="true"
-            android:process=":pushservice"/>
 
         <!-- 用户自定义服务继承自GTIntentService,作为SDK与APP桥梁服务,用来接收各种消息和命令回复-->
         <service android:name=".service.MyIntentService"/>
