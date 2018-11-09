@@ -108,7 +108,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 		setupEvent();
 		initOSS();
 		if (AppManager.getClientUser().is_vip) {
-//			SDKCoreHelper.init(CSApplication.getInstance(), ECInitParams.LoginMode.FORCE_LOGIN);
+			SDKCoreHelper.init(CSApplication.getInstance(), ECInitParams.LoginMode.FORCE_LOGIN);
 		}
 		updateConversationUnRead();
 
@@ -135,7 +135,7 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 			mHandler.postDelayed(() -> requestMyGiftList(1, 1), 5000 * 10);
 			mHandler.postDelayed(() -> requestFollowList("followFormeList", 1, 1), 1500 * 10);
 		} else {
-//			SDKCoreHelper.init(CSApplication.getInstance(), ECInitParams.LoginMode.FORCE_LOGIN);
+			SDKCoreHelper.init(CSApplication.getInstance(), ECInitParams.LoginMode.FORCE_LOGIN);
 		}
 
 		loadData();
