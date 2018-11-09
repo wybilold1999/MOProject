@@ -69,11 +69,6 @@ public class EntranceActivity extends BaseActivity implements AMapLocationListen
         getIPAddress();
         initLocationClient();
         requestLocationPermission();
-        checkHWUpdate();
-    }
-
-    private void checkHWUpdate() {
-        HMSAgent.checkUpdate(this, (rst) -> {});
     }
 
     /**

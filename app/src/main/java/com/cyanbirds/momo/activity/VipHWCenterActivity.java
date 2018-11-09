@@ -274,7 +274,7 @@ public class VipHWCenterActivity extends BaseActivity {
 		//分类，必填，不参与签名。该字段会影响风控策略 | Categories, required, do not participate in the signature. This field affects wind control policy
 		// X4：主题,X5：应用商店,	X6：游戏,X7：天际通,X8：云空间,X9：电子书,X10：华为学习,X11：音乐,X12 视频, | X4: Theme, X5: App Store, X6: Games, X7: Sky Pass, X8: Cloud Space, X9: ebook, X10: Huawei Learning, X11: Music, X12 video,
 		// X31 话费充值,X32 机票/酒店,X33 电影票,X34 团购,X35 手机预购,X36 公共缴费,X39 流量充值 | X31, X32 air tickets/hotels, X33 movie tickets, X34 Group purchase, X35 mobile phone advance, X36 public fees, X39 flow Recharge
-		payReq.serviceCatalog = "X6";
+		payReq.serviceCatalog = "X5";
 		//商户保留信息，选填不参与签名，支付成功后会华为支付平台会原样 回调CP服务端 | The merchant retains the information, chooses not to participate in the signature, the payment will be successful, the Huawei payment platform will be back to the CP service
 		payReq.extReserved = "Here to fill in the Merchant reservation information";
 

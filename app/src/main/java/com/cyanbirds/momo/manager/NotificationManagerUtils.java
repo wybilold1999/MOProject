@@ -169,6 +169,12 @@ public class NotificationManagerUtils {
             CharSequence channelName = mContext.getString(R.string.chat_message);
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(AppManager.pkgName, channelName, importance);
+            channel.shouldShowLights();//是否会闪光
+            channel.enableLights(true);//是否显示通知指示灯
+            channel.enableVibration(true);//是否振动
+            channel.setBypassDnd(true);//设置可以绕过请勿打扰模式
+            channel.canBypassDnd();//可否绕过请勿打扰模式
+            channel.setLockscreenVisibility(Notification.VISIBILITY_SECRET);//锁屏显示通知
             NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(channel);
         }

@@ -82,16 +82,20 @@ public class LauncherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mStartTime = System.currentTimeMillis();// 记录开始时间
+        com.cyanbirds.momo.manager.NotificationManagerUtils.getInstance().cancelNotification();
+        com.cyanbirds.momo.manager.NotificationManagerUtils.getInstance().createNotificationChannel();
         getKeys();
         requestPermission();
     }
 
     private void hwConnect() {
         // 在首个界面，需要调用connect进行连接
-        HMSAgent.connect(this, rst -> {
-            init();
-            loadData();
-        });
+            HMSAgent.connect(this, rst -> {
+                HMSAgent.checkUpdate(this, (rstCheck) -> {
+                    init();
+                    loadData();
+                });
+            });
     }
 
     private void requestPermission() {

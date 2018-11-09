@@ -69,7 +69,6 @@ public class CSApplication extends MultiDexApplication {
 
 			registerWeiXin();
 
-			NotificationManagerUtils.getInstance().createNotificationChannel();
 		});
 
 		//初始化短信sdk
@@ -79,7 +78,9 @@ public class CSApplication extends MultiDexApplication {
 
 		initBugly();
 
-		HMSAgent.init(this);
+		if ("HUAWEI".equals(AppManager.getDeviceName())) {
+			HMSAgent.init(this);
+		}
 
 	}
 
