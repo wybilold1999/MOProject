@@ -11,8 +11,8 @@ package com.cyanbirds.momo.config;
  */
 public class AppConstants {
 	
-//	public static final String BASE_URL = "http://120.76.54.8/MoLoveServer/";
-	public static final String BASE_URL = "http://192.168.1.106:8080/MoLoveServer/";
+	public static final String BASE_URL = "http://120.76.54.8/MoLoveServer/";
+//	public static final String BASE_URL = "http://192.168.1.106:8080/MoLoveServer/";
 
 	/**
 	 * 密码加密密匙
@@ -60,8 +60,6 @@ public class AppConstants {
 	public static final String BAIDU_LOCATION_API = "http://api.map.baidu.com/location/ip?ak=icuYvoz6ZrKLTKC6m53hquZUzZlHUypg&coor=bd09ll&ip=";
 
 	public static final String WX_PAY_PLATFORM = "wxpay";
-
-	public static final String ALI_PAY_PLATFORM = "alipay";
 
 	public static int CHAT_LIMIT = 0;
 

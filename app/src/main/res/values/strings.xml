@@ -100,8 +100,6 @@
     <string name="bangding_faile">绑定失败</string>
     <string name="qq">QQ号</string>
     <string name="weixin">微信号</string>
-    <string name="ali_pay">支付宝支付</string>
-    <string name="weixin_pay">微信支付</string>
     <string name="send_telephone_fare">(送%1$d元话费)</string>
     <string name="pay_type">请选择支付方式</string>
     <string name="location_symbol">[位置]</string>
@@ -198,7 +196,6 @@
     <string name="official_qq">如有任何疑问，可联系官方客服QQ：2350635875</string>
     <string name="tv_fare">充值送话费！让您尽情谈情，尽情约爱！</string>
     <string name="tv_fare_info">1.限时抢购单次充值满100即有机会获赠话费\n2.绑定手机充值话费将会自动充值到您的手机中</string>
-    <!--<string name="tv_refund">退费说明：\n我司为了更加重视和关注完善用户体验，根据有旧版本的用户的相关反馈，特意提供退费联系人信息。也请新用户继续监督和提供宝贵的意见和建议。谢谢！\n注意，退款需要提供以下信息：\n1.退款方式\n2.退款联系人相关信息\n3.支付宝账户、微信账户、银行卡号 三者选一\n\n客服QQ：2350635875</string>-->
     <string name="tv_refund">我司为了更加重视和关注完善用户体验，特意提供了意见反馈功能和QQ客服功能，请用户继续监督和提供宝贵的意见和建议。谢谢！</string>
 
     <string name="bg_downloading">后台下载中...</string>

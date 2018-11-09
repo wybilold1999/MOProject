@@ -1,14 +1,10 @@
 package com.cyanbirds.momo.activity;
 
-import android.annotation.SuppressLint;
 import android.arch.lifecycle.Lifecycle;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,14 +15,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.alipay.sdk.app.PayTask;
 import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.base.BaseActivity;
 import com.cyanbirds.momo.adapter.MemberBuyAdapter;
 import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.entity.MemberBuy;
-import com.cyanbirds.momo.entity.PayResult;
 import com.cyanbirds.momo.entity.UserVipModel;
 import com.cyanbirds.momo.helper.SDKCoreHelper;
 import com.cyanbirds.momo.manager.AppManager;
@@ -35,7 +29,6 @@ import com.cyanbirds.momo.net.IUserBuyApi;
 import com.cyanbirds.momo.net.base.RetrofitFactory;
 import com.cyanbirds.momo.ui.widget.DividerItemDecoration;
 import com.cyanbirds.momo.ui.widget.WrapperLinearLayoutManager;
-import com.cyanbirds.momo.utils.AESOperator;
 import com.cyanbirds.momo.utils.DensityUtil;
 import com.cyanbirds.momo.utils.JsonUtils;
 import com.cyanbirds.momo.utils.RxBus;
@@ -52,7 +45,6 @@ import com.yuntongxun.ecsdk.ECInitParams;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -90,8 +82,6 @@ public class VipCenterActivity extends BaseActivity {
 	 * 没有网络时显示开通会员的名单
 	 */
 	private List<String> turnOnVipNameList;
-
-	private static final int SDK_PAY_FLAG = 1;
 
 	/**
 	 * 普通会员商品
