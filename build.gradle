@@ -34,8 +34,6 @@ allprojects {
             url 'https://maven.google.com/'
             name 'Google'
         }
-        URL HMSMaven =new URL('http://developer.huawei.com/repo')
-        maven {url HMSMaven}
         maven {
             url "http://mvn.gt.igexin.com/nexus/content/repositories/releases/"
         }
