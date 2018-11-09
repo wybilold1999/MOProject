@@ -281,17 +281,15 @@ public class MainActivity extends BaseActivity implements MessageUnReadListener.
 	 * 华为推送注册
 	 */
 	private void initHWPush() {
-		if ("HUAWEI".equals(AppManager.getDeviceName())) {
-			HMSAgent.Push.getToken((rst) -> {
-				if (rst != 0) {
-					initHWPush();
-				}
-			});
-			/**
-			 * 能接收透传消息
-			 */
-			HMSAgent.Push.enableReceiveNormalMsg(true ,(rst -> {}));
-		}
+		HMSAgent.Push.getToken((rst) -> {
+			if (rst != 0) {
+				initHWPush();
+			}
+		});
+		/**
+		 * 能接收透传消息
+		 */
+		HMSAgent.Push.enableReceiveNormalMsg(true ,(rst -> {}));
 	}
 
 	@Override
