@@ -27,7 +27,6 @@ import com.cyanbirds.momo.activity.MyGiftsActivity;
 import com.cyanbirds.momo.activity.PersonalInfoActivity;
 import com.cyanbirds.momo.activity.SettingActivity;
 import com.cyanbirds.momo.activity.VipCenterActivity;
-import com.cyanbirds.momo.activity.VipHWCenterActivity;
 import com.cyanbirds.momo.config.AppConstants;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.ClientUser;
@@ -223,13 +222,13 @@ public class PersonalFragment extends Fragment {
 			} else {
 				isVip.setVisibility(View.GONE);
 			}
-			/*if (clientUser.isShowVip) {
+			if (clientUser.isShowVip) {
 				mVipCard.setVisibility(View.VISIBLE);
 				vipLay.setVisibility(View.VISIBLE);
 			} else {
 				mVipCard.setVisibility(View.GONE);
 				vipLay.setVisibility(View.GONE);
-			}*/
+			}
 			if (clientUser.isShowAppointment) {
 				mAppointmentLay.setVisibility(View.VISIBLE);
 			} else {
@@ -278,15 +277,7 @@ public class PersonalFragment extends Fragment {
 				startActivity(intent);
 				break;
 			case R.id.vip_lay:
-				if (AppManager.getClientUser().isShowGold) {
-					intent.setClass(getActivity(), VipCenterActivity.class);
-				} else {
-					intent.setClass(getActivity(), VipHWCenterActivity.class);
-				}
-				if (AppConstants.CITY.contains(AppManager.getClientUser().currentCity) &&
-						"huawei".equals(channel)) {//华为渠道，并且在深圳，就跳转到华为支付，不受isShowGold字段影响
-					intent.setClass(getActivity(), VipHWCenterActivity.class);
-				}
+				intent.setClass(getActivity(), VipCenterActivity.class);
 				startActivity(intent);
 				break;
 			case R.id.my_attention:

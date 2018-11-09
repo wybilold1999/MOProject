@@ -10,13 +10,12 @@ android {
         applicationId "com.cyanbirds.momo"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 16
-        versionName "1.2.6"
-        flavorDimensions "16"
+        versionCode 15
+        versionName "1.2.5"
+        flavorDimensions "15"
         multiDexEnabled true
 
         manifestPlaceholders = [
-                HMSVERSION:"2.6.1",PACKAGE_NAME: "com.cyanbirds.momo", APPID:"100074243", CPID:"890086000101001987",
                 GETUI_APP_ID : "opj7gozQ30AVtgwvmtGOT1",
                 GETUI_APP_KEY : "lStaD5RbCQ6m2uIVArImw3",
                 GETUI_APP_SECRET : "d6vUFMTUmT6OUKN2jzhhZ1"
@@ -170,15 +169,6 @@ dependencies {
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
 
     implementation 'com.tencent:mmkv:1.0.12'
-
-    // 此处版本号仅为示例，请手动修改成实际集成的HMSSDK版本号
-    String HMSSDKVer = '2.6.1.301'
-    implementation 'com.huawei.android.hms:iap:'+HMSSDKVer
-    implementation 'com.huawei.android.hms:game:'+HMSSDKVer
-    implementation 'com.huawei.android.hms:sns:'+HMSSDKVer
-    implementation 'com.huawei.android.hms:hwid:'+HMSSDKVer
-    implementation 'com.huawei.android.hms:push:'+HMSSDKVer
-    implementation 'com.huawei.android.hms:opendevice:'+HMSSDKVer
 
     implementation 'com.getui:sdk:2.12.5.0'
 }

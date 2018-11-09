@@ -492,11 +492,7 @@ public class ChatActivity extends BaseActivity implements OnMessageReportCallbac
 		builder.setPositiveButton(R.string.ok, ((dialog, i) -> {
 			dialog.dismiss();
 			Intent intent = new Intent();
-			if (AppManager.getClientUser().isShowGold) {
-				intent.setClass(ChatActivity.this, VipCenterActivity.class);
-			} else {
-				intent.setClass(ChatActivity.this, VipHWCenterActivity.class);
-			}
+			intent.setClass(ChatActivity.this, VipCenterActivity.class);
 			startActivity(intent);
 		}));
 		if (AppManager.getClientUser().isShowGiveVip) {

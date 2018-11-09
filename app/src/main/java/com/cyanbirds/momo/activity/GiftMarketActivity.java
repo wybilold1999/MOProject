@@ -147,11 +147,7 @@ public class GiftMarketActivity extends BaseActivity implements View.OnClickList
 		builder.setPositiveButton(R.string.ok, ((dialog, i) -> {
 			dialog.dismiss();
 			Intent intent = new Intent();
-			if (AppManager.getClientUser().isShowGold) {
-				intent.setClass(GiftMarketActivity.this, VipCenterActivity.class);
-			} else {
-				intent.setClass(GiftMarketActivity.this, VipHWCenterActivity.class);
-			}
+			intent.setClass(GiftMarketActivity.this, VipCenterActivity.class);
 			startActivity(intent);
 		}));
 		if (AppManager.getClientUser().isShowGiveVip) {

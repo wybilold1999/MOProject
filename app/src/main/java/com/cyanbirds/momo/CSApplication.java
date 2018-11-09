@@ -20,7 +20,6 @@ import com.facebook.imagepipeline.listener.RequestLoggingListener;
 import com.facebook.imagepipeline.memory.PoolConfig;
 import com.facebook.imagepipeline.memory.PoolFactory;
 import com.facebook.imagepipeline.memory.PoolParams;
-import com.huawei.android.hms.agent.HMSAgent;
 import com.mob.MobSDK;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.mm.sdk.openapi.IWXAPI;
@@ -79,8 +78,6 @@ public class CSApplication extends MultiDexApplication {
 
 		initBugly();
 
-		HMSAgent.init(this);
-
 	}
 
 	private void initBugly() {
@@ -134,11 +131,5 @@ public class CSApplication extends MultiDexApplication {
 				.setMainDiskCacheConfig(diskCacheConfig)
 				.setRequestListeners(listeners).build();
 		Fresco.initialize(this, config);
-	}
-
-	@Override
-	public void onTerminate() {
-		super.onTerminate();
-		HMSAgent.destroy();
 	}
 }

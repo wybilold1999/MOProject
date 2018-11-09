@@ -16,7 +16,6 @@ import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.activity.GiveVipActivity;
 import com.cyanbirds.momo.activity.PhotoViewActivity;
 import com.cyanbirds.momo.activity.VipCenterActivity;
-import com.cyanbirds.momo.activity.VipHWCenterActivity;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.entity.FollowModel;
 import com.cyanbirds.momo.manager.AppManager;
@@ -197,11 +196,7 @@ public class AttentionMeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         builder.setPositiveButton(R.string.ok, ((dialog, i) -> {
             dialog.dismiss();
             Intent intent = new Intent();
-            if (AppManager.getClientUser().isShowGold) {
-                intent.setClass(mContext, VipCenterActivity.class);
-            } else {
-                intent.setClass(mContext, VipHWCenterActivity.class);
-            }
+            intent.setClass(mContext, VipCenterActivity.class);
             mContext.startActivity(intent);
         }));
         if (AppManager.getClientUser().isShowGiveVip) {

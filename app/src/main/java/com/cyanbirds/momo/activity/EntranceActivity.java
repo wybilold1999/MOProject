@@ -22,7 +22,6 @@ import com.cyanbirds.momo.utils.CheckUtil;
 import com.cyanbirds.momo.utils.JsonUtils;
 import com.cyanbirds.momo.utils.PreferencesUtils;
 import com.cyanbirds.momo.utils.Utils;
-import com.huawei.android.hms.agent.HMSAgent;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.uber.autodispose.AutoDispose;
 import com.uber.autodispose.android.lifecycle.AndroidLifecycleScopeProvider;
@@ -69,11 +68,6 @@ public class EntranceActivity extends BaseActivity implements AMapLocationListen
         getIPAddress();
         initLocationClient();
         requestLocationPermission();
-        checkHWUpdate();
-    }
-
-    private void checkHWUpdate() {
-        HMSAgent.checkUpdate(this, (rst) -> {});
     }
 
     /**
