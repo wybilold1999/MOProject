@@ -58,6 +58,8 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.huawei.hmsagent.IEvnValues.pay_pub_key;
+
 /**
  * @author Cloudsoar(wangyb)
  * @datetime 2016-01-13 21:34 GMT+8
@@ -215,7 +217,15 @@ public class VipHWCenterActivity extends BaseActivity {
 		PayReq payReq = createPayReq(memberBuy);
 		HMSAgent.Pay.pay(payReq, (retCode, payInfo) -> {
 			if (retCode == HMSAgent.AgentResultCode.HMSAGENT_SUCCESS && payInfo != null) {
-				modifyUserToVIP();
+				boolean checkRst = PaySignUtil.checkSign(payInfo, pay_pub_key);
+				if (checkRst) {
+					ToastUtil.showMessage(R.string.pay_success);
+					// 支付成功并且验签成功，发放商品
+					getPayResult();
+				} else {
+					// 签名失败，需要查询订单状态：对于没有服务器的单机应用，调用查询订单接口查询；其他应用到开发者服务器查询订单状态。| Signature failed, need to query order status: For stand-alone applications without servers, call Query order interface query, other application to the Developer Server query order status.
+					getPayResult();
+				}
 			} else if (retCode == HMSAgent.AgentResultCode.ON_ACTIVITY_RESULT_ERROR
 					|| retCode == PayStatusCodes.PAY_STATE_TIME_OUT
 					|| retCode == PayStatusCodes.PAY_STATE_NET_ERROR) {
@@ -276,7 +286,7 @@ public class VipHWCenterActivity extends BaseActivity {
 		// X31 话费充值,X32 机票/酒店,X33 电影票,X34 团购,X35 手机预购,X36 公共缴费,X39 流量充值 | X31, X32 air tickets/hotels, X33 movie tickets, X34 Group purchase, X35 mobile phone advance, X36 public fees, X39 flow Recharge
 		payReq.serviceCatalog = "X5";
 		//商户保留信息，选填不参与签名，支付成功后会华为支付平台会原样 回调CP服务端 | The merchant retains the information, chooses not to participate in the signature, the payment will be successful, the Huawei payment platform will be back to the CP service
-		payReq.extReserved = "Here to fill in the Merchant reservation information";
+		payReq.extReserved = AppManager.getClientUser().userId + "=" + AppManager.getClientUser().user_name;
 
 		//对单机应用可以直接调用此方法对请求信息签名，非单机应用一定要在服务器端储存签名私钥，并在服务器端进行签名操作。| For stand-alone applications, this method can be called directly to the request information signature, not stand-alone application must store the signature private key on the server side, and sign operation on the server side.
 		// 在服务端进行签名的cp可以将getStringForSign返回的待签名字符串传给服务端进行签名 | The CP, signed on the server side, can pass the pending signature string returned by Getstringforsign to the service side for signature
