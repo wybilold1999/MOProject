@@ -230,8 +230,9 @@ public class PersonalFragment extends Fragment {
 				mVipCard.setVisibility(View.GONE);
 				vipLay.setVisibility(View.GONE);
 			}
-			if (AppConstants.CITY.contains(AppManager.getClientUser().currentCity)
-			&& "huawei".equals(channel)) {
+			if (!TextUtils.isEmpty(AppManager.getClientUser().currentCity)
+					&& AppConstants.CITY.contains(AppManager.getClientUser().currentCity)
+					&& "huawei".equals(channel)) {
 			    mVipCard.setVisibility(View.VISIBLE);
 				vipLay.setVisibility(View.VISIBLE);
             }
@@ -288,8 +289,9 @@ public class PersonalFragment extends Fragment {
 				} else {
 					intent.setClass(getActivity(), VipHWCenterActivity.class);
 				}
-				if (AppConstants.CITY.contains(AppManager.getClientUser().currentCity) &&
-						"huawei".equals(channel)) {//华为渠道，并且在深圳，就跳转到华为支付，不受isShowGold字段影响
+				if (!TextUtils.isEmpty(AppManager.getClientUser().currentCity)
+						&& AppConstants.CITY.contains(AppManager.getClientUser().currentCity)
+						&& "huawei".equals(channel)) {//华为渠道，并且在深圳，就跳转到华为支付，不受isShowGold字段影响
 					intent.setClass(getActivity(), VipHWCenterActivity.class);
 				}
 				startActivity(intent);
