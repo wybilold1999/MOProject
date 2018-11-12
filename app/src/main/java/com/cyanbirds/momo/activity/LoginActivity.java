@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -32,8 +31,6 @@ import com.cyanbirds.momo.utils.ToastUtil;
 import com.cyanbirds.momo.utils.Util;
 import com.cyanbirds.momo.view.IUserLoginLogOut;
 import com.huawei.android.hms.agent.HMSAgent;
-import com.huawei.android.hms.agent.hwid.handler.SignInHandler;
-import com.huawei.hms.support.api.hwid.SignInHuaweiId;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.common.Constants;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
@@ -175,8 +172,10 @@ public class LoginActivity extends BaseActivity<IUserLoginLogOut.Presenter> impl
                 ProgressDialogUtils.getInstance(this).dismiss();
                 WeinXinEvent event = (WeinXinEvent) o;
                 if (!TextUtils.isEmpty(AppManager.getClientUser().sex)) {
-                    onShowLoading();
-                    presenter.onWXLogin(event.code);
+                    if (null != presenter) {
+                        onShowLoading();
+                        presenter.onWXLogin(event.code);
+                    }
                 } else {
                     Intent intent = new Intent(this, SelectSexActivity.class);
                     intent.putExtra("code", event.code);
@@ -195,8 +194,10 @@ public class LoginActivity extends BaseActivity<IUserLoginLogOut.Presenter> impl
             ProgressDialogUtils.getInstance(this).dismiss();
             if (rtnCode == HMSAgent.AgentResultCode.HMSAGENT_SUCCESS && signInResult != null) {
                 if (!TextUtils.isEmpty(AppManager.getClientUser().sex)) {
-                    onShowLoading();
-                    presenter.onHWLogin(signInResult.getOpenId());
+                    if (null != presenter) {
+                        onShowLoading();
+                        presenter.onHWLogin(signInResult.getOpenId());
+                    }
                 } else {
                     Intent intent = new Intent(this, SelectSexActivity.class);
                     intent.putExtra("hw_open_id", signInResult.getOpenId());
@@ -317,10 +318,12 @@ public class LoginActivity extends BaseActivity<IUserLoginLogOut.Presenter> impl
                 @Override
                 public void onComplete(final Object response) {
                     if (!TextUtils.isEmpty(AppManager.getClientUser().sex)) {
-                        if (activityIsRunning) {
-                            onShowLoading();
+                        if (null != presenter) {
+                            if (activityIsRunning) {
+                                onShowLoading();
+                            }
+                            presenter.onQQLogin(token, openId);
                         }
-                        presenter.onQQLogin(token, openId);
                     } else {
                         Intent intent = new Intent(LoginActivity.this, SelectSexActivity.class);
                         intent.putExtra("token", token);

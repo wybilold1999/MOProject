@@ -184,8 +184,10 @@ public class RegisterActivity extends BaseActivity<IUserLoginLogOut.Presenter> i
         HMSAgent.Hwid.signIn(true, (rtnCode, signInResult) -> {
             ProgressDialogUtils.getInstance(this).dismiss();
             if (rtnCode == HMSAgent.AgentResultCode.HMSAGENT_SUCCESS && signInResult != null) {
-                onShowLoading();
-                presenter.onHWLogin(signInResult.getOpenId());
+                if (null != presenter) {
+                    onShowLoading();
+                    presenter.onHWLogin(signInResult.getOpenId());
+                }
             } else {
                 ToastUtil.showMessage(R.string.weibosdk_demo_toast_auth_failed);
             }
@@ -205,8 +207,10 @@ public class RegisterActivity extends BaseActivity<IUserLoginLogOut.Presenter> i
             } else {
                 ProgressDialogUtils.getInstance(this).dismiss();
                 WeinXinEvent event = (WeinXinEvent) o;
-                onShowLoading();
-                presenter.onWXLogin(event.code);
+                if (null != presenter) {
+                    onShowLoading();
+                    presenter.onWXLogin(event.code);
+                }
             }
         });
     }
@@ -345,10 +349,13 @@ public class RegisterActivity extends BaseActivity<IUserLoginLogOut.Presenter> i
                 }
                 @Override
                 public void onComplete(final Object response) {
-                    if (activityIsRunning) {
-                        onShowLoading();
+                    if (null != presenter) {
+                        if (activityIsRunning) {
+                            onShowLoading();
+                        }
+                        presenter.onQQLogin(token, openId);
                     }
-                    presenter.onQQLogin(token, openId);
+
                 }
 
                 @Override

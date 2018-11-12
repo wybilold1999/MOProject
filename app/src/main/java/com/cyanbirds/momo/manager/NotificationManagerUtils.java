@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 
+import com.cyanbirds.momo.CSApplication;
 import com.cyanbirds.momo.R;
 import com.cyanbirds.momo.config.ValueKey;
 import com.cyanbirds.momo.db.ConversationSqlManager;
@@ -37,13 +38,13 @@ public class NotificationManagerUtils {
     }
 
     private static class SingletonHolder {
-        private static final NotificationManagerUtils INSTANCE = new NotificationManagerUtils(AppManager.getContext());
+        private static final NotificationManagerUtils INSTANCE = new NotificationManagerUtils();
     }
 
-    private NotificationManagerUtils(Context context) {
-        mContext = context;
+    private NotificationManagerUtils() {
+        mContext = CSApplication.getInstance().getApplicationContext();
         if (mNotificationManager == null) {
-            mNotificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+            mNotificationManager = (NotificationManager) mContext.getSystemService(NOTIFICATION_SERVICE);
         }
     }
 

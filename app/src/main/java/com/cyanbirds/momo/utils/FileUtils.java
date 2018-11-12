@@ -301,6 +301,9 @@ public class FileUtils {
 
 	public static boolean writeResponseBodyToDisk(ResponseBody body, String filePath, DownloadListener downloadListener) {
 		try {
+			if (body == null) {
+				return false;
+			}
 			File futureStudioIconFile = new File(filePath);
 			InputStream inputStream = null;
 			OutputStream outputStream = null;
