@@ -259,7 +259,7 @@ public class VipHWCenterActivity extends BaseActivity {
 		String amount = String.format("%.2f", memberBuy.price);
 
 		//商品名称 | Product Name
-		payReq.productName = memberBuy.months + "会员" + "客服QQ2350635875";
+		payReq.productName = memberBuy.months + "会员" + "客服微信号码:17188135298";
 		//商品描述 | Product Description
 		payReq.productDesc = memberBuy.descreption;
 		// 商户ID，来源于开发者联盟，也叫“支付id” | Merchant ID, from the Developer Alliance, also known as "Payment ID"
