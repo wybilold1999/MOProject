@@ -32,7 +32,6 @@ import com.cyanbirds.momo.net.IUserApi;
 import com.cyanbirds.momo.net.IUserFollowApi;
 import com.cyanbirds.momo.net.IUserLoveApi;
 import com.cyanbirds.momo.net.base.RetrofitFactory;
-import com.cyanbirds.momo.utils.CheckUtil;
 import com.cyanbirds.momo.utils.JsonUtils;
 import com.cyanbirds.momo.utils.ProgressDialogUtils;
 import com.cyanbirds.momo.utils.RxBus;
@@ -95,7 +94,6 @@ public class PersonalInfoActivity extends BaseActivity {
 
 	private ClientUser mClientUser; //当前用户
 	private String curUserId; //当前用户id
-	private String channel = "";
 
 	private Observable<UserEvent> observable;
 
@@ -147,7 +145,6 @@ public class PersonalInfoActivity extends BaseActivity {
 	}
 
 	private void setupData() {
-		channel = CheckUtil.getAppMetaData(this, "UMENG_CHANNEL");
 		curUserId = getIntent().getStringExtra(ValueKey.USER_ID);
 		if (!TextUtils.isEmpty(curUserId)) {
 			if (AppManager.getClientUser().userId.equals(curUserId)) {
@@ -168,10 +165,6 @@ public class PersonalInfoActivity extends BaseActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (AppManager.getClientUser().userId.equals(curUserId)) {
 			getMenuInflater().inflate(R.menu.personal_menu, menu);
-		} else if (AppManager.getClientUser().isShowVip) {
-			if (!AppManager.getClientUser().is_vip) {
-				getMenuInflater().inflate(R.menu.call_menu, menu);
-			}
 		}
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -181,14 +174,6 @@ public class PersonalInfoActivity extends BaseActivity {
 		if (item.getItemId() == R.id.modify_info) {
 			Intent intent = new Intent(this, ModifyUserInfoActivity.class);
 			startActivity(intent);
-		} else if (item.getItemId() == R.id.call) {
-			Intent intent = new Intent(this, VoipCallActivity.class);
-			intent.putExtra(ValueKey.IMAGE_URL, mClientUser == null ? "" : mClientUser.face_url);
-			intent.putExtra(ValueKey.USER_NAME, mClientUser == null ? "" : mClientUser.user_name);
-			intent.putExtra(ValueKey.FROM_ACTIVITY, "PersonalInfoActivity");
-			startActivity(intent);
-		} else {
-			finish();
 		}
 		return super.onOptionsItemSelected(item);
 	}

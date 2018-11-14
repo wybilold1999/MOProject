@@ -43,6 +43,7 @@ import com.cyanbirds.momo.entity.ClientUser;
 import com.cyanbirds.momo.eventtype.UserEvent;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.ui.widget.WrapperLinearLayoutManager;
+import com.cyanbirds.momo.utils.CheckUtil;
 import com.cyanbirds.momo.utils.RxBus;
 import com.cyanbirds.momo.utils.StringUtil;
 import com.dl7.tag.TagLayout;
@@ -204,6 +205,8 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 
 	private Observable<UserEvent> observable;
 
+	private String channel;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
@@ -267,6 +270,7 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 	}
 
 	private void setupData() {
+		channel = CheckUtil.getAppMetaData(getActivity(), "UMENG_CHANNEL");
 		mVals = new ArrayList<>();
 		if (getArguments() != null) {
 			clientUser = (ClientUser) getArguments().getSerializable(ValueKey.ACCOUNT);
@@ -312,8 +316,15 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 					mGiftCard.setVisibility(View.GONE);
 				}
 				if (AppManager.getClientUser().isShowVip) {
-					mTvFriend.setVisibility(View.VISIBLE);
-					mCardFriend.setVisibility(View.VISIBLE);
+					if (!TextUtils.isEmpty(AppManager.getClientUser().currentCity)
+							&& AppConstants.CITY.contains(AppManager.getClientUser().currentCity)
+							&& "huawei".equals(channel)) {
+						mTvFriend.setVisibility(View.GONE);
+						mCardFriend.setVisibility(View.GONE);
+					} else {
+						mTvFriend.setVisibility(View.VISIBLE);
+						mCardFriend.setVisibility(View.VISIBLE);
+					}
 				} else {
 					mTvFriend.setVisibility(View.GONE);
 					mCardFriend.setVisibility(View.GONE);
@@ -361,8 +372,15 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 
 	private void setUserInfo(ClientUser clientUser) {
 		if (AppManager.getClientUser().isShowVip) {
-			mSocialCard.setVisibility(View.VISIBLE);
-			mSocialText.setVisibility(View.VISIBLE);
+			if (!TextUtils.isEmpty(AppManager.getClientUser().currentCity)
+					&& AppConstants.CITY.contains(AppManager.getClientUser().currentCity)
+					&& "huawei".equals(channel)) {
+				mSocialCard.setVisibility(View.GONE);
+				mSocialText.setVisibility(View.GONE);
+			} else {
+				mSocialCard.setVisibility(View.VISIBLE);
+				mSocialText.setVisibility(View.VISIBLE);
+			}
 		} else {
 			mSocialCard.setVisibility(View.GONE);
 			mSocialText.setVisibility(View.GONE);
@@ -609,8 +627,15 @@ public class TabPersonalFragment extends Fragment implements GeocodeSearch.OnGeo
 						!TextUtils.isEmpty(clientUser.distance) &&
 						!"0.0".equals(clientUser.distance) &&
 						!TextUtils.isEmpty(mAddress)) {
-					mMyLocation.setVisibility(View.VISIBLE);
-					mMapCard.setVisibility(View.VISIBLE);
+					if (!TextUtils.isEmpty(AppManager.getClientUser().currentCity)
+							&& AppConstants.CITY.contains(AppManager.getClientUser().currentCity)
+							&& "huawei".equals(channel)) {
+						mMyLocation.setVisibility(View.GONE);
+						mMapCard.setVisibility(View.GONE);
+					} else {
+						mMyLocation.setVisibility(View.VISIBLE);
+						mMapCard.setVisibility(View.VISIBLE);
+					}
 				} else {
 					mMapCard.setVisibility(View.GONE);
 					mMyLocation.setVisibility(View.GONE);
