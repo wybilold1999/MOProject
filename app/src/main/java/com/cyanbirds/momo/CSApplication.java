@@ -9,7 +9,7 @@ import com.cyanbirds.momo.helper.AppActivityLifecycleCallbacks;
 import com.cyanbirds.momo.helper.CrashHandler;
 import com.cyanbirds.momo.manager.AppManager;
 import com.cyanbirds.momo.manager.NotificationManagerUtils;
-import com.cyanbirds.momo.net.base.RetrofitManager;
+import com.cyanbirds.momo.net.base.RetrofitFactory;
 import com.facebook.cache.disk.DiskCacheConfig;
 import com.facebook.common.util.ByteConstants;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -124,7 +124,7 @@ public class CSApplication extends MultiDexApplication {
 						.build());
 
 		ImagePipelineConfig config = OkHttpImagePipelineConfigFactory
-				.newBuilder(this, RetrofitManager.getInstance().getOkHttpClient())
+				.newBuilder(this, RetrofitFactory.initOkHttpClient())
 				.setBitmapsConfig(Bitmap.Config.RGB_565)
 				.setDownsampleEnabled(true)
 				.setPoolFactory(factory)

@@ -325,6 +325,11 @@ public class ModifyUserInfoActivity extends BaseActivity implements ModifyUserIn
 				}
 				mIntrestFlowlayout.setTags(mVals);
 			}
+
+			if (AppManager.getClientUser().isShowVip) {
+				mTvFriend.setVisibility(View.VISIBLE);
+				mCardFriend.setVisibility(View.VISIBLE);
+			}
 		}
 	}
 

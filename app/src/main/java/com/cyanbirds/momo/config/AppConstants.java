@@ -10,9 +10,10 @@ package com.cyanbirds.momo.config;
  *
  */
 public class AppConstants {
-	
+
+	public static final String BASE_URL = "http://119.23.144.11/MoLoveServer/";
 //	public static final String BASE_URL = "http://120.76.54.8/MoLoveServer/";
-	public static final String BASE_URL = "http://192.168.1.103:8080/MoLoveServer/";
+//	public static final String BASE_URL = "http://172.20.10.4:8080/MoLoveServer/";
 
 	/**
 	 * 密码加密密匙
@@ -65,6 +66,8 @@ public class AppConstants {
 	 */
 	public static final String OSS_IMG_ENDPOINT = "http://real-love-server.img-cn-shenzhen.aliyuncs.com/";
 
+	public static final String BAIDU_LOCATION_API = "http://api.map.baidu.com/location/ip?ak=icuYvoz6ZrKLTKC6m53hquZUzZlHUypg&coor=bd09ll&ip=";
+
 	public static final String WX_PAY_PLATFORM = "wxpay";
 
 	public static final String ALI_PAY_PLATFORM = "alipay";
@@ -72,5 +75,13 @@ public class AppConstants {
 	public static int CHAT_LIMIT = 0;
 
 	public static String BUGLY_ID = "f70599b373";
+
+	public static String CITY_WE_CHAT_RESP_CODE = "city_we_chat_resp_code";
+
+	public static String PAY_SUCCESS = "pay_success";
+
+	public static String PUB_DYNAMIC = "pub_dynamic";
+
+	public static String UPDATE_USER_INFO = "update_user_info";
 
 }

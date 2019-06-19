@@ -112,6 +112,7 @@
     <string name="see_more_send_gift_data">您还不是会员,暂时只能查看前10位给您送礼物的用户,查看更多，立即开通会员？</string>
     <string name="see_more_data">您还不是会员,，暂时只能查看前10位关注了您的用户，查看更多，立即开通会员？</string>
     <string name="un_send_msg">您还不是会员,不能发送消息,立即开通会员？</string>
+    <string name="un_send_gift">您还不是会员,暂时不能给她赠送礼物,赠送礼物勾搭成功率更高哦！</string>
     <string name="social_id_need_vip">您还不是会员,不能查看%1$s号,开通会员即可无限查看</string>
     <string name="upload_success">上传成功</string>
     <string name="success_copy">已复制</string>
@@ -233,5 +234,6 @@
 
     <string name="quit_app_name">退出同城有缘交友</string>
     <string name="quit_are_you_sure">确定要退出吗？</string>
+    <string name="custom_service_qq">QQ：2350635875</string>
 
 </resources>

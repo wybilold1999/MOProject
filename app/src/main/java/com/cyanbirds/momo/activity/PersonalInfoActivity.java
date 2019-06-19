@@ -164,35 +164,6 @@ public class PersonalInfoActivity extends BaseActivity {
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		if (AppManager.getClientUser().userId.equals(curUserId)) {
-			getMenuInflater().inflate(R.menu.personal_menu, menu);
-		} else if (AppManager.getClientUser().isShowVip) {
-			if (!AppManager.getClientUser().is_vip) {
-				getMenuInflater().inflate(R.menu.call_menu, menu);
-			}
-		}
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == R.id.modify_info) {
-			Intent intent = new Intent(this, ModifyUserInfoActivity.class);
-			startActivity(intent);
-		} else if (item.getItemId() == R.id.call) {
-			Intent intent = new Intent(this, VoipCallActivity.class);
-			intent.putExtra(ValueKey.IMAGE_URL, mClientUser == null ? "" : mClientUser.face_url);
-			intent.putExtra(ValueKey.USER_NAME, mClientUser == null ? "" : mClientUser.user_name);
-			intent.putExtra(ValueKey.FROM_ACTIVITY, "PersonalInfoActivity");
-			startActivity(intent);
-		} else {
-			finish();
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
 	@OnClick({R.id.gift, R.id.portrait, R.id.fab, R.id.attention, R.id.love, R.id.message})
 	public void onClick(View view) {
 		Intent intent = new Intent();

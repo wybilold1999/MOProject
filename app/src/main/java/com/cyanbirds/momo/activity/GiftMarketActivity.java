@@ -143,7 +143,7 @@ public class GiftMarketActivity extends BaseActivity implements View.OnClickList
 
 	private void showVipDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(R.string.un_send_msg);
+		builder.setMessage(R.string.un_send_gift);
 		builder.setPositiveButton(R.string.ok, ((dialog, i) -> {
 			dialog.dismiss();
 			Intent intent = new Intent();
