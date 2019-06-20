@@ -224,7 +224,7 @@ public class PreferencesUtils {
 	 * @param context
 	 */
 	public static void setCurrentCity(final Context context, final String city) {
-		AppManager.getMMKV().encode(SETTINGS_CURRENT_CITY, "成都市");
+		AppManager.getMMKV().encode(SETTINGS_CURRENT_CITY, city);
 	}
 
 	/**
